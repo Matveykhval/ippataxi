@@ -837,6 +837,8 @@
           <p style="font-size:0.88rem; color:var(--color-text-muted); margin-bottom:24px;">Vul onderstaand formulier in voor speciale routes of afspraken.</p>
 
           <form id="contact-form">
+            <div id="contact-form-status" style="display:none; margin-bottom:14px; padding:12px; border-radius:var(--radius-sm); font-size:0.88rem;"></div>
+
             <div class="form-group">
               <label for="contact-name" class="form-label">Uw Naam</label>
               <input type="text" id="contact-name" class="form-input" placeholder="Uw naam" required>
@@ -845,7 +847,7 @@
             <div class="form-row-2">
               <div class="form-group">
                 <label for="contact-phone" class="form-label">Telefoonnummer</label>
-                <input type="tel" id="contact-phone" class="form-input" placeholder="06 - 82096284" required>
+                <input type="tel" id="contact-phone" class="form-input" placeholder="06 - ..." required>
               </div>
               <div class="form-group">
                 <label for="contact-email" class="form-label">E-mailadres</label>
@@ -858,7 +860,7 @@
               <textarea id="contact-message" class="form-textarea" placeholder="Vertel ons over uw gewenste ophaallocatie, bestemming en welk type IPPA u wilt inzetten..." required></textarea>
             </div>
 
-            <button type="submit" class="btn-primary" style="width:100%; margin-top:12px;">Verstuur Bericht</button>
+            <button type="submit" class="btn-primary" id="contact-submit-btn" style="width:100%; margin-top:12px;">Verstuur Bericht naar matt@khval.com</button>
           </form>
         </div>
       </div>
@@ -981,14 +983,27 @@
 
       <!-- Passenger Details Input -->
       <form id="modal-booking-form" onsubmit="return false;">
+        <div id="modal-form-status" style="display:none; margin-bottom:14px; padding:12px; border-radius:var(--radius-sm); font-size:0.88rem;"></div>
+
         <div class="form-group" style="margin-bottom:12px;">
           <label for="modal-name" class="form-label">Uw Naam *</label>
           <input type="text" id="modal-name" class="form-input" placeholder="Voor- en achternaam" required>
         </div>
 
+        <div class="form-row-2" style="margin-bottom:12px;">
+          <div class="form-group">
+            <label for="modal-phone" class="form-label">Telefoonnummer *</label>
+            <input type="tel" id="modal-phone" class="form-input" placeholder="06 - ..." required>
+          </div>
+          <div class="form-group">
+            <label for="modal-email" class="form-label">E-mailadres (voor bevestiging)</label>
+            <input type="email" id="modal-email" class="form-input" placeholder="uw@email.nl">
+          </div>
+        </div>
+
         <div class="form-group" style="margin-bottom:12px;">
-          <label for="modal-phone" class="form-label">Telefoonnummer *</label>
-          <input type="tel" id="modal-phone" class="form-input" placeholder="06 - ..." required>
+          <label for="modal-notes" class="form-label">Opmerkingen of Vluchtnummer (optioneel)</label>
+          <input type="text" id="modal-notes" class="form-input" placeholder="Bijv. Vlucht KL1234, kinderzitje of extra stops...">
         </div>
 
         <div class="form-group" style="margin-bottom:20px;">
@@ -1000,7 +1015,7 @@
 
         <div style="display:flex; flex-direction:column; gap:10px;">
           <button type="submit" class="btn-primary" id="btn-confirm-reservation" style="width:100%;">
-            Bevestig Reservering (Met IPPA)
+            Bevestig Reservering (Verstuur naar Chauffeur)
           </button>
           <button type="button" class="btn-whatsapp" id="btn-modal-whatsapp" style="width:100%; justify-content:center;">
             Boek Direct via WhatsApp

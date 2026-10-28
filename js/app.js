@@ -596,33 +596,114 @@ function openWhatsAppDispatch() {
   window.open(url, '_blank');
 }
 
+// Form Submission Endpoint (delivers to matt@khval.com)
+const FORM_ENDPOINT = 'https://formsubmit.co/ajax/matt@khval.com';
+
 function handleReservationSubmit(e) {
   e.preventDefault();
   const name = document.getElementById('modal-name')?.value.trim();
   const phone = document.getElementById('modal-phone')?.value.trim();
+  const email = document.getElementById('modal-email')?.value.trim() || 'Niet opgegeven';
+  const notes = document.getElementById('modal-notes')?.value.trim() || 'Geen';
+  const statusBox = document.getElementById('modal-form-status');
+  const confirmBtn = document.getElementById('btn-confirm-reservation');
 
   if (!name || !phone) {
-    alert(appState.currentLang === 'en' ? 'Please fill in your name and phone number.' : 'Vul alstublieft uw naam en telefoonnummer in.');
+    if (statusBox) {
+      statusBox.className = 'form-status-error';
+      statusBox.textContent = appState.currentLang === 'en' 
+        ? 'Please enter your name and phone number.' 
+        : 'Vul alstublieft uw naam en telefoonnummer in.';
+      statusBox.style.display = 'block';
+    }
     return;
   }
 
-  const refCode = 'IPPA-' + Math.floor(1000 + Math.random() * 9000);
-  const modal = document.getElementById('booking-modal');
-  modal.classList.remove('active');
-
+  const pickup = document.getElementById('ride-pickup')?.value || 'Niet opgegeven';
+  const dropoff = document.getElementById('ride-dropoff')?.value || 'Niet opgegeven';
+  const datetime = document.getElementById('ride-datetime')?.value || 'Zo snel mogelijk';
+  const passengers = document.getElementById('ride-passengers')?.value || '1';
   const res = calculateEstimatedFare();
-  const isEn = appState.currentLang === 'en';
-  const successMsg = isEn 
-    ? `Booking received! Ref: ${refCode}. Hand ${res.giveText} to your driver.`
-    : `Reservering ontvangen! Ref: ${refCode}. Geef bij aankomst ${res.giveText} aan uw chauffeur.`;
+  const vNames = { sedan: 'Executive Sedan', estate: 'Stationwagen', van: 'VIP Taxibus' };
+  const vehicleName = vNames[appState.vehicleType] || 'Executive Sedan';
+  const refCode = 'IPPA-' + Math.floor(1000 + Math.random() * 9000);
 
-  showToast(successMsg);
+  // Set loading state on button
+  if (confirmBtn) {
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<span class="btn-spinner"></span> ' + (appState.currentLang === 'en' ? 'Sending to dispatch...' : 'Bezig met versturen naar centrale...');
+  }
+  if (statusBox) statusBox.style.display = 'none';
 
-  setTimeout(() => {
-    if (confirm(isEn ? 'Would you also like to receive confirmation directly on WhatsApp?' : 'Wilt u de bevestiging tevens via WhatsApp openen?')) {
-      openWhatsAppDispatch();
+  const payload = {
+    _subject: `🚖 Nieuwe IPPATAXI Reservering - ${name} (${res.giveText})`,
+    _template: 'table',
+    _captcha: 'false',
+    Referentie: refCode,
+    Klantnaam: name,
+    Telefoonnummer: phone,
+    Email: email,
+    Ophaaladres: pickup,
+    Bestemming: dropoff,
+    Datum_en_Tijd: datetime.replace('T', ' om '),
+    Voertuig: vehicleName,
+    Aantal_Passagiers: passengers,
+    Betaling_IPPA: res.giveText,
+    Opmerkingen: notes
+  };
+
+  fetch(FORM_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.innerHTML = '✓ ' + (appState.currentLang === 'en' ? 'Reservation Sent!' : 'Reservering Verzonden!');
     }
-  }, 600);
+
+    if (statusBox) {
+      statusBox.className = 'form-status-success';
+      statusBox.innerHTML = appState.currentLang === 'en'
+        ? `✓ <strong>Reservation successfully sent!</strong> Details dispatched to matt@khval.com.<br>Ref: <strong>${refCode}</strong>. Hand <strong>${res.giveText}</strong> to your driver.`
+        : `✓ <strong>Reservering succesvol verzonden!</strong> De ritdetails zijn gemaild naar matt@khval.com.<br>Referentie: <strong>${refCode}</strong>. U overhandigt <strong>${res.giveText}</strong> aan de chauffeur bij aankomst.`;
+      statusBox.style.display = 'block';
+    }
+
+    showToast(appState.currentLang === 'en' 
+      ? `Booking sent to matt@khval.com! Ref: ${refCode}` 
+      : `Reservering verstuurd naar matt@khval.com! Ref: ${refCode}`);
+
+    // Auto close modal after 3.5s and prompt WhatsApp
+    setTimeout(() => {
+      const modal = document.getElementById('booking-modal');
+      if (modal) modal.classList.remove('active');
+      if (confirm(appState.currentLang === 'en' 
+        ? 'Would you also like to open WhatsApp confirmation?' 
+        : 'Wilt u de bevestiging tevens via WhatsApp sturen naar de chauffeur?')) {
+        openWhatsAppDispatch();
+      }
+    }, 3500);
+  })
+  .catch(err => {
+    console.error('Error submitting reservation:', err);
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = appState.currentLang === 'en' ? 'Try Again' : 'Opnieuw Proberen';
+    }
+    if (statusBox) {
+      statusBox.className = 'form-status-error';
+      statusBox.innerHTML = appState.currentLang === 'en'
+        ? 'Could not connect. Please book directly via WhatsApp or phone (+31 6 82096284).'
+        : 'Verbindingsfout. Boek alstublieft direct via WhatsApp of bel 06 - 82096284.';
+      statusBox.style.display = 'block';
+    }
+  });
 }
 
 /**
@@ -630,12 +711,83 @@ function handleReservationSubmit(e) {
  */
 function initContactForm() {
   const form = document.getElementById('contact-form');
+  const submitBtn = document.getElementById('contact-submit-btn');
+  const statusBox = document.getElementById('contact-form-status');
+
   if (!form) return;
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    showToast('Hartelijk dank! Uw IPPA-aanvraag is verzonden naar IPPATAXI.');
-    form.reset();
+
+    const name = document.getElementById('contact-name')?.value.trim();
+    const phone = document.getElementById('contact-phone')?.value.trim();
+    const email = document.getElementById('contact-email')?.value.trim();
+    const message = document.getElementById('contact-message')?.value.trim();
+
+    if (!name || !email || !message) {
+      if (statusBox) {
+        statusBox.className = 'form-status-error';
+        statusBox.textContent = 'Vul alstublieft uw naam, e-mail en vraag in.';
+        statusBox.style.display = 'block';
+      }
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="btn-spinner"></span> Versturen naar matt@khval.com...';
+    }
+    if (statusBox) statusBox.style.display = 'none';
+
+    const payload = {
+      _subject: `✉️ IPPATAXI Vraag van ${name}`,
+      _replyto: email,
+      _template: 'table',
+      _captcha: 'false',
+      Naam: name,
+      Telefoonnummer: phone || 'Niet opgegeven',
+      Email: email,
+      Vraag_of_Ritdetails: message
+    };
+
+    fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '✓ Bericht Verzonden!';
+      }
+      if (statusBox) {
+        statusBox.className = 'form-status-success';
+        statusBox.innerHTML = `✓ <strong>Hartelijk dank ${name}!</strong> Uw bericht is verstuurd naar <strong>matt@khval.com</strong>. We nemen snel contact met u op via ${email} of ${phone}.`;
+        statusBox.style.display = 'block';
+      }
+      showToast(`Bericht succesvol verzonden naar matt@khval.com!`);
+      form.reset();
+
+      setTimeout(() => {
+        if (submitBtn) submitBtn.textContent = 'Verstuur Bericht naar matt@khval.com';
+      }, 5000);
+    })
+    .catch(err => {
+      console.error('Error submitting contact form:', err);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Verstuur Bericht naar matt@khval.com';
+      }
+      if (statusBox) {
+        statusBox.className = 'form-status-error';
+        statusBox.textContent = 'Er trad een verbindingsfout op. U kunt ook direct bellen of appen via 06 - 82096284.';
+        statusBox.style.display = 'block';
+      }
+    });
   });
 }
 
