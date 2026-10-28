@@ -596,9 +596,8 @@ function openWhatsAppDispatch() {
   window.open(url, '_blank');
 }
 
-// Secure Dispatch Endpoint (obfuscated to keep private email hidden from public view/scrapers)
-const _dKey = 'bWF0dEBraHZhbC5jb20='; // base64 encoded
-const FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + atob(_dKey);
+// Official Formspree Endpoint (100% private - your email address is safely hidden on Formspree)
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mzeegqwr';
 
 function handleReservationSubmit(e) {
   e.preventDefault();
@@ -653,7 +652,7 @@ function handleReservationSubmit(e) {
     Opmerkingen: notes
   };
 
-  fetch(FORM_ENDPOINT, {
+  fetch(FORMSPREE_ENDPOINT, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -661,7 +660,14 @@ function handleReservationSubmit(e) {
     },
     body: JSON.stringify(payload)
   })
-  .then(response => response.json())
+  .then(async response => {
+    if (response.ok) {
+      return response.json().catch(() => ({ ok: true }));
+    } else {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error || 'Submission error');
+    }
+  })
   .then(data => {
     if (confirmBtn) {
       confirmBtn.disabled = false;
@@ -751,7 +757,7 @@ function initContactForm() {
       Vraag_of_Ritdetails: message
     };
 
-    fetch(FORM_ENDPOINT, {
+    fetch(FORMSPREE_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -759,7 +765,14 @@ function initContactForm() {
       },
       body: JSON.stringify(payload)
     })
-    .then(response => response.json())
+    .then(async response => {
+      if (response.ok) {
+        return response.json().catch(() => ({ ok: true }));
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || 'Submission error');
+      }
+    })
     .then(data => {
       if (submitBtn) {
         submitBtn.disabled = false;
