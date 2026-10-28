@@ -596,8 +596,9 @@ function openWhatsAppDispatch() {
   window.open(url, '_blank');
 }
 
-// Form Submission Endpoint (delivers to matt@khval.com)
-const FORM_ENDPOINT = 'https://formsubmit.co/ajax/matt@khval.com';
+// Secure Dispatch Endpoint (obfuscated to keep private email hidden from public view/scrapers)
+const _dKey = 'bWF0dEBraHZhbC5jb20='; // base64 encoded
+const FORM_ENDPOINT = 'https://formsubmit.co/ajax/' + atob(_dKey);
 
 function handleReservationSubmit(e) {
   e.preventDefault();
@@ -670,14 +671,14 @@ function handleReservationSubmit(e) {
     if (statusBox) {
       statusBox.className = 'form-status-success';
       statusBox.innerHTML = appState.currentLang === 'en'
-        ? `✓ <strong>Reservation successfully sent!</strong> Details dispatched to matt@khval.com.<br>Ref: <strong>${refCode}</strong>. Hand <strong>${res.giveText}</strong> to your driver.`
-        : `✓ <strong>Reservering succesvol verzonden!</strong> De ritdetails zijn gemaild naar matt@khval.com.<br>Referentie: <strong>${refCode}</strong>. U overhandigt <strong>${res.giveText}</strong> aan de chauffeur bij aankomst.`;
+        ? `✓ <strong>Reservation successfully sent!</strong> Details dispatched to our team.<br>Ref: <strong>${refCode}</strong>. Hand <strong>${res.giveText}</strong> to your driver upon arrival.`
+        : `✓ <strong>Reservering succesvol verzonden!</strong> De ritdetails zijn doorgestuurd naar de centrale.<br>Referentie: <strong>${refCode}</strong>. U overhandigt <strong>${res.giveText}</strong> aan de chauffeur bij aankomst.`;
       statusBox.style.display = 'block';
     }
 
     showToast(appState.currentLang === 'en' 
-      ? `Booking sent to matt@khval.com! Ref: ${refCode}` 
-      : `Reservering verstuurd naar matt@khval.com! Ref: ${refCode}`);
+      ? `Booking sent to dispatch! Ref: ${refCode}` 
+      : `Reservering verstuurd naar centrale! Ref: ${refCode}`);
 
     // Auto close modal after 3.5s and prompt WhatsApp
     setTimeout(() => {
@@ -735,7 +736,7 @@ function initContactForm() {
 
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="btn-spinner"></span> Versturen naar matt@khval.com...';
+      submitBtn.innerHTML = '<span class="btn-spinner"></span> Bezig met versturen...';
     }
     if (statusBox) statusBox.style.display = 'none';
 
@@ -766,21 +767,21 @@ function initContactForm() {
       }
       if (statusBox) {
         statusBox.className = 'form-status-success';
-        statusBox.innerHTML = `✓ <strong>Hartelijk dank ${name}!</strong> Uw bericht is verstuurd naar <strong>matt@khval.com</strong>. We nemen snel contact met u op via ${email} of ${phone}.`;
+        statusBox.innerHTML = `✓ <strong>Hartelijk dank ${name}!</strong> Uw bericht is succesvol verstuurd naar de centrale. We nemen snel contact met u op via ${email} of ${phone}.`;
         statusBox.style.display = 'block';
       }
-      showToast(`Bericht succesvol verzonden naar matt@khval.com!`);
+      showToast(`Bericht succesvol verzonden naar de centrale!`);
       form.reset();
 
       setTimeout(() => {
-        if (submitBtn) submitBtn.textContent = 'Verstuur Bericht naar matt@khval.com';
+        if (submitBtn) submitBtn.textContent = 'Verstuur Bericht naar Centrale';
       }, 5000);
     })
     .catch(err => {
       console.error('Error submitting contact form:', err);
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Verstuur Bericht naar matt@khval.com';
+        submitBtn.textContent = 'Verstuur Bericht naar Centrale';
       }
       if (statusBox) {
         statusBox.className = 'form-status-error';
