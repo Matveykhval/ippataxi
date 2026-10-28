@@ -20,9 +20,7 @@ const appState = {
     'alm-schiphol': { from: 'Almere', to: 'Schiphol Airport (AMS)', km: 42, tier: 'B', tierName: 'Type B IPPA' },
     'ams-stad': { from: 'Amsterdam Centrum', to: 'Amsterdam Zuid / Station', km: 8, tier: 'A', tierName: 'Type A IPPA' },
     'ehv-schiphol': { from: 'Eindhoven', to: 'Schiphol Airport (AMS)', km: 125, tier: 'C', tierName: 'Type C IPPA' }
-  },
-  // Default WhatsApp Dispatch Phone (+31 6 82096284 as seen in user's commit, fallback +31612345678)
-  dispatchPhone: '31682096284'
+  }
 };
 
 // Bilingual Translations Dictionary
@@ -30,7 +28,7 @@ const translations = {
   nl: {
     topBarLive: 'Geen geld nodig • Betaal je rit simpelweg met IPPA',
     topBarSchiphol: 'Korte rit: Type A | Middel: Type B | Lang: Type C',
-    callNow: 'Bel Direct: 06 - 82096284',
+    callNow: '24/7 Digitale Dispatch',
     navHome: 'Home',
     navTariffs: 'Bereken IPPA',
     navIppaSystem: 'Wat is IPPA?',
@@ -93,7 +91,7 @@ const translations = {
   en: {
     topBarLive: 'No money required • Simply pay your ride with IPPA',
     topBarSchiphol: 'Short: Type A | Medium: Type B | Long: Type C',
-    callNow: 'Call Direct: +31 6 82096284',
+    callNow: '24/7 Digital Dispatch',
     navHome: 'Home',
     navTariffs: 'Calculate IPPA',
     navIppaSystem: 'What is IPPA?',
@@ -505,7 +503,6 @@ function initModal() {
   const openBtn = document.getElementById('btn-submit-booking');
   const closeBtn = document.getElementById('modal-close-btn');
   const confirmBtn = document.getElementById('btn-confirm-reservation');
-  const waDirectBtn = document.getElementById('btn-modal-whatsapp');
 
   if (openBtn) {
     openBtn.addEventListener('click', (e) => {
@@ -529,20 +526,6 @@ function initModal() {
 
   if (confirmBtn) {
     confirmBtn.addEventListener('click', handleReservationSubmit);
-  }
-
-  if (waDirectBtn) {
-    waDirectBtn.addEventListener('click', () => {
-      openWhatsAppDispatch();
-    });
-  }
-
-  const heroWaBtn = document.getElementById('btn-hero-wa');
-  if (heroWaBtn) {
-    heroWaBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openWhatsAppDispatch();
-    });
   }
 }
 
@@ -568,32 +551,6 @@ function populateModalSummary() {
   document.getElementById('sum-passengers').textContent = `${passengers} pers.`;
   document.getElementById('sum-ippa').textContent = res.giveText;
 }
-
-function openWhatsAppDispatch() {
-  const pickup = document.getElementById('ride-pickup')?.value || 'Ophaaladres';
-  const dropoff = document.getElementById('ride-dropoff')?.value || 'Bestemming';
-  const datetime = document.getElementById('ride-datetime')?.value || 'Direct';
-  const passengers = document.getElementById('ride-passengers')?.value || '1';
-  const res = calculateEstimatedFare();
-
-  const vNames = {
-    sedan: 'Executive Sedan',
-    estate: 'Stationwagen',
-    van: 'VIP Taxibus'
-  };
-
-  const isEn = appState.currentLang === 'en';
-  let message = '';
-
-  if (isEn) {
-    message = `Hello IPPATAXI (ippataxi.nl),\nI would like to book a taxi:\n\n📍 Pickup: ${pickup}\n🏁 Destination: ${dropoff}\n📅 Date & Time: ${datetime}\n👥 Passengers: ${passengers}\n🚘 Vehicle: ${vNames[appState.vehicleType]}\n💎 Payment for Driver: ${res.giveText} (No Money)\n\nPlease confirm my ride!`;
-  } else {
-    message = `Hallo IPPATAXI (ippataxi.nl),\nIk wil graag een taxi reserveren:\n\n📍 Ophaaladres: ${pickup}\n🏁 Bestemming: ${dropoff}\n📅 Datum & Tijd: ${datetime}\n👥 Aantal personen: ${passengers}\n🚘 Voertuig: ${vNames[appState.vehicleType]}\n💎 Betaling Chauffeur: ${res.giveText} (Geen geld)\n\nKunt u deze rit bevestigen?`;
-  }
-
-  const encoded = encodeURIComponent(message);
-  const url = `https://wa.me/${appState.dispatchPhone}?text=${encoded}`;
-  window.open(url, '_blank');
 }
 
 // Official Formspree Endpoint (100% private - your email address is safely hidden on Formspree)
@@ -686,16 +643,11 @@ function handleReservationSubmit(e) {
       ? `Booking sent to dispatch! Ref: ${refCode}` 
       : `Reservering verstuurd naar centrale! Ref: ${refCode}`);
 
-    // Auto close modal after 3.5s and prompt WhatsApp
+    // Auto close modal after 3 seconds
     setTimeout(() => {
       const modal = document.getElementById('booking-modal');
       if (modal) modal.classList.remove('active');
-      if (confirm(appState.currentLang === 'en' 
-        ? 'Would you also like to open WhatsApp confirmation?' 
-        : 'Wilt u de bevestiging tevens via WhatsApp sturen naar de chauffeur?')) {
-        openWhatsAppDispatch();
-      }
-    }, 3500);
+    }, 3000);
   })
   .catch(err => {
     console.error('Error submitting reservation:', err);
@@ -706,8 +658,8 @@ function handleReservationSubmit(e) {
     if (statusBox) {
       statusBox.className = 'form-status-error';
       statusBox.innerHTML = appState.currentLang === 'en'
-        ? 'Could not connect. Please book directly via WhatsApp or phone (+31 6 82096284).'
-        : 'Verbindingsfout. Boek alstublieft direct via WhatsApp of bel 06 - 82096284.';
+        ? 'Could not connect. Please try again or reach out to info@ippataxi.nl.'
+        : 'Verbindingsfout. Probeer het opnieuw of mail naar info@ippataxi.nl.';
       statusBox.style.display = 'block';
     }
   });
@@ -798,7 +750,7 @@ function initContactForm() {
       }
       if (statusBox) {
         statusBox.className = 'form-status-error';
-        statusBox.textContent = 'Er trad een verbindingsfout op. U kunt ook direct bellen of appen via 06 - 82096284.';
+        statusBox.textContent = 'Er trad een verbindingsfout op. Probeer het opnieuw of mail naar info@ippataxi.nl.';
         statusBox.style.display = 'block';
       }
     });

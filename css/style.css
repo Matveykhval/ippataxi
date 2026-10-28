@@ -1898,8 +1898,8 @@ button, input, select, textarea {
 
 .floating-mobile-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1.2fr;
-  gap: 8px;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 10px;
 }
 
 .floating-btn {
