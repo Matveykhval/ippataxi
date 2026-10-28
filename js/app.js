@@ -416,7 +416,24 @@ function initPresetRoutes() {
   const routeButtons = document.querySelectorAll('.btn-route-book');
   const pickupInput = document.getElementById('ride-pickup');
   const dropoffInput = document.getElementById('ride-dropoff');
-  const bookingWidget = document.getElementById('booking-calculator');
+  const bookingWidget = document.getElementById('calculator') || document.getElementById('booking-calculator');
+
+  // Handle all links targeting #calculator
+  document.querySelectorAll('a[href="#calculator"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const calcEl = document.getElementById('calculator') || document.getElementById('booking-calculator');
+      if (calcEl) {
+        calcEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        calcEl.classList.remove('highlight-pulse');
+        void calcEl.offsetWidth; // trigger reflow
+        calcEl.classList.add('highlight-pulse');
+        // If mobile drawer is open, close it
+        const drawer = document.querySelector('.mobile-nav-drawer');
+        if (drawer) drawer.classList.remove('open');
+      }
+    });
+  });
 
   routeButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {

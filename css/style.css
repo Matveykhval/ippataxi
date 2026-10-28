@@ -602,6 +602,18 @@ button, input, select, textarea {
   -webkit-backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
+  scroll-margin-top: 100px;
+}
+
+.booking-card:target,
+.booking-card.highlight-pulse {
+  animation: cardTargetPulse 1.2s ease-out;
+}
+
+@keyframes cardTargetPulse {
+  0% { box-shadow: 0 0 0 0 rgba(229, 184, 105, 0.8); }
+  50% { box-shadow: 0 0 35px 6px rgba(229, 184, 105, 0.4); }
+  100% { box-shadow: var(--shadow-lg), 0 0 0 1px rgba(229, 184, 105, 0.1); }
 }
 
 .booking-card::before {
