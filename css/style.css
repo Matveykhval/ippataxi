@@ -1,5 +1,6 @@
 /* ==========================================================================
    IPPATAXI.NL - Premium Luxury Taxi Service Styling
+   Theme: The 3-Tier IPPA Payment System (Type A, Type B, Type C)
    Color Palette: Deep Obsidian, Champagne Gold, Pure Platinum & Glass Accents
    ========================================================================== */
 
@@ -17,8 +18,15 @@
   --color-primary-dark: #b88b39;
   --color-primary-glow: rgba(229, 184, 105, 0.25);
   
+  /* The 3 IPPA Tier Colors */
+  --color-ippa-a: #10b981; /* Emerald Green - Type A (Short) */
+  --color-ippa-a-glow: rgba(16, 185, 129, 0.25);
+  --color-ippa-b: #f59e0b; /* Amber Gold - Type B (Medium) */
+  --color-ippa-b-glow: rgba(245, 158, 11, 0.25);
+  --color-ippa-c: #a855f7; /* Royal Purple / Amethyst - Type C (Long) */
+  --color-ippa-c-glow: rgba(168, 85, 247, 0.25);
+
   --color-accent-blue: #38bdf8;
-  --color-accent-green: #22c55e;
   --color-whatsapp: #25d366;
   
   --color-text-main: #f8fafc;
@@ -123,9 +131,9 @@ button, input, select, textarea {
 .top-bar-badge .live-dot {
   width: 8px;
   height: 8px;
-  background-color: var(--color-accent-green);
+  background-color: var(--color-ippa-a);
   border-radius: 50%;
-  box-shadow: 0 0 10px var(--color-accent-green);
+  box-shadow: 0 0 10px var(--color-ippa-a);
   animation: pulseGreen 2s infinite;
 }
 
@@ -244,14 +252,14 @@ button, input, select, textarea {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: var(--color-text-dim);
-  font-weight: 600;
+  color: var(--color-primary-light);
+  font-weight: 700;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 26px;
   list-style: none;
 }
 
@@ -393,7 +401,7 @@ button, input, select, textarea {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  opacity: 0.38;
+  opacity: 0.36;
   filter: saturate(1.2) contrast(1.1);
   transform: scale(1.02);
 }
@@ -423,13 +431,13 @@ button, input, select, textarea {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
+  padding: 6px 16px;
   background: rgba(229, 184, 105, 0.12);
   border: 1px solid rgba(229, 184, 105, 0.3);
   border-radius: var(--radius-full);
   color: var(--color-primary-light);
   font-size: 0.84rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 24px;
   backdrop-filter: blur(8px);
 }
@@ -440,26 +448,63 @@ button, input, select, textarea {
 
 .hero-title {
   font-family: var(--font-heading);
-  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
+  font-size: clamp(2.3rem, 4vw, 3.6rem);
   font-weight: 800;
-  line-height: 1.12;
+  line-height: 1.15;
   letter-spacing: -0.02em;
   margin-bottom: 20px;
   color: #ffffff;
 }
 
-.hero-title .text-gradient {
-  background: linear-gradient(135deg, #ffffff 30%, var(--color-primary-light) 70%, var(--color-primary) 100%);
+.hero-title .highlight-ippa {
+  background: linear-gradient(135deg, var(--color-ippa-a) 0%, var(--color-ippa-b) 50%, var(--color-ippa-c) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  font-weight: 900;
 }
 
 .hero-desc {
   font-size: clamp(1.05rem, 1.2vw, 1.18rem);
   color: var(--color-text-muted);
   line-height: 1.7;
-  margin-bottom: 32px;
+  margin-bottom: 30px;
   max-width: 580px;
+}
+
+/* Quick IPPA Pill Highlights in Hero */
+.hero-ippa-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.ippa-mini-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.ippa-mini-badge.type-a {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--color-ippa-a);
+  color: #34d399;
+}
+
+.ippa-mini-badge.type-b {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid var(--color-ippa-b);
+  color: #fbbf24;
+}
+
+.ippa-mini-badge.type-c {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid var(--color-ippa-c);
+  color: #c084fc;
 }
 
 .hero-features-list {
@@ -545,7 +590,7 @@ button, input, select, textarea {
 }
 
 /* ==========================================================================
-   Interactive Hero Booking Card / Fare Estimator
+   Interactive Hero Booking Card / IPPA Tier Estimator
    ========================================================================== */
 .booking-card {
   background: rgba(18, 24, 38, 0.88);
@@ -565,8 +610,8 @@ button, input, select, textarea {
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-ippa-a), var(--color-ippa-b), var(--color-ippa-c));
 }
 
 .booking-header {
@@ -736,52 +781,104 @@ button, input, select, textarea {
   color: var(--color-text-dim);
 }
 
-/* Fare Estimation Box */
-.fare-estimate-box {
-  background: linear-gradient(135deg, rgba(229, 184, 105, 0.09), rgba(229, 184, 105, 0.02));
-  border: 1px dashed rgba(229, 184, 105, 0.4);
+/* ==========================================================================
+   DYNAMIC IPPA TIER RESULT BOX (Hero Estimator)
+   ========================================================================== */
+.ippa-result-box {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  border: 2px solid var(--color-ippa-b);
   border-radius: var(--radius-md);
-  padding: 14px 18px;
+  padding: 16px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 4px;
+  margin-top: 6px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
 }
 
-.fare-details {
+.ippa-result-box.tier-a {
+  border-color: var(--color-ippa-a);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.02));
+  box-shadow: 0 0 25px var(--color-ippa-a-glow);
+}
+
+.ippa-result-box.tier-b {
+  border-color: var(--color-ippa-b);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(245, 158, 11, 0.02));
+  box-shadow: 0 0 25px var(--color-ippa-b-glow);
+}
+
+.ippa-result-box.tier-c {
+  border-color: var(--color-ippa-c);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.14), rgba(168, 85, 247, 0.02));
+  box-shadow: 0 0 25px var(--color-ippa-c-glow);
+}
+
+.ippa-result-left {
   display: flex;
   flex-direction: column;
 }
 
-.fare-tag {
-  font-size: 0.74rem;
+.ippa-result-title {
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: var(--color-primary);
+  color: var(--color-text-muted);
   font-weight: 700;
 }
 
-.fare-sub {
-  font-size: 0.8rem;
+.ippa-tier-name {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ippa-distance-note {
+  font-size: 0.78rem;
   color: var(--color-text-muted);
 }
 
-.fare-price-wrap {
+.ippa-result-badge-wrap {
   text-align: right;
 }
 
-.fare-price-amount {
+.ippa-payment-pill {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
   font-family: var(--font-heading);
-  font-size: 1.6rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: #ffffff;
-  line-height: 1;
+  letter-spacing: 0.5px;
 }
 
-.fare-fixed-note {
+.tier-a .ippa-payment-pill {
+  background: var(--color-ippa-a);
+  color: #0b0e14;
+}
+
+.tier-b .ippa-payment-pill {
+  background: var(--color-ippa-b);
+  color: #0b0e14;
+}
+
+.tier-c .ippa-payment-pill {
+  background: var(--color-ippa-c);
+  color: #ffffff;
+}
+
+.ippa-no-money-note {
   font-size: 0.72rem;
-  color: var(--color-accent-green);
-  font-weight: 600;
+  color: #ffffff;
+  opacity: 0.8;
+  margin-top: 4px;
 }
 
 .booking-submit-btn {
@@ -789,6 +886,131 @@ button, input, select, textarea {
   padding: 14px;
   font-size: 1.02rem;
   margin-top: 4px;
+}
+
+/* ==========================================================================
+   THE 3 IPPA TYPES SHOWCASE SECTION
+   ========================================================================== */
+.ippa-tiers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 20px;
+}
+
+.ippa-tier-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+}
+
+.ippa-tier-card:hover {
+  transform: translateY(-6px);
+}
+
+.ippa-tier-card.card-type-a {
+  border-top: 4px solid var(--color-ippa-a);
+}
+.ippa-tier-card.card-type-a:hover {
+  border-color: var(--color-ippa-a);
+  box-shadow: 0 12px 30px var(--color-ippa-a-glow);
+}
+
+.ippa-tier-card.card-type-b {
+  border-top: 4px solid var(--color-ippa-b);
+}
+.ippa-tier-card.card-type-b:hover {
+  border-color: var(--color-ippa-b);
+  box-shadow: 0 12px 30px var(--color-ippa-b-glow);
+}
+
+.ippa-tier-card.card-type-c {
+  border-top: 4px solid var(--color-ippa-c);
+}
+.ippa-tier-card.card-type-c:hover {
+  border-color: var(--color-ippa-c);
+  box-shadow: 0 12px 30px var(--color-ippa-c-glow);
+}
+
+.tier-card-badge {
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.card-type-a .tier-card-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-ippa-a);
+  border: 1px solid var(--color-ippa-a);
+}
+
+.card-type-b .tier-card-badge {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--color-ippa-b);
+  border: 1px solid var(--color-ippa-b);
+}
+
+.card-type-c .tier-card-badge {
+  background: rgba(168, 85, 247, 0.15);
+  color: var(--color-ippa-c);
+  border: 1px solid var(--color-ippa-c);
+}
+
+.tier-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.tier-card-scope {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-primary-light);
+  margin-bottom: 16px;
+}
+
+.tier-card-desc {
+  font-size: 0.94rem;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+
+.tier-card-give {
+  background: rgba(10, 13, 20, 0.6);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-top: auto;
+  text-align: center;
+}
+
+.give-label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.give-value {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
 }
 
 /* ==========================================================================
@@ -840,7 +1062,7 @@ button, input, select, textarea {
 
 .section-header {
   text-align: center;
-  max-width: 680px;
+  max-width: 720px;
   margin: 0 auto 56px;
 }
 
@@ -962,10 +1184,13 @@ button, input, select, textarea {
 
 .route-price-val {
   font-family: var(--font-heading);
-  font-size: 1.45rem;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: var(--color-primary-light);
 }
+
+.route-price-val.type-a { color: var(--color-ippa-a); }
+.route-price-val.type-b { color: var(--color-ippa-b); }
+.route-price-val.type-c { color: var(--color-ippa-c); }
 
 .btn-route-book {
   padding: 8px 16px;
@@ -1177,7 +1402,7 @@ button, input, select, textarea {
 }
 
 .fleet-amenities li svg {
-  color: var(--color-accent-green);
+  color: var(--color-ippa-a);
   flex-shrink: 0;
 }
 
@@ -1195,7 +1420,7 @@ button, input, select, textarea {
 
 .fleet-rate-val {
   font-family: var(--font-heading);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #ffffff;
 }
@@ -1514,12 +1739,33 @@ button, input, select, textarea {
 }
 
 .pay-badge {
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.pay-badge.badge-a {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid var(--color-ippa-a);
+  color: #34d399;
+}
+
+.pay-badge.badge-b {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid var(--color-ippa-b);
+  color: #fbbf24;
+}
+
+.pay-badge.badge-c {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid var(--color-ippa-c);
+  color: #c084fc;
+}
+
+.pay-badge.badge-neutral {
   background: var(--color-bg-surface-elevated);
   border: 1px solid var(--color-border);
-  padding: 6px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 0.78rem;
-  font-weight: 600;
   color: var(--color-text-muted);
 }
 
@@ -1818,6 +2064,10 @@ button, input, select, textarea {
     margin-right: auto;
   }
   
+  .hero-ippa-pills {
+    justify-content: center;
+  }
+
   .hero-features-list {
     max-width: 500px;
     margin-left: auto;
@@ -1826,6 +2076,10 @@ button, input, select, textarea {
   
   .hero-cta-buttons {
     justify-content: center;
+  }
+
+  .ippa-tiers-grid {
+    grid-template-columns: 1fr;
   }
   
   .stats-grid {

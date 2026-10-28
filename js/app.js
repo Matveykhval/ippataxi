@@ -1,12 +1,9 @@
 /**
- * IPPATAXI.NL - Core Application & Booking Logic
- * Features:
- * - Dynamic fare estimator with smart rate calculation
- * - Pre-filled route selectors
- * - WhatsApp instant dispatcher
- * - Full Dutch / English bilingual toggle
- * - Booking confirmation modal & toast manager
- * - FAQ accordion & mobile drawer
+ * IPPATAXI.NL - 3-Tier IPPA System Application Logic
+ * Concept: Customers pay the driver with IPPA instead of money!
+ * - Type A IPPA: Short rides (< 15 km)
+ * - Type B IPPA: Medium rides (15 - 50 km, e.g., Schiphol transfers)
+ * - Type C IPPA: Long rides (> 50 km, e.g., Intercity & regional)
  */
 
 // Application State
@@ -14,55 +11,49 @@ const appState = {
   currentLang: localStorage.getItem('ippa_lang') || 'nl',
   activeTab: 'standard', // 'standard' | 'airport' | 'hourly'
   vehicleType: 'sedan',  // 'sedan' | 'estate' | 'van'
-  rates: {
-    baseFare: 4.05,
-    perKm: 2.50,
-    perMinute: 0.45,
-    vanMultiplier: 1.45,
-    estateMultiplier: 1.15
-  },
   routesPreset: {
-    'ams-schiphol': { from: 'Amsterdam Centrum', to: 'Schiphol Airport (AMS)', km: 18, basePrice: 45 },
-    'utr-schiphol': { from: 'Utrecht', to: 'Schiphol Airport (AMS)', km: 48, basePrice: 85 },
-    'dh-schiphol': { from: 'Den Haag', to: 'Schiphol Airport (AMS)', km: 45, basePrice: 80 },
-    'rtm-schiphol': { from: 'Rotterdam', to: 'Schiphol Airport (AMS)', km: 60, basePrice: 110 },
-    'hlm-schiphol': { from: 'Haarlem', to: 'Schiphol Airport (AMS)', km: 20, basePrice: 49 },
-    'alm-schiphol': { from: 'Almere', to: 'Schiphol Airport (AMS)', km: 42, basePrice: 79 },
-    'ehv-schiphol': { from: 'Eindhoven', to: 'Schiphol Airport (AMS)', km: 125, basePrice: 195 },
-    'ams-rotterdam': { from: 'Amsterdam', to: 'Rotterdam The Hague Airport (RTM)', km: 70, basePrice: 130 }
+    'ams-schiphol': { from: 'Amsterdam Centrum', to: 'Schiphol Airport (AMS)', km: 18, tier: 'B', tierName: 'Type B IPPA' },
+    'utr-schiphol': { from: 'Utrecht', to: 'Schiphol Airport (AMS)', km: 48, tier: 'B', tierName: 'Type B IPPA' },
+    'dh-schiphol': { from: 'Den Haag', to: 'Schiphol Airport (AMS)', km: 45, tier: 'B', tierName: 'Type B IPPA' },
+    'rtm-schiphol': { from: 'Rotterdam', to: 'Schiphol Airport (AMS)', km: 60, tier: 'C', tierName: 'Type C IPPA' },
+    'hlm-schiphol': { from: 'Haarlem', to: 'Schiphol Airport (AMS)', km: 20, tier: 'B', tierName: 'Type B IPPA' },
+    'alm-schiphol': { from: 'Almere', to: 'Schiphol Airport (AMS)', km: 42, tier: 'B', tierName: 'Type B IPPA' },
+    'ams-stad': { from: 'Amsterdam Centrum', to: 'Amsterdam Zuid / Station', km: 8, tier: 'A', tierName: 'Type A IPPA' },
+    'ehv-schiphol': { from: 'Eindhoven', to: 'Schiphol Airport (AMS)', km: 125, tier: 'C', tierName: 'Type C IPPA' }
   },
-  // Default WhatsApp Dispatch Phone (+31 6 12345678)
-  dispatchPhone: '31612345678'
+  // Default WhatsApp Dispatch Phone (+31 6 82096284 as seen in user's commit, fallback +31612345678)
+  dispatchPhone: '31682096284'
 };
 
 // Bilingual Translations Dictionary
 const translations = {
   nl: {
-    topBarLive: 'Direct taxi nodig? Binnen 10-15 min voorgereden',
-    topBarSchiphol: 'Vaste Schiphol tarieven',
-    callNow: 'Bel Direct: 06 - 12 34 56 78',
+    topBarLive: 'Geen geld nodig • Betaal je rit simpelweg met IPPA',
+    topBarSchiphol: 'Korte rit: Type A | Middel: Type B | Lang: Type C',
+    callNow: 'Bel Direct: 06 - 82096284',
     navHome: 'Home',
-    navTariffs: 'Tarieven & Boeken',
-    navAirport: 'Schiphol Vervoer',
+    navTariffs: 'Bereken IPPA',
+    navIppaSystem: 'Wat is IPPA?',
+    navAirport: 'Schiphol Transfers',
     navFleet: 'Onze Vloot',
     navServices: 'Diensten',
-    navWhyUs: 'Waarom Ons',
+    navWhyUs: 'Waarom IPPA',
     navContact: 'Contact',
-    btnBookNav: 'Direct Reserveren',
-    heroTag: 'Luxe Taxivervoer in Heel Nederland',
-    heroTitle: 'Zakelijk & Particulier Taxi Vervoer Zonder Zorgen',
-    heroDesc: 'Ervaar eersteklas comfort met IPPATAXI. Van vaste Schiphol transfers tot directievervoer en stadsritten. Transparante prijzen, representatieve chauffeurs en luxe voertuigen.',
-    feat1: 'Vaste prijzen, geen meter-verrassingen',
-    feat2: 'Altijd representatief in pak',
-    feat3: 'Schiphol Vluchtmonitoring inbegrepen',
-    feat4: 'PIN, Creditcard, Tikkie & Factuur',
-    btnHeroWa: 'Direct Boeken via WhatsApp',
+    btnBookNav: 'Reserveer met IPPA',
+    heroTag: 'Reizen Zonder Geld • 100% IPPA',
+    heroTitle: 'Betaal Uw Taxirit Met IPPA In Plaats Van Geld',
+    heroDesc: 'Vergeet euro’s, pinpassen en meters. Bij IPPATAXI reist u in eersteklas luxe en betaalt u de chauffeur simpelweg met een IPPA: Type A voor korte ritten, Type B voor middellange ritten en Type C voor lange afstanden.',
+    feat1: 'Geen contant geld of euro’s nodig',
+    feat2: '1 ding, 3 soorten (Type A, B & C)',
+    feat3: 'Luxe Mercedes vloot & privéchauffeur',
+    feat4: 'Schiphol vluchtmonitoring inbegrepen',
+    btnHeroWa: 'Boek via WhatsApp (IPPA)',
     btnHeroCall: 'Telefonisch Reserveren',
-    cardTitle: 'Bereken Uw Ritprijs',
-    cardSubtitle: 'Directe prijsindicatie & online reservering',
+    cardTitle: 'Welke IPPA Heeft U Nodig?',
+    cardSubtitle: 'Bereken direct of uw rit Type A, B of C vereist',
     tabStandard: 'Standaard Rit',
     tabAirport: 'Schiphol Transfer',
-    tabHourly: 'Zakelijk / Uur',
+    tabHourly: 'Lange Afstand',
     lblPickup: 'Ophaaladres / Stad',
     lblDropoff: 'Bestemming / Luchthaven',
     lblDateTime: 'Datum & Ophaaltijd',
@@ -75,56 +66,57 @@ const translations = {
     vehEstateSub: '1-4 pers • 4-5 koffers',
     vehVan: 'VIP Taxibus',
     vehVanSub: 'Tot 8 pers • 8 koffers',
-    fareTag: 'Vast Tarief Indicatie',
-    fareNote: '✓ Inclusief btw, bagage & instaptarief',
-    btnBookSubmit: 'Rit Reserveren & Bevestigen',
-    statRides: 'Succesvolle Ritten',
+    fareTag: 'Benodigde Betaling:',
+    fareNote: '✓ Geef de chauffeur simpelweg 1x deze IPPA bij aankomst',
+    btnBookSubmit: 'Rit Reserveren met IPPA',
+    statRides: 'Tevreden Klanten',
     statRating: 'Gemiddelde Beoordeling',
-    statAvailability: 'Beschikbaarheid',
-    statAirports: 'Luchthavens Gedekt',
-    routesTag: 'Populaire Routes',
-    routesTitle: 'Vaste Scherpe Schiphol Tarieven',
-    routesDesc: 'Geen file-opslag of onverwachte kosten. U weet vooraf precies waar u aan toe bent.',
-    btnBookRoute: 'Boek Deze Rit',
-    srvTag: 'Onze Specialisaties',
-    srvTitle: 'Diensten Op Maat Voor Elke Gelegenheid',
-    fltTag: 'Eersteklas Comfort',
-    fltTitle: 'Onze Exclusieve Vloot',
-    fltDesc: 'Al onze auto’s zijn brandschoon, voorzien van airconditioning, lederen bekleding en gratis WiFi.',
-    whyTag: 'Waarom Ippataxi',
-    whyTitle: 'De Zekerheden Van IPPATAXI',
-    faqTag: 'Vragen & Antwoorden',
-    faqTitle: 'Veelgestelde Vragen',
+    statAvailability: '24/7 Bereikbaar',
+    statAirports: 'Heel Nederland Gedekt',
+    routesTag: 'Populaire Bestemmingen',
+    routesTitle: 'Vaste IPPA Ritten',
+    routesDesc: 'Weet direct welk type IPPA u aan de chauffeur geeft voor uw rit.',
+    btnBookRoute: 'Kies Deze Rit',
+    srvTag: 'Eersteklas Vervoer',
+    srvTitle: 'Luxe Chauffeursdiensten Op IPPA',
+    fltTag: 'Eersteklas Vloot',
+    fltTitle: 'Onze Exclusieve Voertuigen',
+    fltDesc: 'Stap in een brandschone Mercedes, leun achterover en geef bij aankomst uw IPPA.',
+    whyTag: 'Waarom IPPATAXI',
+    whyTitle: 'De Revolutie Van IPPA Vervoer',
+    faqTag: 'Alles over IPPA',
+    faqTitle: 'Veelgestelde Vragen Over IPPA',
     contactTag: '24/7 Bereikbaar',
-    contactTitle: 'Neem Contact Op Of Reserveer Direct',
-    contactDesc: 'Heeft u met spoed een taxi nodig of een speciale ritwens? Onze centrale is dag en nacht bereikbaar.'
+    contactTitle: 'Vragen Over IPPA Of Direct Boeken?',
+    contactDesc: 'Heeft u een vraag over welk type IPPA u nodig heeft voor uw rit? Neem direct contact op met onze dispatch.'
   },
   en: {
-    topBarLive: 'Need a taxi immediately? Arrives within 10-15 mins',
-    topBarSchiphol: 'Fixed Airport Rates',
-    callNow: 'Call Direct: +31 6 12 34 56 78',
+    topBarLive: 'No money required • Simply pay your ride with IPPA',
+    topBarSchiphol: 'Short: Type A | Medium: Type B | Long: Type C',
+    callNow: 'Call Direct: +31 6 82096284',
     navHome: 'Home',
-    navTariffs: 'Fares & Booking',
-    navAirport: 'Airport Transfer',
+    navTariffs: 'Calculate IPPA',
+    navIppaSystem: 'What is IPPA?',
+    navAirport: 'Airport Transfers',
     navFleet: 'Our Fleet',
     navServices: 'Services',
-    navWhyUs: 'Why Us',
+    navWhyUs: 'Why IPPA',
     navContact: 'Contact',
-    btnBookNav: 'Book Online',
-    heroTag: 'Premium Taxi Service in the Netherlands',
-    heroTitle: 'Executive & Private Taxi Rides With Complete Peace of Mind',
-    heroDesc: 'Experience first-class comfort with IPPATAXI. From fixed-fare Amsterdam Airport transfers to executive corporate travel. Transparent pricing, suited drivers, and immaculate luxury vehicles.',
-    feat1: 'Fixed pricing, no meter surprises',
-    feat2: 'Polite, suited professional chauffeurs',
-    feat3: 'Schiphol flight monitoring included',
-    feat4: 'Card, Cash, Apple Pay & Corporate Invoicing',
-    btnHeroWa: 'Book Instantly via WhatsApp',
+    btnBookNav: 'Book with IPPA',
+    heroTag: 'Travel Without Money • 100% IPPA',
+    heroTitle: 'Pay For Your Taxi Ride With IPPA Instead Of Money',
+    heroDesc: 'Forget euros, credit cards and meters. At IPPATAXI you ride in first-class luxury and simply hand your driver an IPPA: Type A for short trips, Type B for medium trips, and Type C for long distances.',
+    feat1: 'No cash or euros needed',
+    feat2: '1 thing, 3 tiers (Type A, B & C)',
+    feat3: 'Luxury Mercedes fleet & suited drivers',
+    feat4: 'Schiphol flight monitoring included',
+    btnHeroWa: 'Book via WhatsApp (IPPA)',
     btnHeroCall: 'Book by Phone',
-    cardTitle: 'Calculate Your Ride Fare',
-    cardSubtitle: 'Instant price estimation & simple booking',
+    cardTitle: 'Which IPPA Do You Need?',
+    cardSubtitle: 'Calculate whether your ride requires Type A, B or C',
     tabStandard: 'Point-to-Point',
     tabAirport: 'Airport Transfer',
-    tabHourly: 'Hourly / Corporate',
+    tabHourly: 'Long Distance',
     lblPickup: 'Pickup Address / City',
     lblDropoff: 'Destination / Airport',
     lblDateTime: 'Date & Pickup Time',
@@ -137,33 +129,33 @@ const translations = {
     vehEstateSub: '1-4 guests • 4-5 bags',
     vehVan: 'VIP Minivan',
     vehVanSub: 'Up to 8 guests • 8 bags',
-    fareTag: 'Fixed Fare Estimate',
-    fareNote: '✓ Inclusive of VAT, luggage & fees',
-    btnBookSubmit: 'Reserve & Confirm Ride',
-    statRides: 'Completed Rides',
+    fareTag: 'Required Payment:',
+    fareNote: '✓ Simply hand the driver 1x this IPPA upon arrival',
+    btnBookSubmit: 'Reserve Ride with IPPA',
+    statRides: 'Happy Travelers',
     statRating: 'Customer Rating',
-    statAvailability: 'Availability',
-    statAirports: 'Airports Served',
+    statAvailability: '24/7 Available',
+    statAirports: 'All Netherlands Covered',
     routesTag: 'Popular Destinations',
-    routesTitle: 'Fixed-Rate Airport Transfers',
-    routesDesc: 'No traffic surcharges or hidden fees. Transparent, guaranteed fixed pricing.',
-    btnBookRoute: 'Book This Route',
-    srvTag: 'Our Specializations',
-    srvTitle: 'Tailored Services For Every Occasion',
-    fltTag: 'First-Class Comfort',
-    fltTitle: 'Our Executive Fleet',
-    fltDesc: 'All vehicles are pristine, climate controlled, feature leather upholstery and complimentary Wi-Fi.',
-    whyTag: 'Why Choose Us',
-    whyTitle: 'The IPPATAXI Guarantee',
-    faqTag: 'Questions & Answers',
+    routesTitle: 'Fixed IPPA Routes',
+    routesDesc: 'Instantly know which type of IPPA to hand your driver.',
+    btnBookRoute: 'Select Route',
+    srvTag: 'First-Class Travel',
+    srvTitle: 'Executive Chauffeur Services On IPPA',
+    fltTag: 'First-Class Fleet',
+    fltTitle: 'Our Executive Vehicles',
+    fltDesc: 'Step inside a pristine Mercedes, relax in comfort, and hand your IPPA at dropoff.',
+    whyTag: 'Why IPPATAXI',
+    whyTitle: 'The IPPA Travel Revolution',
+    faqTag: 'Everything about IPPA',
     faqTitle: 'Frequently Asked Questions',
     contactTag: '24/7 Support',
-    contactTitle: 'Get in Touch or Reserve Now',
-    contactDesc: 'Need a taxi urgently or planning an executive transfer? Our dispatch is available 24/7.'
+    contactTitle: 'Questions About IPPA Or Ready To Book?',
+    contactDesc: 'Need assistance determining which IPPA type your trip requires? Reach out anytime.'
   }
 };
 
-// DOM Elements
+// DOM Initialization
 document.addEventListener('DOMContentLoaded', () => {
   initLanguage();
   initBookingTabs();
@@ -192,7 +184,6 @@ function initLanguage() {
     });
   });
 
-  // Apply stored language
   applyTranslations(appState.currentLang);
 }
 
@@ -200,7 +191,6 @@ function setLanguage(lang) {
   appState.currentLang = lang;
   localStorage.setItem('ippa_lang', lang);
 
-  // Update button active state
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
   });
@@ -224,19 +214,18 @@ function applyTranslations(lang) {
     }
   });
 
-  // Update HTML lang attribute
   document.documentElement.lang = lang;
 }
 
 /**
- * Set default date & time in the booking form
+ * Default Date & Time Setup
  */
 function setDefaultDateTime() {
   const dtInput = document.getElementById('ride-datetime');
   if (!dtInput) return;
 
   const now = new Date();
-  now.setMinutes(now.getMinutes() + 45); // default to 45 mins from now
+  now.setMinutes(now.getMinutes() + 45);
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const day = String(now.getDate()).padStart(2, '0');
@@ -247,12 +236,11 @@ function setDefaultDateTime() {
 }
 
 /**
- * Booking Tab Switcher (Standard / Airport / Hourly)
+ * Booking Tab Switcher
  */
 function initBookingTabs() {
   const tabs = document.querySelectorAll('.booking-tab-btn');
   const dropoffInput = document.getElementById('ride-dropoff');
-  const pickupInput = document.getElementById('ride-pickup');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -266,10 +254,6 @@ function initBookingTabs() {
         if (!dropoffInput.value || dropoffInput.value.trim() === '') {
           dropoffInput.value = 'Schiphol Airport (AMS)';
         }
-      } else if (mode === 'hourly') {
-        if (dropoffInput) dropoffInput.placeholder = 'Zakelijk / Meerdere stops';
-      } else {
-        if (dropoffInput) dropoffInput.placeholder = 'Bijv. Schiphol Airport, Utrecht...';
       }
 
       updateFareDisplay();
@@ -298,8 +282,95 @@ function initVehicleSelector() {
 }
 
 /**
- * Fare Calculation Logic
+ * 3-TIER IPPA CALCULATION LOGIC
+ * Distance-based tier assignment:
+ * - < 15 km: Type A IPPA (Korte rit)
+ * - 15 - 50 km: Type B IPPA (Middelmatige rit)
+ * - > 50 km: Type C IPPA (Lange rit)
  */
+function calculateEstimatedFare() {
+  const pickup = (document.getElementById('ride-pickup')?.value || '').toLowerCase().trim();
+  const dropoff = (document.getElementById('ride-dropoff')?.value || '').toLowerCase().trim();
+
+  // Known city pairs matcher
+  const pairs = [
+    { match: ['amsterdam', 'schiphol'], km: 18, tier: 'B' },
+    { match: ['utrecht', 'schiphol'], km: 48, tier: 'B' },
+    { match: ['den haag', 'schiphol'], km: 45, tier: 'B' },
+    { match: ['rotterdam', 'schiphol'], km: 60, tier: 'C' },
+    { match: ['haarlem', 'schiphol'], km: 20, tier: 'B' },
+    { match: ['almere', 'schiphol'], km: 42, tier: 'B' },
+    { match: ['amstelveen', 'schiphol'], km: 12, tier: 'A' },
+    { match: ['eindhoven', 'schiphol'], km: 125, tier: 'C' },
+    { match: ['rotterdam', 'den haag'], km: 26, tier: 'B' },
+    { match: ['amsterdam', 'rotterdam'], km: 70, tier: 'C' },
+    { match: ['amsterdam', 'utrecht'], km: 42, tier: 'B' },
+    { match: ['centrum', 'zuid'], km: 7, tier: 'A' },
+    { match: ['centrum', 'noord'], km: 8, tier: 'A' }
+  ];
+
+  let distanceKm = 18;
+  let tier = 'B';
+  let matched = false;
+
+  for (const pair of pairs) {
+    const has0 = pickup.includes(pair.match[0]) || dropoff.includes(pair.match[0]);
+    const has1 = pickup.includes(pair.match[1]) || dropoff.includes(pair.match[1]);
+    if (has0 && has1) {
+      distanceKm = pair.km;
+      tier = pair.tier;
+      matched = true;
+      break;
+    }
+  }
+
+  if (!matched) {
+    if (pickup.includes('schiphol') || dropoff.includes('schiphol')) {
+      distanceKm = 25;
+      tier = 'B';
+    } else if (pickup.length > 2 && dropoff.length > 2) {
+      distanceKm = 12;
+      tier = 'A';
+    } else {
+      distanceKm = 18;
+      tier = 'B';
+    }
+  }
+
+  // Tier metadata
+  const tierInfo = {
+    A: {
+      tier: 'A',
+      name: 'Type A IPPA',
+      subtext: 'Korte Rit (Stad / Binnen regio)',
+      subtextEn: 'Short Ride (City / Local)',
+      badgeClass: 'tier-a',
+      giveText: '1x Type A IPPA'
+    },
+    B: {
+      tier: 'B',
+      name: 'Type B IPPA',
+      subtext: 'Middelmatige Rit (Schiphol / Regio)',
+      subtextEn: 'Medium Ride (Airport / Regional)',
+      badgeClass: 'tier-b',
+      giveText: '1x Type B IPPA'
+    },
+    C: {
+      tier: 'C',
+      name: 'Type C IPPA',
+      subtext: 'Lange Rit (Intercity / Provincie)',
+      subtextEn: 'Long Distance (Intercity)',
+      badgeClass: 'tier-c',
+      giveText: '1x Type C IPPA'
+    }
+  };
+
+  return {
+    distanceKm: distanceKm,
+    ...tierInfo[tier]
+  };
+}
+
 function initFareCalculation() {
   const pickupInput = document.getElementById('ride-pickup');
   const dropoffInput = document.getElementById('ride-dropoff');
@@ -312,85 +383,29 @@ function initFareCalculation() {
   updateFareDisplay();
 }
 
-function calculateEstimatedFare() {
-  const pickup = (document.getElementById('ride-pickup')?.value || '').toLowerCase().trim();
-  const dropoff = (document.getElementById('ride-dropoff')?.value || '').toLowerCase().trim();
-  const passengers = parseInt(document.getElementById('ride-passengers')?.value || '1', 10);
-
-  // If user has chosen Minibus (or > 4 passengers auto-selects minivan)
-  let vehicleMultiplier = 1.0;
-  if (appState.vehicleType === 'estate') {
-    vehicleMultiplier = appState.rates.estateMultiplier;
-  } else if (appState.vehicleType === 'van' || passengers > 4) {
-    vehicleMultiplier = appState.rates.vanMultiplier;
-  }
-
-  // Check known airport routes
-  let basePrice = 0;
-  let distanceKm = 15; // default fallback distance
-
-  // Known city pairs matcher
-  const pairs = [
-    { match: ['amsterdam', 'schiphol'], base: 45, km: 18 },
-    { match: ['utrecht', 'schiphol'], base: 85, km: 48 },
-    { match: ['den haag', 'schiphol'], base: 80, km: 45 },
-    { match: ['rotterdam', 'schiphol'], base: 110, km: 60 },
-    { match: ['haarlem', 'schiphol'], base: 49, km: 20 },
-    { match: ['almere', 'schiphol'], base: 79, km: 42 },
-    { match: ['amstelveen', 'schiphol'], base: 35, km: 12 },
-    { match: ['eindhoven', 'schiphol'], base: 195, km: 125 },
-    { match: ['rotterdam', 'den haag'], base: 55, km: 26 },
-    { match: ['amsterdam', 'rotterdam'], base: 130, km: 70 },
-    { match: ['amsterdam', 'utrecht'], base: 80, km: 42 }
-  ];
-
-  let matched = false;
-  for (const pair of pairs) {
-    const has0 = pickup.includes(pair.match[0]) || dropoff.includes(pair.match[0]);
-    const has1 = pickup.includes(pair.match[1]) || dropoff.includes(pair.match[1]);
-    if (has0 && has1) {
-      basePrice = pair.base;
-      distanceKm = pair.km;
-      matched = true;
-      break;
-    }
-  }
-
-  if (!matched) {
-    // If not a known pair, calculate dynamic baseline
-    if (pickup.length > 2 && dropoff.length > 2) {
-      // Approximate 25km typical intercity / airport ride
-      distanceKm = 22;
-      basePrice = appState.rates.baseFare + (distanceKm * appState.rates.perKm) + (25 * appState.rates.perMinute);
-    } else {
-      // Default base starting fare
-      basePrice = 45;
-    }
-  }
-
-  let finalPrice = Math.round(basePrice * vehicleMultiplier);
-  // Ensure minimum fare
-  if (finalPrice < 25) finalPrice = 25;
-
-  return {
-    price: finalPrice,
-    distanceKm: distanceKm
-  };
-}
-
 function updateFareDisplay() {
   const result = calculateEstimatedFare();
-  const priceDisplay = document.getElementById('fare-amount-display');
-  const distanceDisplay = document.getElementById('fare-distance-display');
+  const box = document.getElementById('ippa-result-box');
+  const tierNameEl = document.getElementById('ippa-tier-name');
+  const distanceEl = document.getElementById('ippa-distance-display');
+  const paymentPill = document.getElementById('ippa-payment-pill');
 
-  if (priceDisplay) {
-    priceDisplay.textContent = `€${result.price.toFixed(2)}`;
+  if (box) {
+    box.className = `ippa-result-box ${result.badgeClass}`;
   }
-  if (distanceDisplay) {
+
+  if (tierNameEl) {
+    tierNameEl.textContent = result.name;
+  }
+
+  if (distanceEl) {
     const isEn = appState.currentLang === 'en';
-    distanceDisplay.textContent = isEn 
-      ? `Est. ~${result.distanceKm} km • Direct Dispatch`
-      : `Geschat ~${result.distanceKm} km • Direct voorgereden`;
+    const sub = isEn ? result.subtextEn : result.subtext;
+    distanceEl.textContent = `Geschat ~${result.distanceKm} km • ${sub}`;
+  }
+
+  if (paymentPill) {
+    paymentPill.textContent = result.giveText;
   }
 }
 
@@ -411,18 +426,17 @@ function initPresetRoutes() {
       if (pickupInput && from) pickupInput.value = from;
       if (dropoffInput && to) dropoffInput.value = to;
 
-      // Select Airport Tab
       const airportTab = document.querySelector('[data-tab="airport"]');
       if (airportTab) airportTab.click();
 
       updateFareDisplay();
 
-      // Scroll smoothly to the booking widget
       if (bookingWidget) {
         bookingWidget.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
 
-      showToast(appState.currentLang === 'en' ? `Route selected: ${from} → ${to}` : `Route ingesteld: ${from} → ${to}`);
+      const res = calculateEstimatedFare();
+      showToast(`Gekozen: ${from} → ${to} (${res.giveText})`);
     });
   });
 }
@@ -490,7 +504,6 @@ function initModal() {
     });
   }
 
-  // Close on outside click
   window.addEventListener('click', (e) => {
     if (e.target === modal) {
       modal.classList.remove('active');
@@ -507,7 +520,6 @@ function initModal() {
     });
   }
 
-  // Hero WhatsApp button direct dispatch
   const heroWaBtn = document.getElementById('btn-hero-wa');
   if (heroWaBtn) {
     heroWaBtn.addEventListener('click', (e) => {
@@ -523,12 +535,12 @@ function populateModalSummary() {
   const datetime = document.getElementById('ride-datetime')?.value || 'Zo snel mogelijk';
   const passengers = document.getElementById('ride-passengers')?.value || '1';
   const luggage = document.getElementById('ride-luggage')?.value || '1';
-  const { price } = calculateEstimatedFare();
+  const res = calculateEstimatedFare();
 
   const vNames = {
     sedan: 'Executive Sedan',
     estate: 'Stationwagen',
-    van: 'VIP Taxibus (tot 8p)'
+    van: 'VIP Taxibus'
   };
   const vehicleName = vNames[appState.vehicleType] || 'Executive Sedan';
 
@@ -536,17 +548,16 @@ function populateModalSummary() {
   document.getElementById('sum-dropoff').textContent = dropoff;
   document.getElementById('sum-datetime').textContent = datetime.replace('T', ' om ');
   document.getElementById('sum-vehicle').textContent = vehicleName;
-  document.getElementById('sum-passengers').textContent = `${passengers} pers. / ${luggage} koffers`;
-  document.getElementById('sum-fare').textContent = `€${price.toFixed(2)}`;
+  document.getElementById('sum-passengers').textContent = `${passengers} pers.`;
+  document.getElementById('sum-ippa').textContent = res.giveText;
 }
 
 function openWhatsAppDispatch() {
   const pickup = document.getElementById('ride-pickup')?.value || 'Ophaaladres';
   const dropoff = document.getElementById('ride-dropoff')?.value || 'Bestemming';
   const datetime = document.getElementById('ride-datetime')?.value || 'Direct';
-  const passengers = document.getElementById('ride-passengers')?.value || '1-2';
-  const luggage = document.getElementById('ride-luggage')?.value || '1';
-  const { price } = calculateEstimatedFare();
+  const passengers = document.getElementById('ride-passengers')?.value || '1';
+  const res = calculateEstimatedFare();
 
   const vNames = {
     sedan: 'Executive Sedan',
@@ -558,9 +569,9 @@ function openWhatsAppDispatch() {
   let message = '';
 
   if (isEn) {
-    message = `Hello IPPATAXI (ippataxi.nl),\nI would like to book a taxi:\n\n📍 Pickup: ${pickup}\n🏁 Destination: ${dropoff}\n📅 Date & Time: ${datetime}\n👥 Passengers: ${passengers}\n🧳 Luggage: ${luggage}\n🚘 Vehicle: ${vNames[appState.vehicleType]}\n💶 Estimated fare: €${price.toFixed(2)}\n\nPlease confirm availability!`;
+    message = `Hello IPPATAXI (ippataxi.nl),\nI would like to book a taxi:\n\n📍 Pickup: ${pickup}\n🏁 Destination: ${dropoff}\n📅 Date & Time: ${datetime}\n👥 Passengers: ${passengers}\n🚘 Vehicle: ${vNames[appState.vehicleType]}\n💎 Payment for Driver: ${res.giveText} (No Money)\n\nPlease confirm my ride!`;
   } else {
-    message = `Hallo IPPATAXI (ippataxi.nl),\nIk wil graag een taxi reserveren:\n\n📍 Ophaaladres: ${pickup}\n🏁 Bestemming: ${dropoff}\n📅 Datum & Tijd: ${datetime}\n👥 Aantal personen: ${passengers}\n🧳 Bagage: ${luggage} stuks\n🚘 Voertuig: ${vNames[appState.vehicleType]}\n💶 Geschat vast tarief: €${price.toFixed(2)}\n\nKunt u deze rit bevestigen?`;
+    message = `Hallo IPPATAXI (ippataxi.nl),\nIk wil graag een taxi reserveren:\n\n📍 Ophaaladres: ${pickup}\n🏁 Bestemming: ${dropoff}\n📅 Datum & Tijd: ${datetime}\n👥 Aantal personen: ${passengers}\n🚘 Voertuig: ${vNames[appState.vehicleType]}\n💎 Betaling Chauffeur: ${res.giveText} (Geen geld)\n\nKunt u deze rit bevestigen?`;
   }
 
   const encoded = encodeURIComponent(message);
@@ -572,36 +583,33 @@ function handleReservationSubmit(e) {
   e.preventDefault();
   const name = document.getElementById('modal-name')?.value.trim();
   const phone = document.getElementById('modal-phone')?.value.trim();
-  const flight = document.getElementById('modal-flight')?.value.trim();
-  const payment = document.getElementById('modal-payment')?.value;
 
   if (!name || !phone) {
     alert(appState.currentLang === 'en' ? 'Please fill in your name and phone number.' : 'Vul alstublieft uw naam en telefoonnummer in.');
     return;
   }
 
-  // Generate a random luxury booking reference
-  const refCode = 'IPP-' + Math.floor(100000 + Math.random() * 900000);
+  const refCode = 'IPPA-' + Math.floor(1000 + Math.random() * 9000);
   const modal = document.getElementById('booking-modal');
   modal.classList.remove('active');
 
+  const res = calculateEstimatedFare();
   const isEn = appState.currentLang === 'en';
   const successMsg = isEn 
-    ? `Booking received! Ref: ${refCode}. We will contact you at ${phone}.`
-    : `Reservering ontvangen! Ref: ${refCode}. We nemen direct contact op via ${phone}.`;
+    ? `Booking received! Ref: ${refCode}. Hand ${res.giveText} to your driver.`
+    : `Reservering ontvangen! Ref: ${refCode}. Geef bij aankomst ${res.giveText} aan uw chauffeur.`;
 
   showToast(successMsg);
 
-  // Prompt WhatsApp as backup confirmation option
   setTimeout(() => {
-    if (confirm(isEn ? 'Would you also like to receive confirmation directly on WhatsApp?' : 'Wilt u de bevestiging tevens direct via WhatsApp openen?')) {
+    if (confirm(isEn ? 'Would you also like to receive confirmation directly on WhatsApp?' : 'Wilt u de bevestiging tevens via WhatsApp openen?')) {
       openWhatsAppDispatch();
     }
   }, 600);
 }
 
 /**
- * Quick Contact Form in Section
+ * Contact Form
  */
 function initContactForm() {
   const form = document.getElementById('contact-form');
@@ -609,14 +617,13 @@ function initContactForm() {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const isEn = appState.currentLang === 'en';
-    showToast(isEn ? 'Thank you! Your message has been sent to IPPATAXI.' : 'Hartelijk dank! Uw bericht is verzonden naar IPPATAXI.');
+    showToast('Hartelijk dank! Uw IPPA-aanvraag is verzonden naar IPPATAXI.');
     form.reset();
   });
 }
 
 /**
- * Toast Notification Helper
+ * Toast Helper
  */
 function showToast(message) {
   let container = document.querySelector('.toast-container');
@@ -629,7 +636,7 @@ function showToast(message) {
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.innerHTML = `
-    <span style="color: #22c55e; font-size: 1.2rem;">✓</span>
+    <span style="color: #e5b869; font-size: 1.2rem;">💎</span>
     <div>${message}</div>
   `;
 
@@ -643,9 +650,6 @@ function showToast(message) {
   }, 4000);
 }
 
-/**
- * Debounce helper
- */
 function debounce(fn, delay) {
   let timer;
   return function(...args) {
