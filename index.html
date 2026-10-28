@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPPATAXI.nl | Luxe Taxivervoer & Vaste Schiphol Tarieven</title>
+  <meta name="description" content="Betrouwbare en luxe taxidienst in Nederland. Vaste Schiphol airport transfers, zakelijk directievervoer en 24/7 stadsritten. Bereken direct uw ritprijs en reserveer online via ippataxi.nl.">
+  <meta name="keywords" content="taxi, ippataxi, taxi schiphol, taxidienst amsterdam, utrecht taxi, luchthavenvervoer, taxi boeken, goedkope taxi schiphol, zakelijk vervoer">
+  <meta name="author" content="IPPATAXI">
+  <link rel="canonical" href="https://ippataxi.nl">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ippataxi.nl">
+  <meta property="og:title" content="IPPATAXI.nl | Luxe & Betrouwbaar Taxivervoer in Nederland">
+  <meta property="og:description" content="Vaste scherpe Schiphol tarieven, directievervoer en 24/7 ritten. Bereken direct online uw ritprijs.">
+  <meta property="og:image" content="assets/images/hero.jpg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Structured Data / JSON-LD for Local Taxi Service -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TaxiService",
+    "name": "IPPATAXI",
+    "url": "https://ippataxi.nl",
+    "logo": "https://ippataxi.nl/assets/images/hero.jpg",
+    "telephone": "+31612345678",
+    "priceRange": "€€",
+    "areaServed": {
+      "@type": "Country",
+      "name": "Netherlands"
+    },
+    "description": "Luxe taxivervoer, vaste Schiphol transfers en representatief zakelijk directievervoer in heel Nederland.",
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "00:00",
+      "closes": "23:59"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "248"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Top Notification & Contact Bar -->
+  <aside class="top-bar" aria-label="Meldingen en direct contact">
+    <div class="container top-bar-inner">
+      <div class="top-bar-features">
+        <span class="top-bar-badge">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span data-i18n="topBarLive">Direct taxi nodig? Binnen 10-15 min voorgereden</span>
+        </span>
+        <span class="badge-sub" style="display:inline-flex; align-items:center; gap:4px;">
+          <span>✈</span>
+          <span data-i18n="topBarSchiphol">Vaste Schiphol tarieven</span>
+        </span>
+      </div>
+
+      <div class="top-bar-actions">
+        <a href="tel:+31612345678" class="top-phone-link" id="topbar-phone" title="Bel direct">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <span data-i18n="callNow">Bel Direct: 06 - 12 34 56 78</span>
+        </a>
+
+        <!-- Language Switcher -->
+        <div class="lang-switch" role="group" aria-label="Taal selectie">
+          <button type="button" class="lang-btn active" data-lang="nl" title="Nederlands">NL</button>
+          <button type="button" class="lang-btn" data-lang="en" title="English">EN</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Navigation Header -->
+  <header class="site-header">
+    <div class="container navbar">
+      <a href="#home" class="brand-logo" id="main-brand-logo" aria-label="IPPATAXI Home">
+        <div class="brand-mark">IT</div>
+        <div class="brand-text">
+          <div class="brand-title">IPPA<span>TAXI</span></div>
+          <div class="brand-subtitle">ippataxi.nl • Premium Service</div>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav class="nav-links" aria-label="Hoofdnavigatie">
+        <a href="#home" class="nav-link active" data-i18n="navHome">Home</a>
+        <a href="#calculator" class="nav-link" data-i18n="navTariffs">Tarieven & Boeken</a>
+        <a href="#routes" class="nav-link" data-i18n="navAirport">Schiphol Vervoer</a>
+        <a href="#fleet" class="nav-link" data-i18n="navFleet">Onze Vloot</a>
+        <a href="#services" class="nav-link" data-i18n="navServices">Diensten</a>
+        <a href="#why-us" class="nav-link" data-i18n="navWhyUs">Waarom Ons</a>
+        <a href="#contact" class="nav-link" data-i18n="navContact">Contact</a>
+      </nav>
+
+      <!-- Desktop Action Buttons -->
+      <div class="nav-actions">
+        <a href="tel:+31612345678" class="btn-nav-call" id="btn-header-call">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <span>06 - 12 34 56 78</span>
+        </a>
+        <a href="#calculator" class="btn-nav-book" id="btn-header-book" data-i18n="btnBookNav">Direct Reserveren</a>
+      </div>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button class="mobile-menu-toggle" aria-label="Open mobiel menu" id="mobile-toggle">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav-drawer" id="mobile-drawer" aria-hidden="true">
+      <a href="#home" class="mobile-nav-link" data-i18n="navHome">Home</a>
+      <a href="#calculator" class="mobile-nav-link" data-i18n="navTariffs">Tarieven & Boeken</a>
+      <a href="#routes" class="mobile-nav-link" data-i18n="navAirport">Schiphol Vervoer</a>
+      <a href="#fleet" class="mobile-nav-link" data-i18n="navFleet">Onze Vloot</a>
+      <a href="#services" class="mobile-nav-link" data-i18n="navServices">Diensten</a>
+      <a href="#why-us" class="mobile-nav-link" data-i18n="navWhyUs">Waarom Ons</a>
+      <a href="#contact" class="mobile-nav-link" data-i18n="navContact">Contact</a>
+      <div style="display:flex; gap:10px; margin-top:8px;">
+        <a href="tel:+31612345678" class="btn-primary" style="flex:1; text-align:center;">📞 Bel Direct</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ====================================================================
+         HERO SECTION: Background Image + Title + Interactive Booking Widget
+         ==================================================================== -->
+    <section class="hero-section" id="home">
+      <div class="hero-background-wrapper" aria-hidden="true">
+        <img src="assets/images/hero.jpg" alt="Luxe Mercedes taxi van IPPATAXI bij de luchthaven" class="hero-bg-img">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="container hero-grid">
+        <!-- Hero Left Column: Brand Statement & CTA -->
+        <div class="hero-content">
+          <div class="hero-badge-pill">
+            <span class="star-icon">★</span>
+            <span data-i18n="heroTag">Luxe Taxivervoer in Heel Nederland</span>
+          </div>
+
+          <h1 class="hero-title">
+            <span data-i18n="heroTitle">Zakelijk & Particulier Taxi Vervoer Zonder Zorgen</span>
+          </h1>
+
+          <p class="hero-desc" data-i18n="heroDesc">
+            Ervaar eersteklas comfort met IPPATAXI. Van vaste Schiphol transfers tot directievervoer en stadsritten. Transparante prijzen, representatieve chauffeurs en luxe voertuigen.
+          </p>
+
+          <div class="hero-features-list">
+            <div class="hero-feature-item">
+              <span class="hero-feature-icon">✓</span>
+              <span data-i18n="feat1">Vaste prijzen, geen meter-verrassingen</span>
+            </div>
+            <div class="hero-feature-item">
+              <span class="hero-feature-icon">✓</span>
+              <span data-i18n="feat2">Altijd representatief in pak</span>
+            </div>
+            <div class="hero-feature-item">
+              <span class="hero-feature-icon">✓</span>
+              <span data-i18n="feat3">Schiphol Vluchtmonitoring inbegrepen</span>
+            </div>
+            <div class="hero-feature-item">
+              <span class="hero-feature-icon">✓</span>
+              <span data-i18n="feat4">PIN, Creditcard, Tikkie & Factuur</span>
+            </div>
+          </div>
+
+          <div class="hero-cta-buttons">
+            <button type="button" class="btn-whatsapp" id="btn-hero-wa">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              <span data-i18n="btnHeroWa">Direct Boeken via WhatsApp</span>
+            </button>
+            <a href="tel:+31612345678" class="btn-primary" id="btn-hero-call">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              <span data-i18n="btnHeroCall">Telefonisch Reserveren</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Right Column: Interactive Booking & Fare Estimator Card -->
+        <div class="booking-card" id="booking-calculator">
+          <div class="booking-header">
+            <h3 data-i18n="cardTitle">Bereken Uw Ritprijs</h3>
+            <p data-i18n="cardSubtitle">Directe prijsindicatie & online reservering</p>
+          </div>
+
+          <!-- Booking Mode Tabs -->
+          <div class="booking-tabs" role="tablist">
+            <button type="button" class="booking-tab-btn active" data-tab="standard" data-i18n="tabStandard">Standaard Rit</button>
+            <button type="button" class="booking-tab-btn" data-tab="airport" data-i18n="tabAirport">Schiphol Transfer</button>
+            <button type="button" class="booking-tab-btn" data-tab="hourly" data-i18n="tabHourly">Zakelijk / Uur</button>
+          </div>
+
+          <!-- Booking Inputs Form -->
+          <form class="booking-form" id="main-booking-form" onsubmit="return false;">
+            <!-- Pickup Address -->
+            <div class="form-group">
+              <label for="ride-pickup" class="form-label" data-i18n="lblPickup">Ophaaladres / Stad</label>
+              <div class="input-with-icon">
+                <span class="input-icon">📍</span>
+                <input type="text" id="ride-pickup" class="form-input" placeholder="Bijv. Amsterdam Centrum, Keizersgracht..." value="Amsterdam Centrum" required>
+              </div>
+            </div>
+
+            <!-- Destination Address -->
+            <div class="form-group">
+              <label for="ride-dropoff" class="form-label" data-i18n="lblDropoff">Bestemming / Luchthaven</label>
+              <div class="input-with-icon">
+                <span class="input-icon">🏁</span>
+                <input type="text" id="ride-dropoff" class="form-input" placeholder="Bijv. Schiphol Airport (AMS)" value="Schiphol Airport (AMS)" required>
+              </div>
+            </div>
+
+            <!-- Date & Time + Passengers -->
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="ride-datetime" class="form-label" data-i18n="lblDateTime">Datum & Ophaaltijd</label>
+                <div class="input-with-icon">
+                  <span class="input-icon">🕒</span>
+                  <input type="datetime-local" id="ride-datetime" class="form-input" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="ride-passengers" class="form-label" data-i18n="lblPassengers">Passagiers</label>
+                <div class="input-with-icon">
+                  <span class="input-icon">👥</span>
+                  <select id="ride-passengers" class="form-select">
+                    <option value="1">1 Passagier</option>
+                    <option value="2">2 Passagiers</option>
+                    <option value="3">3 Passagiers</option>
+                    <option value="4">4 Passagiers</option>
+                    <option value="5">5 Passagiers (Taxibus)</option>
+                    <option value="6">6 Passagiers (Taxibus)</option>
+                    <option value="7">7 Passagiers (Taxibus)</option>
+                    <option value="8">8 Passagiers (Taxibus)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vehicle Selection Radio Cards -->
+            <div class="form-group">
+              <span class="vehicle-selector-title" data-i18n="lblVehicle">Kies Gewenst Voertuig</span>
+              <div class="vehicle-options">
+                <label class="vehicle-radio-label selected" id="veh-opt-sedan">
+                  <input type="radio" name="vehicle" value="sedan" checked>
+                  <div class="vehicle-radio-icon">🚘</div>
+                  <div class="vehicle-radio-name" data-i18n="vehSedan">Executive Sedan</div>
+                  <div class="vehicle-radio-meta" data-i18n="vehSedanSub">1-4 pers • 3 koffers</div>
+                </label>
+
+                <label class="vehicle-radio-label" id="veh-opt-estate">
+                  <input type="radio" name="vehicle" value="estate">
+                  <div class="vehicle-radio-icon">🚙</div>
+                  <div class="vehicle-radio-name" data-i18n="vehEstate">Stationwagen</div>
+                  <div class="vehicle-radio-meta" data-i18n="vehEstateSub">1-4 pers • 5 koffers</div>
+                </label>
+
+                <label class="vehicle-radio-label" id="veh-opt-van">
+                  <input type="radio" name="vehicle" value="van">
+                  <div class="vehicle-radio-icon">🚐</div>
+                  <div class="vehicle-radio-name" data-i18n="vehVan">VIP Taxibus</div>
+                  <div class="vehicle-radio-meta" data-i18n="vehVanSub">Tot 8 pers • 8 koffers</div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Live Estimated Fare Box -->
+            <div class="fare-estimate-box">
+              <div class="fare-details">
+                <span class="fare-tag" data-i18n="fareTag">Vast Tarief Indicatie</span>
+                <span class="fare-sub" id="fare-distance-display">Geschat ~18 km • Direct voorgereden</span>
+                <span class="fare-fixed-note" data-i18n="fareNote">✓ Inclusief btw, bagage & instaptarief</span>
+              </div>
+              <div class="fare-price-wrap">
+                <div class="fare-price-amount" id="fare-amount-display">€45.00</div>
+              </div>
+            </div>
+
+            <!-- Submission Button -->
+            <button type="button" class="btn-primary booking-submit-btn" id="btn-submit-booking">
+              <span data-i18n="btnBookSubmit">Rit Reserveren & Bevestigen</span>
+              <span>→</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         TRUST STATS BAR
+         ==================================================================== -->
+    <section class="stats-section" aria-label="Statistieken en zekerheden">
+      <div class="container stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">15.000+</div>
+          <div class="stat-label" data-i18n="statRides">Succesvolle Ritten</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">4.9 ★</div>
+          <div class="stat-label" data-i18n="statRating">Gemiddelde Beoordeling</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label" data-i18n="statAvailability">Beschikbaarheid</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Punctualiteitsgarantie</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         POPULAR AIRPORT TRANSFERS (VASTE SCHIPHOL TARIEVEN)
+         ==================================================================== -->
+    <section class="section" id="routes">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag" data-i18n="routesTag">Populaire Routes</span>
+          <h2 class="section-title" data-i18n="routesTitle">Vaste Scherpe Schiphol Tarieven</h2>
+          <p class="section-desc" data-i18n="routesDesc">
+            Geen file-opslag of onverwachte kosten. U weet vooraf precies waar u aan toe bent met onze vaste airport transfers.
+          </p>
+        </div>
+
+        <div class="airport-routes-grid">
+          <!-- Amsterdam - Schiphol -->
+          <article class="route-card">
+            <span class="route-badge">Meest Gekozen</span>
+            <div class="route-airports">
+              <span class="route-point">Amsterdam Centrum</span>
+              <span class="route-arrow">⇄</span>
+              <span class="route-point">Schiphol Airport</span>
+            </div>
+            <div class="route-meta">
+              <span class="route-meta-item">⏱ ca. 20 min</span>
+              <span class="route-meta-item">📍 18 km</span>
+            </div>
+            <div class="route-footer">
+              <div>
+                <div class="route-price-label">Vaste Prijs</div>
+                <div class="route-price-val">€45,00</div>
+              </div>
+              <button type="button" class="btn-route-book" data-from="Amsterdam Centrum" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Boek Deze Rit</button>
+            </div>
+          </article>
+
+          <!-- Utrecht - Schiphol -->
+          <article class="route-card">
+            <span class="route-badge">Zakelijk Favoriet</span>
+            <div class="route-airports">
+              <span class="route-point">Utrecht</span>
+              <span class="route-arrow">⇄</span>
+              <span class="route-point">Schiphol Airport</span>
+            </div>
+            <div class="route-meta">
+              <span class="route-meta-item">⏱ ca. 35 min</span>
+              <span class="route-meta-item">📍 48 km</span>
+            </div>
+            <div class="route-footer">
+              <div>
+                <div class="route-price-label">Vaste Prijs</div>
+                <div class="route-price-val">€85,00</div>
+              </div>
+              <button type="button" class="btn-route-book" data-from="Utrecht" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Boek Deze Rit</button>
+            </div>
+          </article>
+
+          <!-- Den Haag - Schiphol -->
+          <article class="route-card">
+            <span class="route-badge">Vaste Prijs</span>
+            <div class="route-airports">
+              <span class="route-point">Den Haag</span>
+              <span class="route-arrow">⇄</span>
+              <span class="route-point">Schiphol Airport</span>
+            </div>
+            <div class="route-meta">
+              <span class="route-meta-item">⏱ ca. 35 min</span>
+              <span class="route-meta-item">📍 45 km</span>
+            </div>
+            <div class="route-footer">
+              <div>
+                <div class="route-price-label">Vaste Prijs</div>
+                <div class="route-price-val">€80,00</div>
+              </div>
+              <button type="button" class="btn-route-book" data-from="Den Haag" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Boek Deze Rit</button>
+            </div>
+          </article>
+
+          <!-- Rotterdam - Schiphol -->
+          <article class="route-card">
+            <span class="route-badge">Vaste Prijs</span>
+            <div class="route-airports">
+              <span class="route-point">Rotterdam</span>
+              <span class="route-arrow">⇄</span>
+              <span class="route-point">Schiphol Airport</span>
+            </div>
+            <div class="route-meta">
+              <span class="route-meta-item">⏱ ca. 45 min</span>
+              <span class="route-meta-item">📍 60 km</span>
+            </div>
+            <div class="route-footer">
+              <div>
+                <div class="route-price-label">Vaste Prijs</div>
+                <div class="route-price-val">€110,00</div>
+              </div>
+              <button type="button" class="btn-route-book" data-from="Rotterdam" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Boek Deze Rit</button>
+            </div>
+          </article>
+
+          <!-- Haarlem - Schiphol -->
+          <article class="route-card">
+            <span class="route-badge">Regio Rit</span>
+            <div class="route-airports">
+              <span class="route-point">Haarlem</span>
+              <span class="route-arrow">⇄</span>
+              <span class="route-point">Schiphol Airport</span>
+            </div>
+            <div class="route-meta">
+              <span class="route-meta-item">⏱ ca. 20 min</span>
+              <span class="route-meta-item">📍 20 km</span>
+            </div>
+            <div class="route-footer">
+              <div>
+                <div class="route-price-label">Vaste Prijs</div>
+                <div class="route-price-val">€49,00</div>
+              </div>
+              <button type="button" class="btn-route-book" data-from="Haarlem" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Boek Deze Rit</button>
+            </div>
+          </article>
+
+          <!-- Almere - Schiphol -->
+          <article class="route-card">
+            <span class="route-badge">Vaste Prijs</span>
+            <div class="route-airports">
+              <span class="route-point">Almere</span>
+              <span class="route-arrow">⇄</span>
+              <span class="route-point">Schiphol Airport</span>
+            </div>
+            <div class="route-meta">
+              <span class="route-meta-item">⏱ ca. 30 min</span>
+              <span class="route-meta-item">📍 42 km</span>
+            </div>
+            <div class="route-footer">
+              <div>
+                <div class="route-price-label">Vaste Prijs</div>
+                <div class="route-price-val">€79,00</div>
+              </div>
+              <button type="button" class="btn-route-book" data-from="Almere" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Boek Deze Rit</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SERVICES SECTION
+         ==================================================================== -->
+    <section class="section section-alt" id="services">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag" data-i18n="srvTag">Onze Specialisaties</span>
+          <h2 class="section-title" data-i18n="srvTitle">Diensten Op Maat Voor Elke Gelegenheid</h2>
+          <p class="section-desc">
+            Van luchthaventransfers tot exclusief zakelijk directievervoer. Altijd met persoonlijke service en discretie.
+          </p>
+        </div>
+
+        <div class="services-grid">
+          <!-- Service 1: Luchthavenvervoer -->
+          <div class="service-card">
+            <div class="service-icon-box">✈️</div>
+            <h3 class="service-title">Luchthaven Vervoer</h3>
+            <p class="service-desc">
+              Zorgeloos vertrekken of thuiskomen. Wij monitoren continu uw vluchtnummer zodat de chauffeur precies klaarstaat bij aankomst.
+            </p>
+            <ul class="service-points">
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Schiphol, Rotterdam & Eindhoven Airport</li>
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Geen parkeerstress of wachttijden</li>
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Meet & Greet optie in de aankomsthal</li>
+            </ul>
+          </div>
+
+          <!-- Service 2: Zakelijk Vervoer -->
+          <div class="service-card">
+            <div class="service-icon-box">💼</div>
+            <h3 class="service-title">Zakelijk & Directievervoer</h3>
+            <p class="service-desc">
+              Representatief vervoer voor directie, zakenpartners en gasten. Werk rustig door in een stille auto met snelle WiFi.
+            </p>
+            <ul class="service-points">
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Rijden op rekening (maandfactuur)</li>
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Gecertificeerde chauffeur in pak</li>
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Discretie en privacy gegarandeerd</li>
+            </ul>
+          </div>
+
+          <!-- Service 3: Stads- en Regiorit -->
+          <div class="service-card">
+            <div class="service-icon-box">📍</div>
+            <h3 class="service-title">Particulier & Stadsritten</h3>
+            <p class="service-desc">
+              Veilig en snel naar restaurant, theater, medische afspraak of vrienden. Binnen korte tijd voorgereden waar u ook bent.
+            </p>
+            <ul class="service-points">
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Snelle aanrijtijd (10-15 min)</li>
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Comfortabele brandschone wagens</li>
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Betaal eenvoudig via PIN of Tikkie</li>
+            </ul>
+          </div>
+
+          <!-- Service 4: Groepsvervoer & VIP Bus -->
+          <div class="service-card">
+            <div class="service-icon-box">👥</div>
+            <h3 class="service-title">VIP Taxibus & Groepen</h3>
+            <p class="service-desc">
+              Comfortabel reizen met het hele gezin, vriendengroep of team tot 8 personen inclusief alle bagage in onze luxe Mercedes V-Klasse.
+            </p>
+            <ul class="service-points">
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Tot wel 8 volwaardige zitplaatsen</li>
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Enorme bagageruimte voor 8+ koffers</li>
+              <li class="service-point"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Evenementen & concerten vervoer</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         FLEET SHOWCASE SECTION
+         ==================================================================== -->
+    <section class="section" id="fleet">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag" data-i18n="fltTag">Eersteklas Comfort</span>
+          <h2 class="section-title" data-i18n="fltTitle">Onze Exclusieve Vloot</h2>
+          <p class="section-desc" data-i18n="fltDesc">
+            Al onze auto’s zijn brandschoon, voorzien van airconditioning, lederen bekleding en gratis WiFi.
+          </p>
+        </div>
+
+        <div class="fleet-grid">
+          <!-- Fleet 1: Mercedes-Benz E-Class Sedan -->
+          <article class="fleet-card">
+            <div class="fleet-img-wrapper">
+              <img src="assets/images/sedan.jpg" alt="Luxe Mercedes-Benz Executive Sedan taxi" class="fleet-img" loading="lazy">
+              <span class="fleet-badge">Executive Class</span>
+            </div>
+            <div class="fleet-content">
+              <div class="fleet-category">Luxe Sedan</div>
+              <h3 class="fleet-name">Mercedes-Benz E-Klasse</h3>
+              
+              <div class="fleet-specs">
+                <span class="spec-badge">👥 Max 4 Pers</span>
+                <span class="spec-badge">🧳 3 Grote Koffers</span>
+                <span class="spec-badge">⚡ WiFi & USB</span>
+              </div>
+
+              <ul class="fleet-amenities">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Lederen comfortstoelen & klimaatregeling</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Flesjes mineraalwater voor onderweg</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Telefoonopladers (USB-C & Lightning)</li>
+              </ul>
+
+              <div class="fleet-footer">
+                <div>
+                  <div class="fleet-rate-text">Standaard Tarief</div>
+                  <div class="fleet-rate-val">Vanaf €45,00</div>
+                </div>
+                <a href="#calculator" class="btn-route-book">Selecteer Sedan</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Fleet 2: Mercedes-Benz V-Class VIP Van -->
+          <article class="fleet-card">
+            <div class="fleet-img-wrapper">
+              <img src="assets/images/van.jpg" alt="Luxe Mercedes-Benz V-Klasse VIP Taxibus" class="fleet-img" loading="lazy">
+              <span class="fleet-badge">VIP Group Travel</span>
+            </div>
+            <div class="fleet-content">
+              <div class="fleet-category">Taxibus & Groepen</div>
+              <h3 class="fleet-name">Mercedes-Benz V-Klasse</h3>
+              
+              <div class="fleet-specs">
+                <span class="spec-badge">👥 Max 8 Pers</span>
+                <span class="spec-badge">🧳 8 Koffers + Handbagage</span>
+                <span class="spec-badge">🕶 Privacy Glas</span>
+              </div>
+
+              <ul class="fleet-amenities">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Conferentie-opstelling mogelijk</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Extra ruime kofferbak voor wintersport & golf</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Aparte airconditioning achterin</li>
+              </ul>
+
+              <div class="fleet-footer">
+                <div>
+                  <div class="fleet-rate-text">Groepstarief</div>
+                  <div class="fleet-rate-val">Vanaf €65,00</div>
+                </div>
+                <a href="#calculator" class="btn-route-book">Selecteer Minibus</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Fleet 3: Executive Stationwagon / Eco -->
+          <article class="fleet-card">
+            <div class="fleet-img-wrapper">
+              <img src="assets/images/hero.jpg" alt="Luxe Stationwagon Taxi Schiphol transfer" class="fleet-img" loading="lazy">
+              <span class="fleet-badge">Extra Bagage</span>
+            </div>
+            <div class="fleet-content">
+              <div class="fleet-category">Ruime Combi</div>
+              <h3 class="fleet-name">Executive Stationwagon</h3>
+              
+              <div class="fleet-specs">
+                <span class="spec-badge">👥 Max 4 Pers</span>
+                <span class="spec-badge">🧳 5 Grote Koffers</span>
+                <span class="spec-badge">🌿 Zeer Zuinig</span>
+              </div>
+
+              <ul class="fleet-amenities">
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Ideaal voor vakantiegangers met veel koffers</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Comfortabele zachte vering voor lange afstanden</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Kinderzitjes / Maxi-Cosi op aanvraag</li>
+              </ul>
+
+              <div class="fleet-footer">
+                <div>
+                  <div class="fleet-rate-text">Vast Tarief</div>
+                  <div class="fleet-rate-val">Vanaf €50,00</div>
+                </div>
+                <a href="#calculator" class="btn-route-book">Selecteer Station</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         WHY CHOOSE US (6 PILLARS)
+         ==================================================================== -->
+    <section class="section section-alt" id="why-us">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag" data-i18n="whyTag">Waarom Ippataxi</span>
+          <h2 class="section-title" data-i18n="whyTitle">De Zekerheden Van IPPATAXI</h2>
+          <p class="section-desc">
+            Wij begrijpen dat betrouwbaarheid het allerbelangrijkste is wanneer u een taxi bestelt. Daarom hanteren wij strikte servicestandaarden.
+          </p>
+        </div>
+
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="why-icon">⏱</div>
+            <h3 class="why-title">Altijd Op Tijd Garantie</h3>
+            <p class="why-desc">Geen stress voor uw vlucht of zakelijke afspraak. Onze chauffeurs zijn stipt en staan ruim van tevoren gereed.</p>
+          </div>
+
+          <div class="why-card">
+            <div class="why-icon">💶</div>
+            <h3 class="why-title">Vaste Transparante Prijzen</h3>
+            <p class="why-desc">U weet vooraf exact waar u aan toe bent. Geen nare verrassingen bij files of omleidingen dankzij ons vaste tarievensysteem.</p>
+          </div>
+
+          <div class="why-card">
+            <div class="why-icon">👔</div>
+            <h3 class="why-title">Gecertificeerde Chauffeurs</h3>
+            <p class="why-desc">Representatief gekleed in pak, vriendelijk, meertalig (Nederlands & Engels) en in het bezit van alle officiële taxi-licenties.</p>
+          </div>
+
+          <div class="why-card">
+            <div class="why-icon">✈️</div>
+            <h3 class="why-title">Live Vlucht Monitoring</h3>
+            <p class="why-desc">Heeft uw vlucht vertraging of landt u eerder? Wij passen de ophaaltijd automatisch aan zonder extra kosten.</p>
+          </div>
+
+          <div class="why-card">
+            <div class="why-icon">💳</div>
+            <h3 class="why-title">Alle Betaalmethoden</h3>
+            <p class="why-desc">Eenvoudig en veilig betalen in het voertuig met PIN, Contactloos, Apple Pay, Visa, Mastercard of vooraf per factuur / Tikkie.</p>
+          </div>
+
+          <div class="why-card">
+            <div class="why-icon">📞</div>
+            <h3 class="why-title">24/7 Persoonlijke Support</h3>
+            <p class="why-desc">Geen keuzemenu’s of wachtrijen. Bel of stuur direct een WhatsApp bericht en u heeft direct contact met onze dispatch.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         REVIEWS & SOCIAL PROOF
+         ==================================================================== -->
+    <section class="section">
+      <div class="container">
+        <div class="reviews-summary">
+          <div class="reviews-score">4.9 / 5.0</div>
+          <div class="reviews-stars">★★★★★</div>
+          <div class="reviews-meta">Gebaseerd op 240+ geverifieerde ritten</div>
+        </div>
+
+        <div class="testimonials-grid">
+          <!-- Review 1 -->
+          <article class="testimonial-card">
+            <p class="testimonial-quote">
+              "Wat een verademing vergeleken met andere taxidiensten! Onze chauffeur stond keurig op tijd voor de deur in Amstelveen, hielp met alle koffers en de Mercedes was brandschoon. Vaste prijs voor Schiphol was top."
+            </p>
+            <div class="testimonial-author">
+              <div class="author-avatar">MB</div>
+              <div class="author-info">
+                <span class="author-name">Mark van den Berg</span>
+                <span class="author-role">Particuliere klant • Schiphol Transfer</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Review 2 -->
+          <article class="testimonial-card">
+            <p class="testimonial-quote">
+              "Voor ons advocatenkantoor boeken we wekelijks directievervoer via IPPATAXI. Altijd stipt, uiterst discreet en handige maandelijkse facturatie. Zeker een aanrader voor zakelijke reizigers!"
+            </p>
+            <div class="testimonial-author">
+              <div class="author-avatar">SD</div>
+              <div class="author-info">
+                <span class="author-name">Sophie De Vries</span>
+                <span class="author-role">Managing Partner • Zakelijk Vervoer</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Review 3 -->
+          <article class="testimonial-card">
+            <p class="testimonial-quote">
+              "We booked the VIP Minivan for our family trip with 6 people and 7 big suitcases. Everything went seamlessly. The driver was super friendly and communicative on WhatsApp. 5 stars for ippataxi.nl!"
+            </p>
+            <div class="testimonial-author">
+              <div class="author-avatar">JK</div>
+              <div class="author-info">
+                <span class="author-name">James Kramer</span>
+                <span class="author-role">International Traveler • Minivan Ride</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         FAQ ACCORDION
+         ==================================================================== -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag" data-i18n="faqTag">Vragen & Antwoorden</span>
+          <h2 class="section-title" data-i18n="faqTitle">Veelgestelde Vragen</h2>
+          <p class="section-desc">
+            Heeft u vragen over het boeken, betalen of onze werkwijze? Hier vindt u direct de belangrijkste antwoorden.
+          </p>
+        </div>
+
+        <div class="faq-list">
+          <!-- FAQ 1 -->
+          <div class="faq-item active">
+            <button class="faq-question" type="button">
+              <span>Hoe kan ik betalen voor mijn taxirit?</span>
+              <span class="faq-toggle-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>U kunt bij ons betalen zoals u wilt: direct in de taxi via PIN, contactloos, creditcard (Mastercard, Visa, American Express) of contant. Voor vaste zakelijke klanten bieden we facturatie op rekening aan.</p>
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="faq-item">
+            <button class="faq-question" type="button">
+              <span>Zijn de getoonde tarieven echt vast?</span>
+              <span class="faq-toggle-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Ja! Wanneer u via onze calculator of via WhatsApp een vaste prijsafspraak maakt, blijft die prijs gelden. Geen verrassingen bij files, omleidingen of druk verkeer.</p>
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="faq-item">
+            <button class="faq-question" type="button">
+              <span>Wat gebeurt er als mijn vlucht vertraging heeft?</span>
+              <span class="faq-toggle-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Wij houden uw vluchtnummer continu in de gaten via het live vluchtvolgsysteem. Als uw vlucht eerder landt of vertraging oploopt, past uw chauffeur de planning automatisch aan. U hoeft zich nergens zorgen over te maken.</p>
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="faq-item">
+            <button class="faq-question" type="button">
+              <span>Kan ik kosteloos annuleren?</span>
+              <span class="faq-toggle-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Annuleren is geheel kosteloos tot 2 uur voor de afgesproken ophaaltijd. Neem eenvoudig even contact met ons op via telefoon of WhatsApp.</p>
+            </div>
+          </div>
+
+          <!-- FAQ 5 -->
+          <div class="faq-item">
+            <button class="faq-question" type="button">
+              <span>Zijn er kinderzitjes of een taxibus beschikbaar?</span>
+              <span class="faq-toggle-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer">
+              <p>Zeker! We hebben luxe 8-persoons Mercedes-Benz V-Klasse taxibussen voor groepen. Kinderzitjes en Maxi-Cosi's kunnen kosteloos worden aangevraagd bij uw reservering.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         CONTACT & QUICK DISPATCH SECTION
+         ==================================================================== -->
+    <section class="section" id="contact">
+      <div class="container contact-grid">
+        <!-- Contact Information -->
+        <div class="contact-info-card">
+          <span class="section-tag" data-i18n="contactTag">24/7 Bereikbaar</span>
+          <h2 class="contact-info-title" data-i18n="contactTitle">Neem Contact Op Of Reserveer Direct</h2>
+          <p class="contact-info-desc" data-i18n="contactDesc">
+            Heeft u met spoed een taxi nodig of een speciale ritwens? Onze centrale is dag en nacht bereikbaar per telefoon en WhatsApp.
+          </p>
+
+          <div class="contact-channels">
+            <!-- Channel: Phone -->
+            <div class="channel-item">
+              <div class="channel-icon">📞</div>
+              <div class="channel-details">
+                <span class="channel-label">Telefonische Centrale</span>
+                <a href="tel:+31612345678" class="channel-value">+31 (0)6 12 34 56 78</a>
+              </div>
+            </div>
+
+            <!-- Channel: WhatsApp -->
+            <div class="channel-item">
+              <div class="channel-icon">💬</div>
+              <div class="channel-details">
+                <span class="channel-label">Direct WhatsApp Boeken</span>
+                <a href="https://wa.me/31612345678" target="_blank" rel="noopener noreferrer" class="channel-value">+31 6 12 34 56 78 (Direct Chat)</a>
+              </div>
+            </div>
+
+            <!-- Channel: Email -->
+            <div class="channel-item">
+              <div class="channel-icon">✉️</div>
+              <div class="channel-details">
+                <span class="channel-label">E-mail & Offertes</span>
+                <a href="mailto:info@ippataxi.nl" class="channel-value">info@ippataxi.nl</a>
+              </div>
+            </div>
+
+            <!-- Channel: Service Area -->
+            <div class="channel-item">
+              <div class="channel-icon">🗺️</div>
+              <div class="channel-details">
+                <span class="channel-label">Werkgebied</span>
+                <span class="channel-value" style="font-size:0.95rem;">Schiphol, Amsterdam, Utrecht, Randstad & heel Nederland</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="payment-methods-strip">
+            <div class="payment-title">Geaccepteerde Betaalwijzen</div>
+            <div class="payment-badges">
+              <span class="pay-badge">💳 PIN</span>
+              <span class="pay-badge">💳 Mastercard</span>
+              <span class="pay-badge">💳 VISA</span>
+              <span class="pay-badge">💳 AMEX</span>
+              <span class="pay-badge">📱 Apple Pay</span>
+              <span class="pay-badge">💶 Tikkie</span>
+              <span class="pay-badge">📄 Factuur</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact / Query Form -->
+        <div class="contact-form-card">
+          <h3 style="font-family:var(--font-heading); font-size:1.4rem; margin-bottom:12px; color:#fff;">Stuur een Bericht of Offerteaanvraag</h3>
+          <p style="font-size:0.88rem; color:var(--color-text-muted); margin-bottom:24px;">Voor trouwvervoer, meerdaagse zakelijke ritten of maatwerk.</p>
+
+          <form id="contact-form">
+            <div class="form-group">
+              <label for="contact-name" class="form-label">Uw Naam</label>
+              <input type="text" id="contact-name" class="form-input" placeholder="Bijv. Jan de Jong" required>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="contact-phone" class="form-label">Telefoonnummer</label>
+                <input type="tel" id="contact-phone" class="form-input" placeholder="06 - 12345678" required>
+              </div>
+              <div class="form-group">
+                <label for="contact-email" class="form-label">E-mailadres</label>
+                <input type="email" id="contact-email" class="form-input" placeholder="uw@email.nl" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-message" class="form-label">Uw Vraag of Ritdetails</label>
+              <textarea id="contact-message" class="form-textarea" placeholder="Vertel ons over uw gewenste ophaallocatie, datum, tijd en eventuele speciale verzoeken..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width:100%; margin-top:12px;">Verstuur Aanvraag</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====================================================================
+       FOOTER
+       ==================================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div>
+        <div class="brand-logo">
+          <div class="brand-mark">IT</div>
+          <div class="brand-text">
+            <div class="brand-title">IPPA<span>TAXI</span></div>
+            <div class="brand-subtitle">ippataxi.nl</div>
+          </div>
+        </div>
+        <p class="footer-brand-desc">
+          IPPATAXI is uw betrouwbare partner voor comfortabel, stipt en representatief taxivervoer in Nederland. Gespecialiseerd in luchthaventransfers en zakelijk vervoer.
+        </p>
+        <div style="font-size:0.82rem; color:var(--color-text-dim);">
+          KvK: 12345678 (Geregistreerd Taxi Ondernemer)
+        </div>
+      </div>
+
+      <div>
+        <h4 class="footer-heading">Navigatie</h4>
+        <ul class="footer-links">
+          <li><a href="#home" class="footer-link">Home</a></li>
+          <li><a href="#calculator" class="footer-link">Rit Berekenen</a></li>
+          <li><a href="#routes" class="footer-link">Schiphol Tarieven</a></li>
+          <li><a href="#fleet" class="footer-link">Onze Wagenpark</a></li>
+          <li><a href="#services" class="footer-link">Diensten</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-heading">Diensten</h4>
+        <ul class="footer-links">
+          <li><a href="#services" class="footer-link">Luchthavenvervoer</a></li>
+          <li><a href="#services" class="footer-link">Zakelijk Directievervoer</a></li>
+          <li><a href="#services" class="footer-link">Particulier Stadsvervoer</a></li>
+          <li><a href="#services" class="footer-link">VIP Taxibus (tot 8p)</a></li>
+          <li><a href="#services" class="footer-link">Vervoer op Rekening</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="footer-heading">Contact & Reserveren</h4>
+        <ul class="footer-links">
+          <li><a href="tel:+31612345678" class="footer-link">📞 +31 6 12 34 56 78</a></li>
+          <li><a href="https://wa.me/31612345678" class="footer-link">💬 WhatsApp Dispatch</a></li>
+          <li><a href="mailto:info@ippataxi.nl" class="footer-link">✉️ info@ippataxi.nl</a></li>
+          <li><span class="footer-link" style="color:var(--color-primary-light);">⏰ 24 uur per dag, 7 dagen per week</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div>
+        &copy; 2026 IPPATAXI (<span class="domain-pill">ippataxi.nl</span>). Alle rechten voorbehouden.
+      </div>
+      <div style="display:flex; gap:16px;">
+        <a href="#privacy" class="footer-link">Privacybeleid</a>
+        <a href="#voorwaarden" class="footer-link">Algemene Voorwaarden</a>
+        <a href="#cookies" class="footer-link">Cookies</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ====================================================================
+       MOBILE STICKY ACTION BAR
+       ==================================================================== -->
+  <div class="floating-mobile-bar" aria-label="Snelle mobiele acties">
+    <div class="floating-mobile-grid">
+      <a href="tel:+31612345678" class="floating-btn floating-btn-call">
+        <span>📞 Bel</span>
+      </a>
+      <a href="https://wa.me/31612345678" target="_blank" rel="noopener noreferrer" class="floating-btn floating-btn-wa">
+        <span>💬 WhatsApp</span>
+      </a>
+      <a href="#calculator" class="floating-btn floating-btn-book">
+        <span>🚘 Boek Rit</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       BOOKING CONFIRMATION MODAL
+       ==================================================================== -->
+  <div class="modal-overlay" id="booking-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-box">
+      <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Sluit venster">&times;</button>
+      
+      <h3 class="modal-title" id="modal-title">Bevestig Uw Taxirit</h3>
+      <p class="modal-subtitle">Controleer uw ritgegevens en rond uw reservering direct af.</p>
+
+      <!-- Trip Summary -->
+      <div class="modal-summary-box">
+        <div class="summary-row">
+          <span class="summary-label">Van:</span>
+          <span class="summary-val" id="sum-pickup">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Naar:</span>
+          <span class="summary-val" id="sum-dropoff">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Datum & Tijd:</span>
+          <span class="summary-val" id="sum-datetime">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Voertuig:</span>
+          <span class="summary-val" id="sum-vehicle">-</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Reizigers:</span>
+          <span class="summary-val" id="sum-passengers">-</span>
+        </div>
+        <div class="summary-row" style="font-size:1.05rem; color:var(--color-primary-light);">
+          <span class="summary-label" style="color:var(--color-primary);">Vaste Prijs:</span>
+          <span class="summary-val" id="sum-fare">€0.00</span>
+        </div>
+      </div>
+
+      <!-- Passenger Details Input -->
+      <form id="modal-booking-form" onsubmit="return false;">
+        <div class="form-group" style="margin-bottom:12px;">
+          <label for="modal-name" class="form-label">Uw Naam *</label>
+          <input type="text" id="modal-name" class="form-input" placeholder="Voor- en achternaam" required>
+        </div>
+
+        <div class="form-row-2" style="margin-bottom:12px;">
+          <div class="form-group">
+            <label for="modal-phone" class="form-label">Telefoonnummer (voor chauffeur) *</label>
+            <input type="tel" id="modal-phone" class="form-input" placeholder="+31 6..." required>
+          </div>
+          <div class="form-group">
+            <label for="modal-flight" class="form-label">Vluchtnummer (optioneel)</label>
+            <input type="text" id="modal-flight" class="form-input" placeholder="Bijv. KL1234">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:20px;">
+          <label for="modal-payment" class="form-label">Gewenste Betaalwijze</label>
+          <select id="modal-payment" class="form-select">
+            <option value="pin">PIN / Creditcard in de taxi</option>
+            <option value="tikkie">Tikkie / Betaalverzoek</option>
+            <option value="cash">Contant in de taxi</option>
+            <option value="invoice">Zakelijk op rekening (Factuur)</option>
+          </select>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <button type="submit" class="btn-primary" id="btn-confirm-reservation" style="width:100%;">
+            Bevestig Reservering
+          </button>
+          <button type="button" class="btn-whatsapp" id="btn-modal-whatsapp" style="width:100%; justify-content:center;">
+            Boek Direct via WhatsApp
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="js/app.js"></script>
+</body>
+</html>
