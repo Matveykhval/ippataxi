@@ -551,7 +551,7 @@ function populateModalSummary() {
   document.getElementById('sum-passengers').textContent = `${passengers} pers.`;
   document.getElementById('sum-ippa').textContent = res.giveText;
 }
-}
+
 
 // Official Formspree Endpoint (100% private - your email address is safely hidden on Formspree)
 const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mzeegqwr';
