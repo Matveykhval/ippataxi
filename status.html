@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Uw rit | IPPATAXI</title>
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>
+    .wrap { max-width: 520px; margin: 0 auto; padding: 48px 20px; }
+    .brand { text-align: center; margin-bottom: 28px; }
+    .brand .logo { margin-bottom: 10px; }
+    .hero { text-align: center; margin-bottom: 24px; }
+    .hero h1 { font-size: 1.8rem; font-weight: 600; letter-spacing: -.02em; }
+    .steps { list-style: none; margin: 8px 0 4px; }
+    .steps li { display: flex; gap: 14px; align-items: center; padding: 10px 0; color: var(--muted); position: relative; }
+    .steps li::before {
+      content: ''; width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid var(--line); background: var(--card); flex-shrink: 0; z-index: 1;
+    }
+    .steps li:not(:last-child)::after {
+      content: ''; position: absolute; left: 6px; top: 30px; width: 2px; height: calc(100% - 8px); background: var(--line);
+    }
+    .steps li.done { color: var(--text); }
+    .steps li.done::before { background: var(--s-completed); border-color: var(--s-completed); }
+    .steps li.current { color: var(--text); font-weight: 600; }
+    .steps li.current::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 5px rgba(0,113,227,.18); }
+    .cancelled-note { color: #ff453a; font-weight: 600; text-align: center; padding: 8px 0; }
+    .foot { text-align: center; margin-top: 24px; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="brand"><div class="logo" style="margin:0 auto 10px">IT</div><strong>IPPATAXI</strong></div>
+    <div id="out"></div>
+    <p class="muted foot"><a href="./">Terug naar ippataxi.nl</a></p>
+  </main>
+  <script src="js/config.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const out = document.getElementById('out');
+      const token = new URLSearchParams(location.search).get('t') || '';
+      const cfg = window.IPPA_CONFIG || {};
+      const STEPS = [['new', 'Reservering ontvangen'], ['confirmed', 'Bevestigd'], ['assigned', 'Chauffeur toegewezen'], ['completed', 'Rit afgerond']];
+
+      const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
+
+      function message(title, sub) {
+        out.replaceChildren();
+        const h = el('div', 'hero'); h.append(el('h1', '', title), el('p', 'muted', sub));
+        out.append(h);
+      }
+
+      function render(b) {
+        out.replaceChildren();
+        const hero = el('div', 'hero');
+        hero.append(el('h1', '', 'Hallo ' + b.first_name), el('p', 'muted', 'Referentie ' + b.ref));
+        out.append(hero);
+
+        const card = el('div', 'card');
+        const route = el('div', 'route');
+        route.append(document.createTextNode(b.pickup), el('span', 'arrow', '→'), document.createTextNode(b.dropoff));
+        const when = b.pickup_at
+          ? new Date(b.pickup_at).toLocaleString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })
+          : 'Zo snel mogelijk';
+        const meta = el('div', 'meta');
+        meta.append(el('span', '', '📅 ' + when), el('span', '', '🚗 ' + (b.vehicle || '-')));
+        card.append(route, meta);
+        if (b.driver && ['assigned', 'completed'].includes(b.status)) card.append(el('div', 'note', 'Uw chauffeur: ' + b.driver));
+        if (b.ippa) card.append(el('div', 'note', 'Betaling: ' + b.ippa + ' aan de chauffeur bij aankomst'));
+        out.append(card);
+
+        const stepsCard = el('div', 'card'); stepsCard.style.marginTop = '14px';
+        if (b.status === 'cancelled') {
+          stepsCard.append(el('div', 'cancelled-note', 'Deze rit is geannuleerd'));
+        } else {
+          const ul = el('ul', 'steps');
+          const idx = STEPS.findIndex(([k]) => k === b.status);
+          STEPS.forEach(([, label], i) => ul.append(el('li', i < idx ? 'done' : i === idx ? 'current' : '', label)));
+          stepsCard.append(ul);
+        }
+        out.append(stepsCard);
+      }
+
+      async function load() {
+        if (!/^[0-9a-f-]{36}$/i.test(token)) return message('Link ongeldig', 'Controleer de link in uw e-mail.');
+        try {
+          const res = await fetch(cfg.supabaseUrl + '/rest/v1/rpc/get_booking_status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', apikey: cfg.supabaseAnonKey, Authorization: 'Bearer ' + cfg.supabaseAnonKey },
+            body: JSON.stringify({ p_token: token })
+          });
+          const rows = await res.json();
+          if (!res.ok || !rows.length) return message('Rit niet gevonden', 'Controleer de link in uw e-mail.');
+          render(rows[0]);
+        } catch (e) {
+          message('Geen verbinding', 'Probeer het later opnieuw.');
+        }
+      }
+      load();
+      setInterval(load, 30000);
+    })();
+  </script>
+</body>
+</html>
+

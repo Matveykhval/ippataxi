@@ -570,17 +570,17 @@ function handleReservationSubmit(e) {
   e.preventDefault();
   const name = document.getElementById('modal-name')?.value.trim();
   const phone = document.getElementById('modal-phone')?.value.trim();
-  const email = document.getElementById('modal-email')?.value.trim() || 'Niet opgegeven';
+  const email = document.getElementById('modal-email')?.value.trim();
   const notes = document.getElementById('modal-notes')?.value.trim() || 'Geen';
   const statusBox = document.getElementById('modal-form-status');
   const confirmBtn = document.getElementById('btn-confirm-reservation');
 
-  if (!name || !phone) {
+  if (!name || !phone || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     if (statusBox) {
       statusBox.className = 'form-status-error';
       statusBox.textContent = appState.currentLang === 'en' 
-        ? 'Please enter your name and phone number.' 
-        : 'Vul alstublieft uw naam en telefoonnummer in.';
+        ? 'Please enter your name, phone number and a valid e-mail address.' 
+        : 'Vul alstublieft uw naam, telefoonnummer en een geldig e-mailadres in.';
       statusBox.style.display = 'block';
     }
     return;
@@ -604,10 +604,11 @@ function handleReservationSubmit(e) {
 
   const pickupDate = new Date(datetime);
   const row = {
+    track_token: crypto.randomUUID(),
     ref: refCode,
     name,
     phone,
-    email: email === 'Niet opgegeven' ? null : email,
+    email,
     pickup,
     dropoff,
     pickup_at: isNaN(pickupDate) ? null : pickupDate.toISOString(),
@@ -625,10 +626,11 @@ function handleReservationSubmit(e) {
     }
 
     if (statusBox) {
+      const statusUrl = `status.html?t=${row.track_token}`;
       statusBox.className = 'form-status-success';
       statusBox.innerHTML = appState.currentLang === 'en'
-        ? `✓ <strong>Reservation successfully sent!</strong> Details dispatched to our team.<br>Ref: <strong>${refCode}</strong>. Hand <strong>${res.giveText}</strong> to your driver upon arrival.`
-        : `✓ <strong>Reservering succesvol verzonden!</strong> De ritdetails zijn doorgestuurd naar de centrale.<br>Referentie: <strong>${refCode}</strong>. U overhandigt <strong>${res.giveText}</strong> aan de chauffeur bij aankomst.`;
+        ? `✓ <strong>Reservation successfully sent!</strong> Details dispatched to our team.<br>Ref: <strong>${refCode}</strong>. Hand <strong>${res.giveText}</strong> to your driver upon arrival.<br><a href="${statusUrl}" style="color:inherit;text-decoration:underline">Track your ride status →</a>`
+        : `✓ <strong>Reservering succesvol verzonden!</strong> De ritdetails zijn doorgestuurd naar de centrale.<br>Referentie: <strong>${refCode}</strong>. U overhandigt <strong>${res.giveText}</strong> aan de chauffeur bij aankomst.<br><a href="${statusUrl}" style="color:inherit;text-decoration:underline">Bekijk de status van uw rit →</a>`;
       statusBox.style.display = 'block';
     }
 

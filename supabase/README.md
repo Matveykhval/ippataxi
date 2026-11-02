@@ -19,3 +19,11 @@ Add the user in Authentication → Users, then run the `insert into public.staff
 Drivers can see and update bookings/messages but cannot delete. Per-driver visibility can be added later
 by tightening the `select` policy to `driver = <their name>`.
 
+
+## Customer notifications (status page + e-mail)
+1. SQL Editor: run [002_status_tracking.sql](002_status_tracking.sql). Do this BEFORE pushing the new site code.
+2. Create a free account at https://resend.com and copy an API key.
+3. Supabase: Edge Functions -> Deploy a new function -> Via Editor. Name it `notify-status` and paste [functions/notify-status/index.ts](functions/notify-status/index.ts). Deploy.
+4. Edge Functions -> Secrets: add `RESEND_API_KEY`, and `MAIL_FROM` (e.g. `IPPATAXI <noreply@ippataxi.nl>`).
+5. To mail customers (not just yourself), verify ippataxi.nl in Resend (add the DNS records it shows). Until then, e-mails only reach your own Resend account address.
+

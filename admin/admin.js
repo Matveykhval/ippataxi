@@ -127,8 +127,24 @@
     const row = state.data[table].find((r) => r.id === id);
     Object.assign(row, patch);
     updateBadges();
-    if (indicator) { indicator.textContent = 'Opgeslagen ✓'; setTimeout(() => (indicator.textContent = ''), 2000); }
+    if (indicator) {
+      indicator.textContent = 'Opgeslagen ✓';
+      setTimeout(() => { if (indicator.textContent === 'Opgeslagen ✓') indicator.textContent = ''; }, 2000);
+    }
     return true;
+  }
+
+  // Statuses that e-mail the customer (see supabase/functions/notify-status)
+  const NOTIFY = ['confirmed', 'assigned', 'cancelled'];
+
+  async function notifyCustomer(row, indicator) {
+    if (!NOTIFY.includes(row.status)) return;
+    if (!row.email) { indicator.textContent = 'Opgeslagen · geen e-mail bekend'; return; }
+    indicator.textContent = 'E-mail versturen…';
+    const { data, error } = await db.functions.invoke('notify-status', { body: { bookingId: row.id } });
+    indicator.textContent = !error && data?.sent
+      ? 'Opgeslagen · e-mail verstuurd ✓'
+      : 'Opgeslagen · e-mail mislukt ✗';
   }
 
   function updateBadges() {
@@ -216,6 +232,7 @@
     status.addEventListener('change', async () => {
       if (await update('bookings', r.id, { status: status.value }, saved)) {
         pill.textContent = LABEL[r.status]; pill.style.background = statusColor(r.status);
+        notifyCustomer(r, saved);
         if (state.filter !== 'all') render();
       }
     });
