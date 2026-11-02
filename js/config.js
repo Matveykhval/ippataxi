@@ -5,7 +5,7 @@
  * NEVER put the "service_role" key here.
  */
 window.IPPA_CONFIG = {
-  supabaseUrl: 'https://YOUR-PROJECT-REF.supabase.co',
-  supabaseAnonKey: 'YOUR-ANON-PUBLIC-KEY'
+  supabaseUrl: 'https://wrkcvdpcziomirkarrws.supabase.co',
+  supabaseAnonKey: 'sb_publishable_vx5l1eAUzIFUUVFu3TglaQ_t4PIpeDB'
 };
 
