@@ -541,8 +541,30 @@ function populateModalSummary() {
 }
 
 
-// Official Formspree Endpoint (100% private - your email address is safely hidden on Formspree)
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mzeegqwr';
+/**
+ * Saves a row to Supabase (insert-only for visitors, enforced by Row Level Security).
+ * Settings live in js/config.js.
+ */
+async function sendToSupabase(table, row) {
+  const cfg = window.IPPA_CONFIG || {};
+  if (!cfg.supabaseUrl || cfg.supabaseUrl.includes('YOUR-PROJECT')) {
+    throw new Error('Supabase is not configured (js/config.js)');
+  }
+  const response = await fetch(`${cfg.supabaseUrl}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': cfg.supabaseAnonKey,
+      'Authorization': `Bearer ${cfg.supabaseAnonKey}`,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(row)
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.message || 'Submission error');
+  }
+}
 
 function handleReservationSubmit(e) {
   e.preventDefault();
@@ -580,40 +602,23 @@ function handleReservationSubmit(e) {
   }
   if (statusBox) statusBox.style.display = 'none';
 
-  const payload = {
-    _subject: `🚖 Nieuwe IPPATAXI Reservering - ${name} (${res.giveText})`,
-    _template: 'table',
-    _captcha: 'false',
-    Referentie: refCode,
-    Klantnaam: name,
-    Telefoonnummer: phone,
-    Email: email,
-    Ophaaladres: pickup,
-    Bestemming: dropoff,
-    Datum_en_Tijd: datetime.replace('T', ' om '),
-    Voertuig: vehicleName,
-    Aantal_Passagiers: passengers,
-    Betaling_IPPA: res.giveText,
-    Opmerkingen: notes
+  const pickupDate = new Date(datetime);
+  const row = {
+    ref: refCode,
+    name,
+    phone,
+    email: email === 'Niet opgegeven' ? null : email,
+    pickup,
+    dropoff,
+    pickup_at: isNaN(pickupDate) ? null : pickupDate.toISOString(),
+    vehicle: vehicleName,
+    passengers: parseInt(passengers, 10) || 1,
+    ippa: res.giveText,
+    notes: notes === 'Geen' ? null : notes
   };
 
-  fetch(FORMSPREE_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    },
-    body: JSON.stringify(payload)
-  })
-  .then(async response => {
-    if (response.ok) {
-      return response.json().catch(() => ({ ok: true }));
-    } else {
-      const errData = await response.json().catch(() => ({}));
-      throw new Error(errData.error || 'Submission error');
-    }
-  })
-  .then(data => {
+  sendToSupabase('bookings', row)
+  .then(() => {
     if (confirmBtn) {
       confirmBtn.disabled = false;
       confirmBtn.innerHTML = '✓ ' + (appState.currentLang === 'en' ? 'Reservation Sent!' : 'Reservering Verzonden!');
@@ -686,34 +691,8 @@ function initContactForm() {
     }
     if (statusBox) statusBox.style.display = 'none';
 
-    const payload = {
-      _subject: `✉️ IPPATAXI Vraag van ${name}`,
-      _replyto: email,
-      _template: 'table',
-      _captcha: 'false',
-      Naam: name,
-      Telefoonnummer: phone || 'Niet opgegeven',
-      Email: email,
-      Vraag_of_Ritdetails: message
-    };
-
-    fetch(FORMSPREE_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    })
-    .then(async response => {
-      if (response.ok) {
-        return response.json().catch(() => ({ ok: true }));
-      } else {
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(errData.error || 'Submission error');
-      }
-    })
-    .then(data => {
+    sendToSupabase('messages', { name, phone: phone || null, email, message })
+    .then(() => {
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = '✓ Bericht Verzonden!';

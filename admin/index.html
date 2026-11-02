@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>IPPATAXI Dashboard</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <!-- Login -->
+  <main id="login-view" class="login" hidden>
+    <form id="login-form" class="login-card" autocomplete="on">
+      <div class="logo">IT</div>
+      <h1>Inloggen</h1>
+      <p class="muted">IPPATAXI Dashboard</p>
+      <input type="email" id="login-email" placeholder="E-mailadres" autocomplete="username" required>
+      <input type="password" id="login-password" placeholder="Wachtwoord" autocomplete="current-password" required>
+      <button type="submit" class="btn primary" id="login-btn">Doorgaan</button>
+      <p id="login-error" class="error" hidden></p>
+    </form>
+  </main>
+
+  <!-- Dashboard -->
+  <div id="app-view" hidden>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <strong>IPPATAXI</strong>
+        <nav class="segmented" role="tablist">
+          <button class="seg active" data-tab="bookings" role="tab">Ritten <span class="badge" id="badge-bookings" hidden></span></button>
+          <button class="seg" data-tab="messages" role="tab">Berichten <span class="badge" id="badge-messages" hidden></span></button>
+        </nav>
+        <div class="topbar-right">
+          <span id="who" class="muted"></span>
+          <button class="btn ghost" id="refresh-btn" title="Vernieuwen">↻</button>
+          <button class="btn ghost" id="logout-btn">Uitloggen</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="toolbar">
+        <div class="chips" id="filters"></div>
+        <input type="search" id="search" placeholder="Zoeken…">
+      </div>
+      <div id="list" class="list"></div>
+      <p id="empty" class="empty" hidden>Niets gevonden.</p>
+    </main>
+  </div>
+
+  <!-- No access -->
+  <main id="denied-view" class="login" hidden>
+    <div class="login-card">
+      <h1>Geen toegang</h1>
+      <p class="muted">Dit account is niet toegevoegd als medewerker.</p>
+      <button class="btn primary" id="denied-logout">Uitloggen</button>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
+
