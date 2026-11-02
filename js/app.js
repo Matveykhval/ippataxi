@@ -165,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
   initContactForm();
   setDefaultDateTime();
+  initNavigationScrollspy();
 });
 
 /**
@@ -416,23 +417,6 @@ function initPresetRoutes() {
   const dropoffInput = document.getElementById('ride-dropoff');
   const bookingWidget = document.getElementById('calculator') || document.getElementById('booking-calculator');
 
-  // Handle all links targeting #calculator
-  document.querySelectorAll('a[href="#calculator"]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const calcEl = document.getElementById('calculator') || document.getElementById('booking-calculator');
-      if (calcEl) {
-        calcEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        calcEl.classList.remove('highlight-pulse');
-        void calcEl.offsetWidth; // trigger reflow
-        calcEl.classList.add('highlight-pulse');
-        // If mobile drawer is open, close it
-        const drawer = document.querySelector('.mobile-nav-drawer');
-        if (drawer) drawer.classList.remove('open');
-      }
-    });
-  });
-
   routeButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
       const from = e.currentTarget.getAttribute('data-from');
@@ -448,7 +432,11 @@ function initPresetRoutes() {
 
       if (bookingWidget) {
         bookingWidget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        bookingWidget.classList.remove('highlight-pulse');
+        void bookingWidget.offsetWidth;
+        bookingWidget.classList.add('highlight-pulse');
       }
+      setActiveNav('calculator');
 
       const res = calculateEstimatedFare();
       showToast(`Gekozen: ${from} → ${to} (${res.giveText})`);
@@ -791,4 +779,189 @@ function debounce(fn, delay) {
     clearTimeout(timer);
     timer = setTimeout(() => fn.apply(this, args), delay);
   };
+}
+
+/**
+ * Navigation Bar Scrollspy & Active State Handler
+ * Updates the active navigation indicator (yellow underline) dynamically on scroll and click.
+ */
+function setActiveNav(targetId) {
+  if (!targetId) return;
+  const cleanId = targetId.replace(/^#/, '');
+
+  const navLinks = document.querySelectorAll('.nav-links .nav-link');
+  const mobileNavLinks = document.querySelectorAll('.mobile-nav-drawer .mobile-nav-link');
+
+  navLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href) return;
+    const linkId = href.replace(/^#/, '');
+    link.classList.toggle('active', linkId === cleanId);
+  });
+
+  mobileNavLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href) return;
+    const linkId = href.replace(/^#/, '');
+    link.classList.toggle('active', linkId === cleanId);
+  });
+}
+
+function initNavigationScrollspy() {
+  const navLinks = document.querySelectorAll('.nav-links .nav-link');
+  const mobileNavLinks = document.querySelectorAll('.mobile-nav-drawer .mobile-nav-link');
+  const brandLogo = document.getElementById('main-brand-logo');
+  const drawer = document.querySelector('.mobile-nav-drawer');
+
+  // Trackable sections in vertical order
+  const sectionIds = ['home', 'ippa-system', 'routes', 'fleet', 'why-us', 'contact'];
+  const sections = sectionIds
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  let isManualScroll = false;
+  let manualScrollTimer = null;
+  let ticking = false;
+
+  function scrollToSection(targetId) {
+    setActiveNav(targetId);
+
+    // Suppress scrollspy during smooth scroll animation
+    isManualScroll = true;
+    clearTimeout(manualScrollTimer);
+    manualScrollTimer = setTimeout(() => {
+      isManualScroll = false;
+    }, 850);
+
+    if (drawer && drawer.classList.contains('open')) {
+      drawer.classList.remove('open');
+    }
+
+    if (history.pushState) {
+      history.pushState(null, '', '#' + targetId);
+    }
+
+    if (targetId === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (targetId === 'calculator') {
+      const calcEl = document.getElementById('calculator');
+      if (calcEl) {
+        calcEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        calcEl.classList.remove('highlight-pulse');
+        void calcEl.offsetWidth;
+        calcEl.classList.add('highlight-pulse');
+      }
+    } else {
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        const headerHeight = document.querySelector('.site-header')?.offsetHeight || 76;
+        const targetPos = targetEl.getBoundingClientRect().top + window.pageYOffset - (headerHeight + 10);
+        window.scrollTo({
+          top: Math.max(0, targetPos),
+          behavior: 'smooth'
+        });
+      }
+    }
+  }
+
+  // Handle all nav links (desktop + mobile)
+  const allNavLinks = [...navLinks, ...mobileNavLinks];
+  allNavLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        e.preventDefault();
+        const targetId = href.replace(/^#/, '');
+        scrollToSection(targetId);
+      }
+    });
+  });
+
+  // Handle Brand Logo click -> Home
+  if (brandLogo) {
+    brandLogo.addEventListener('click', (e) => {
+      e.preventDefault();
+      scrollToSection('home');
+    });
+  }
+
+  // Handle other anchor links on the page (buttons, cards, footer)
+  document.querySelectorAll('a[href^="#"]:not(.nav-link):not(.mobile-nav-link):not(.brand-logo)').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const href = link.getAttribute('href');
+      if (!href) return;
+      const targetId = href.replace(/^#/, '');
+      if (targetId === 'calculator') {
+        e.preventDefault();
+        scrollToSection('calculator');
+      } else if (targetId === 'home') {
+        e.preventDefault();
+        scrollToSection('home');
+      } else if (targetId === 'contact') {
+        e.preventDefault();
+        scrollToSection('contact');
+      } else if (document.getElementById(targetId)) {
+        e.preventDefault();
+        scrollToSection(targetId);
+      }
+    });
+  });
+
+  // Scrollspy logic
+  function updateScrollspy() {
+    if (isManualScroll) return;
+
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
+
+    // Bottom of the page -> activate contact
+    if (windowHeight + scrollY >= docHeight - 80) {
+      setActiveNav('contact');
+      return;
+    }
+
+    // Top of page -> activate home
+    if (scrollY < 120) {
+      setActiveNav('home');
+      return;
+    }
+
+    const headerHeight = document.querySelector('.site-header')?.offsetHeight || 76;
+    const scrollMarker = scrollY + headerHeight + 140;
+
+    let currentSection = sections[0].id;
+    for (let i = 0; i < sections.length; i++) {
+      const sec = sections[i];
+      if (sec.offsetTop <= scrollMarker) {
+        currentSection = sec.id;
+      }
+    }
+
+    if (currentSection) {
+      setActiveNav(currentSection);
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateScrollspy();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // Initial state based on location hash or default to home
+  if (window.location.hash) {
+    const hashId = window.location.hash.replace(/^#/, '');
+    if (document.getElementById(hashId) || hashId === 'calculator') {
+      setActiveNav(hashId);
+    } else {
+      setActiveNav('home');
+    }
+  } else {
+    setActiveNav('home');
+  }
 }

@@ -373,6 +373,14 @@ button, input, select, textarea {
   color: var(--color-text-main);
   padding: 8px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: var(--transition);
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  padding-left: 6px;
 }
 
 /* ==========================================================================
@@ -385,6 +393,7 @@ button, input, select, textarea {
   align-items: center;
   padding: 60px 0 80px;
   overflow: hidden;
+  scroll-margin-top: 85px;
 }
 
 .hero-background-wrapper {
@@ -1066,6 +1075,7 @@ button, input, select, textarea {
 .section {
   padding: 90px 0;
   position: relative;
+  scroll-margin-top: 85px;
 }
 
 .section-alt {
