@@ -467,6 +467,7 @@ button, input, select, textarea {
 
 .hero-title .highlight-ippa {
   background: linear-gradient(135deg, var(--color-ippa-a) 0%, var(--color-ippa-b) 50%, var(--color-ippa-c) 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 900;
