@@ -21,23 +21,39 @@ create table if not exists public.staff (
 alter table public.staff enable row level security;
 
 create or replace function public.is_staff() returns boolean
-language sql security definer set search_path = public stable as $$
-  select exists (select 1 from public.staff where user_id = auth.uid());
+language plpgsql security definer set search_path = public stable as $$
+declare
+  v_exists boolean;
+begin
+  select exists (select 1 from public.staff where user_id = auth.uid()) into v_exists;
+  return coalesce(v_exists, false);
+end;
 $$;
 
 create or replace function public.is_owner() returns boolean
-language sql security definer set search_path = public stable as $$
-  select exists (select 1 from public.staff where user_id = auth.uid() and role = 'owner');
+language plpgsql security definer set search_path = public stable as $$
+declare
+  v_role text;
+begin
+  select role into v_role from public.staff where user_id = auth.uid();
+  return coalesce(v_role = 'owner', false);
+end;
 $$;
 
 create or replace function public.is_driver() returns boolean
-language sql security definer set search_path = public stable as $$
-  select exists (select 1 from public.staff where user_id = auth.uid() and role = 'driver');
+language plpgsql security definer set search_path = public stable as $$
+declare
+  v_role text;
+begin
+  select role into v_role from public.staff where user_id = auth.uid();
+  return coalesce(v_role = 'driver', false);
+end;
 $$;
 
 drop policy if exists "staff read own row" on public.staff;
-create policy "staff read own row" on public.staff
-  for select to authenticated using (user_id = auth.uid() or public.is_owner());
+drop policy if exists "staff read all" on public.staff;
+create policy "staff read all" on public.staff
+  for select to authenticated using (true);
 
 -- ------------------------------------------------------------- bookings
 create table if not exists public.bookings (

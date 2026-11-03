@@ -23,20 +23,35 @@ alter table public.bookings alter column status set default 'pending';
 create index if not exists bookings_dispatch_idx
   on public.bookings (status, assigned_driver_id, created_at desc);
 
--- 2. Role helper functions
+-- 2. Role helper functions (Direct lookup without RLS recursion)
 create or replace function public.is_staff() returns boolean
-language sql security definer set search_path = public stable as $$
-  select exists (select 1 from public.staff where user_id = auth.uid());
+language plpgsql security definer set search_path = public stable as $$
+declare
+  v_exists boolean;
+begin
+  select exists (select 1 from public.staff where user_id = auth.uid()) into v_exists;
+  return coalesce(v_exists, false);
+end;
 $$;
 
 create or replace function public.is_owner() returns boolean
-language sql security definer set search_path = public stable as $$
-  select exists (select 1 from public.staff where user_id = auth.uid() and role = 'owner');
+language plpgsql security definer set search_path = public stable as $$
+declare
+  v_role text;
+begin
+  select role into v_role from public.staff where user_id = auth.uid();
+  return coalesce(v_role = 'owner', false);
+end;
 $$;
 
 create or replace function public.is_driver() returns boolean
-language sql security definer set search_path = public stable as $$
-  select exists (select 1 from public.staff where user_id = auth.uid() and role = 'driver');
+language plpgsql security definer set search_path = public stable as $$
+declare
+  v_role text;
+begin
+  select role into v_role from public.staff where user_id = auth.uid();
+  return coalesce(v_role = 'driver', false);
+end;
 $$;
 
 -- 3. Strict column-level & state-transition trigger for drivers
@@ -199,11 +214,12 @@ grant execute on function public.decline_ride(uuid) to authenticated;
 grant execute on function public.complete_ride(uuid) to authenticated;
 
 -- 5. Update Row Level Security Policies for Strict RBAC
--- Staff table: drivers read own row; owners can read & manage all staff
+-- Staff table: authenticated staff can read staff list (needed for driver selection and role checks without recursion)
 drop policy if exists "staff read own row" on public.staff;
-create policy "staff read own row" on public.staff
+drop policy if exists "staff read all" on public.staff;
+create policy "staff read all" on public.staff
   for select to authenticated
-  using (user_id = auth.uid() or public.is_owner());
+  using (true);
 
 -- Public booking creation: allow 'pending' or 'new' initial status
 drop policy if exists "public can create bookings" on public.bookings;
