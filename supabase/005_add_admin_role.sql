@@ -94,3 +94,4 @@ $$;
 -- select id, 'Admin Naam', 'admin'
 -- from auth.users
 -- where email = 'admin@ippataxi.nl';
+

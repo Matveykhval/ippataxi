@@ -115,9 +115,11 @@ textarea { resize: vertical; min-height: 60px; }
   padding: 3px 9px; border-radius: 980px;
   background: rgba(0, 113, 227, 0.14); color: var(--accent);
 }
-.role-badge.driver {
-  background: rgba(48, 164, 108, 0.16); color: #30a46c;
-}
+.role-badge.owner { background: rgba(184, 139, 57, 0.18); color: var(--gold); }
+.role-badge.admin { background: rgba(0, 113, 227, 0.16); color: var(--accent); }
+.role-badge.senior { background: rgba(139, 92, 246, 0.16); color: #8b5cf6; }
+.role-badge.driver { background: rgba(48, 164, 108, 0.16); color: #30a46c; }
+.role-badge.blocked { background: rgba(255, 69, 58, 0.16); color: #ff453a; }
 .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
 
 .segmented { display: flex; background: rgba(127,127,127,.14); border-radius: 10px; padding: 3px; }
@@ -301,3 +303,57 @@ textarea { resize: vertical; min-height: 60px; }
   font-size: .9rem; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,.25); z-index: 50;
 }
 .toast.bad { background: #ff453a; color: #fff; }
+
+/* Staff Dashboard */
+.staff-overview-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px;
+}
+.staff-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.03);
+  transition: transform .1s, box-shadow .15s;
+}
+.staff-card.is-blocked {
+  opacity: 0.85; border-color: rgba(255, 69, 58, 0.35); background: color-mix(in srgb, var(--card) 95%, #ff453a);
+}
+.staff-card-header {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.staff-name-title { font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+.staff-email-sub { font-size: 0.84rem; color: var(--muted); margin-top: 3px; word-break: break-all; }
+.staff-meta-row {
+  display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 0.82rem; color: var(--muted);
+  background: var(--bg); padding: 10px 12px; border-radius: 10px;
+}
+.staff-meta-row strong { color: var(--text); }
+.staff-metrics {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.staff-metric-box {
+  background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; text-align: center;
+}
+.staff-metric-val { font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.staff-metric-lbl { font-size: 0.72rem; color: var(--muted); font-weight: 600; text-transform: uppercase; margin-top: 2px; }
+
+.staff-card-actions {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding-top: 10px; border-top: 1px solid var(--line);
+}
+.staff-role-select {
+  font-size: 0.84rem; font-weight: 600; padding: 6px 10px; border-radius: 980px; width: auto; flex: 1; min-width: 130px;
+}
+.staff-history-drawer {
+  background: var(--bg); border-radius: 12px; padding: 14px; margin-top: 4px;
+}
+.staff-history-title {
+  font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin-bottom: 8px;
+}
+.staff-history-list {
+  display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto;
+}
+.staff-history-item {
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  padding: 8px 12px; font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.staff-history-item .ref-badge { font-weight: 700; font-variant-numeric: tabular-nums; }
+.staff-history-item .route-text { font-weight: 500; }

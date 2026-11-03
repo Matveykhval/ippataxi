@@ -45,11 +45,14 @@
 
   const state = {
     uid: null,
-    staff: null,        // { user_id, name, role }
+    staff: null,        // { user_id, name, role, is_blocked }
     staffList: [],      // all staff rows (loaded for owner)
     staffMap: {},       // user_id -> { user_id, name, role }
-    tab: 'bookings',    // owner tabs: 'bookings' | 'messages'
-    driverTab: 'available', // driver tabs: 'available' | 'my-rides'
+    staffOverview: [],  // staff dashboard metrics & auth details
+    staffHistory: {},   // user_id -> rides driven history cache
+    expandedStaffId: null, // expanded driver ride history card ID
+    tab: 'bookings',    // owner tabs: 'bookings' | 'messages' | 'staff'
+    driverTab: 'available', // driver tabs: 'available' | 'my-rides' | 'messages'
     filter: 'open',
     search: '',
     expandedId: null,   // expanded booking row ID in admin table
@@ -107,12 +110,30 @@
     return `var(--s-${normalizeStatus(s)})`;
   }
 
+  function formatRole(role) {
+    switch (role) {
+      case 'owner': return 'Eigenaar (Owner)';
+      case 'admin': return 'Beheerder (Admin)';
+      case 'senior_driver': return 'Senior Chauffeur';
+      case 'driver': return 'Chauffeur';
+      default: return role || 'Onbekend';
+    }
+  }
+
   function isDriverView() {
-    return forceDriverMode || state.staff?.role === 'driver';
+    return forceDriverMode || state.staff?.role === 'driver' || state.staff?.role === 'senior_driver';
+  }
+
+  function isSeniorDriver() {
+    return state.staff?.role === 'senior_driver';
   }
 
   function isOwner() {
     return (state.staff?.role === 'owner' || state.staff?.role === 'admin') && !forceDriverMode;
+  }
+
+  function isRealOwner() {
+    return state.staff?.role === 'owner' && !forceDriverMode;
   }
 
   /**
@@ -181,30 +202,56 @@
     const uid = userData?.user?.id;
     if (!uid) { show('login'); return; }
 
-    const { data: staff } = await db.from('staff').select('user_id, name, role').eq('user_id', uid).maybeSingle();
+    const { data: staff } = await db.from('staff').select('*').eq('user_id', uid).maybeSingle();
     if (!staff) { show('denied'); return; }
+
+    if (staff.is_blocked) {
+      show('denied');
+      const p = $('denied-view')?.querySelector('p');
+      if (p) p.textContent = 'Uw account is geblokkeerd door de beheerder. Neem contact op voor herstel.';
+      return;
+    }
 
     state.uid = uid;
     state.staff = staff;
     loadLocalDeclined();
 
+    // Silently record login timestamp in background
+    try { await db.rpc('record_staff_login'); } catch (_) {}
+
     // Configure UI chrome based on strict role boundaries
     const driverMode = isDriverView();
     document.title = driverMode ? 'Driver - ippataxi' : 'Admin - ippataxi';
 
-    const roleDisplay = staff.role === 'owner' ? 'Owner' : (staff.role === 'admin' ? 'Admin' : 'Chauffeur');
-    if ($('who')) $('who').textContent = `${staff.name} (${roleDisplay})`;
+    if ($('who')) $('who').textContent = `${staff.name} (${formatRole(staff.role)})`;
     const roleBadge = $('role-badge');
     if (roleBadge) {
-      roleBadge.textContent = driverMode ? 'Chauffeur' : (staff.role === 'owner' ? 'Owner' : 'Admin');
-      roleBadge.classList.toggle('driver', driverMode);
+      roleBadge.textContent = driverMode ? (isSeniorDriver() ? 'Senior Chauffeur' : 'Chauffeur') : (staff.role === 'owner' ? 'Owner' : 'Admin');
+      roleBadge.className = 'role-badge ' + (staff.role === 'senior_driver' ? 'senior' : staff.role);
     }
 
     if ($('admin-tabs')) $('admin-tabs').hidden = driverMode;
     if ($('driver-tabs')) $('driver-tabs').hidden = !driverMode;
-    if ($('driver-rbac-banner')) $('driver-rbac-banner').hidden = !driverMode;
     if ($('stats-bar')) $('stats-bar').hidden = driverMode;
     if ($('driver-portal-link')) $('driver-portal-link').hidden = driverMode;
+
+    const banner = $('driver-rbac-banner');
+    if (banner) {
+      banner.hidden = !driverMode;
+      if (driverMode) {
+        const descDiv = banner.querySelector('div');
+        if (descDiv) {
+          descDiv.innerHTML = isSeniorDriver()
+            ? '<strong>Senior Chauffeursmodus</strong> — U heeft toegang tot beschikbare ritten, eigen ritten én het klantenberichten-inbox met directe contactopties via telefoon, WhatsApp en e-mail.'
+            : '<strong>Chauffeursmodus</strong> — Bekijk openstaande ritten en klik op <b>Accept</b> om een rit te koppelen, of op <b>Decline</b> om te verbergen.';
+        }
+      }
+    }
+
+    const dtabMsg = $('dtab-messages');
+    if (dtabMsg) {
+      dtabMsg.hidden = !isSeniorDriver();
+    }
 
     show('app');
     state.filter = driverMode ? 'all' : 'open';
@@ -261,22 +308,129 @@
   }
 
   /* -------------------------------------------------------------- data */
+  async function loadStaff() {
+    if (!isOwner()) return;
+    try {
+      const { data, error } = await db.rpc('get_staff_dashboard');
+      if (!error && data) {
+        state.staffOverview = data;
+      } else {
+        // Fallback: build staff overview from local staff list & bookings
+        const { data: fallbackStaff } = await db.from('staff').select('*').order('name', { ascending: true });
+        if (fallbackStaff) {
+          state.staffOverview = fallbackStaff.map(st => ({
+            user_id: st.user_id,
+            name: st.name,
+            email: st.user_id === state.uid ? 'Huidige account' : 'Geregistreerd account',
+            role: st.role,
+            is_blocked: Boolean(st.is_blocked),
+            last_login_at: st.last_login_at,
+            created_at: null,
+            total_assigned: state.data.bookings.filter(b => b.assigned_driver_id === st.user_id).length,
+            total_completed: state.data.bookings.filter(b => b.assigned_driver_id === st.user_id && b.status === 'completed').length,
+            active_rides: state.data.bookings.filter(b => b.assigned_driver_id === st.user_id && ['accepted', 'assigned'].includes(b.status)).length
+          }));
+        }
+      }
+    } catch (_) {}
+
+    const badge = $('badge-staff-count');
+    if (badge) {
+      badge.textContent = state.staffOverview.length;
+      badge.hidden = state.staffOverview.length === 0;
+    }
+  }
+
+  async function loadDriverRideHistory(driverId) {
+    if (state.staffHistory[driverId]) return state.staffHistory[driverId];
+    try {
+      const { data, error } = await db.rpc('get_driver_ride_history', { p_driver_id: driverId });
+      if (!error && data) {
+        state.staffHistory[driverId] = data;
+        return data;
+      }
+    } catch (_) {}
+    // Fallback from loaded bookings cache
+    const localRides = state.data.bookings.filter(b => b.assigned_driver_id === driverId);
+    state.staffHistory[driverId] = localRides;
+    return localRides;
+  }
+
+  async function handleUpdateStaffRole(targetStaff, newRole) {
+    if (targetStaff.role === 'owner' && !isRealOwner()) {
+      return toast('U kunt de eigenaar niet wijzigen.', false);
+    }
+    if (!confirm(`Weet u zeker dat u de rol van ${targetStaff.name} wilt wijzigen naar ${formatRole(newRole)}?`)) return;
+
+    try {
+      const { error } = await db.rpc('update_staff_member', {
+        p_target_id: targetStaff.user_id,
+        p_role: newRole,
+        p_is_blocked: Boolean(targetStaff.is_blocked)
+      });
+      if (error) {
+        const { error: directErr } = await db.from('staff').update({ role: newRole }).eq('user_id', targetStaff.user_id);
+        if (directErr) return toast('Rol wijzigen mislukt: ' + (error.message || directErr.message), false);
+      }
+    } catch (e) {
+      const { error: directErr } = await db.from('staff').update({ role: newRole }).eq('user_id', targetStaff.user_id);
+      if (directErr) return toast('Rol wijzigen mislukt: ' + directErr.message, false);
+    }
+
+    targetStaff.role = newRole;
+    toast(`Rol van ${targetStaff.name} succesvol gewijzigd naar ${formatRole(newRole)} ✓`);
+    await load();
+  }
+
+  async function handleToggleStaffBlock(targetStaff) {
+    if (targetStaff.role === 'owner') {
+      return toast('U kunt de eigenaar niet blokkeren.', false);
+    }
+    const nextBlocked = !targetStaff.is_blocked;
+    const actionName = nextBlocked ? 'blokkeren' : 'deblokkeren';
+    if (!confirm(`Weet u zeker dat u ${targetStaff.name} wilt ${actionName}?`)) return;
+
+    try {
+      const { error } = await db.rpc('update_staff_member', {
+        p_target_id: targetStaff.user_id,
+        p_role: targetStaff.role,
+        p_is_blocked: nextBlocked
+      });
+      if (error) {
+        const { error: directErr } = await db.from('staff').update({ is_blocked: nextBlocked }).eq('user_id', targetStaff.user_id);
+        if (directErr) return toast(`Medewerker ${actionName} mislukt: ` + (error.message || directErr.message), false);
+      }
+    } catch (e) {
+      const { error: directErr } = await db.from('staff').update({ is_blocked: nextBlocked }).eq('user_id', targetStaff.user_id);
+      if (directErr) return toast(`Medewerker ${actionName} mislukt: ` + directErr.message, false);
+    }
+
+    targetStaff.is_blocked = nextBlocked;
+    toast(`${targetStaff.name} is nu ${nextBlocked ? 'geblokkeerd' : 'gedeblokkeerd'} ✓`);
+    await load();
+  }
+
   async function load() {
     if (isDriverView()) {
-      // Drivers only query bookings (messages are blocked by RBAC)
-      const b = await db.from('bookings').select('*').order('created_at', { ascending: false }).limit(300);
+      const queries = [
+        db.from('bookings').select('*').order('created_at', { ascending: false }).limit(300)
+      ];
+      if (isSeniorDriver()) {
+        queries.push(db.from('messages').select('*').order('created_at', { ascending: false }).limit(300));
+      }
+      const [b, m] = await Promise.all(queries);
       if (b.error) {
         if (b.error.code === 'PGRST301') return logout();
         console.error(b.error);
       }
       state.data.bookings = b.data || [];
-      state.data.messages = [];
+      state.data.messages = m?.data || [];
     } else {
-      // Owner loads bookings, messages, and staff directory for driver name resolution
+      // Owner / Admin loads bookings, messages, staff directory, and staff dashboard
       const [b, m, s] = await Promise.all([
         db.from('bookings').select('*').order('created_at', { ascending: false }).limit(500),
         db.from('messages').select('*').order('created_at', { ascending: false }).limit(500),
-        db.from('staff').select('user_id, name, role').order('name', { ascending: true })
+        db.from('staff').select('user_id, name, role, is_blocked, last_login_at').order('name', { ascending: true })
       ]);
       if (b.error || m.error) {
         if ((b.error || m.error)?.code === 'PGRST301') return logout();
@@ -286,6 +440,7 @@
       state.data.messages = m.data || [];
       state.staffList = s.data || [];
       state.staffMap = Object.fromEntries(state.staffList.map((st) => [st.user_id, st]));
+      await loadStaff();
     }
     updateBadges();
     renderStats();
@@ -459,6 +614,12 @@
       const bMine = $('badge-my-rides');
       if (bAvail) { bAvail.textContent = availCount; bAvail.hidden = availCount === 0; }
       if (bMine) { bMine.textContent = myActiveCount; bMine.hidden = myActiveCount === 0; }
+
+      if (isSeniorDriver()) {
+        const newMsgCount = state.data.messages.filter(m => m.status === 'new').length;
+        const bMsg = $('badge-driver-messages');
+        if (bMsg) { bMsg.textContent = newMsgCount; bMsg.hidden = newMsgCount === 0; }
+      }
       return;
     }
 
@@ -468,6 +629,12 @@
     const bMsg = $('badge-messages');
     if (bBook) { bBook.textContent = pendingBookings; bBook.hidden = pendingBookings === 0; }
     if (bMsg) { bMsg.textContent = newMessages; bMsg.hidden = newMessages === 0; }
+
+    const bStaff = $('badge-staff-count');
+    if (bStaff && state.staffOverview) {
+      bStaff.textContent = state.staffOverview.length;
+      bStaff.hidden = state.staffOverview.length === 0;
+    }
   }
 
   function renderStats() {
@@ -509,11 +676,41 @@
     wrap.replaceChildren();
 
     if (isDriverView()) {
+      if (state.driverTab === 'messages') {
+        const msgOptions = [['all', 'Alle Berichten'], ...STATUS.messages];
+        msgOptions.forEach(([key, label]) => {
+          wrap.append(el('button', {
+            class: 'chip' + (state.filter === key ? ' active' : ''),
+            text: label,
+            onclick: () => { state.filter = key; buildFilters(); render(); }
+          }));
+        });
+        return;
+      }
+
       const driverOptions = state.driverTab === 'available'
         ? [['all', 'Alle beschikbare ritten']]
         : [['all', 'Alles'], ['accepted', 'Actief (Accepted)'], ['completed', 'Afgerond (Completed)']];
 
       driverOptions.forEach(([key, label]) => {
+        wrap.append(el('button', {
+          class: 'chip' + (state.filter === key ? ' active' : ''),
+          text: label,
+          onclick: () => { state.filter = key; buildFilters(); render(); }
+        }));
+      });
+      return;
+    }
+
+    if (state.tab === 'staff') {
+      const staffOptions = [
+        ['all', 'Alle Medewerkers'],
+        ['admins', 'Beheerders (Admins)'],
+        ['senior', 'Senior Chauffeurs'],
+        ['drivers', 'Chauffeurs'],
+        ['blocked', 'Geblokkeerd']
+      ];
+      staffOptions.forEach(([key, label]) => {
         wrap.append(el('button', {
           class: 'chip' + (state.filter === key ? ' active' : ''),
           text: label,
@@ -539,7 +736,7 @@
   document.querySelectorAll('#admin-tabs .seg').forEach((btn) => btn.addEventListener('click', () => {
     document.querySelectorAll('#admin-tabs .seg').forEach((b) => b.classList.toggle('active', b === btn));
     state.tab = btn.dataset.tab;
-    state.filter = 'open';
+    state.filter = state.tab === 'staff' ? 'all' : 'open';
     buildFilters();
     renderStats();
     render();
@@ -569,8 +766,34 @@
     );
   }
 
+  function visibleStaffRows() {
+    if (!state.staffOverview) return [];
+    return state.staffOverview.filter((st) => {
+      if (state.filter === 'admins' && !['owner', 'admin'].includes(st.role)) return false;
+      if (state.filter === 'senior' && st.role !== 'senior_driver') return false;
+      if (state.filter === 'drivers' && st.role !== 'driver') return false;
+      if (state.filter === 'blocked' && !st.is_blocked) return false;
+      if (state.search) {
+        const q = state.search.toLowerCase();
+        return (
+          st.name.toLowerCase().includes(q) ||
+          (st.email && st.email.toLowerCase().includes(q)) ||
+          st.role.toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
+  }
+
   function visibleRows() {
     if (isDriverView()) {
+      if (state.driverTab === 'messages') {
+        return state.data.messages.filter((r) => {
+          if (state.filter !== 'all' && r.status !== state.filter) return false;
+          return matchesSearch(r);
+        });
+      }
+
       return state.data.bookings.filter((r) => {
         if (state.driverTab === 'available') {
           if (!isRideAvailableForDriver(r)) return false;
@@ -583,6 +806,10 @@
       });
     }
 
+    if (state.tab === 'staff') {
+      return visibleStaffRows();
+    }
+
     return state.data[state.tab].filter((r) => {
       const norm = state.tab === 'bookings' ? normalizeStatus(r.status) : r.status;
       if (state.filter === 'open' && state.doneStates.includes(norm)) return false;
@@ -592,15 +819,29 @@
   }
 
   function render() {
-    const rows = visibleRows();
     const list = $('list');
     if (!list) return;
     list.replaceChildren();
-    if ($('empty')) $('empty').hidden = rows.length > 0;
 
+    if (state.tab === 'staff' && !isDriverView()) {
+      const staffList = visibleStaffRows();
+      if ($('empty')) $('empty').hidden = staffList.length > 0;
+      if (staffList.length === 0) return;
+      const grid = el('div', { class: 'staff-overview-grid' });
+      staffList.forEach((st) => grid.append(staffDashboardCard(st)));
+      list.append(grid);
+      return;
+    }
+
+    const rows = visibleRows();
+    if ($('empty')) $('empty').hidden = rows.length > 0;
     if (rows.length === 0) return;
 
     if (isDriverView()) {
+      if (state.driverTab === 'messages') {
+        rows.forEach((r) => list.append(messageCard(r)));
+        return;
+      }
       rows.forEach((r) => list.append(driverRideCard(r)));
       return;
     }
@@ -610,6 +851,132 @@
     } else {
       rows.forEach((r) => list.append(messageCard(r)));
     }
+  }
+
+  /* ------------------------------------------- Staff Dashboard Card */
+  function staffDashboardCard(st) {
+    const isOwnerCard = st.role === 'owner';
+    const isMe = st.user_id === state.uid;
+    const isBlocked = Boolean(st.is_blocked);
+    const card = el('article', { class: 'staff-card' + (isBlocked ? ' is-blocked' : '') });
+
+    let badgeClass = 'role-badge';
+    if (st.role === 'owner') badgeClass += ' owner';
+    else if (st.role === 'admin') badgeClass += ' admin';
+    else if (st.role === 'senior_driver') badgeClass += ' senior';
+    else badgeClass += ' driver';
+
+    const roleBadge = el('span', { class: badgeClass, text: formatRole(st.role) });
+    const statusBadge = isBlocked
+      ? el('span', { class: 'role-badge blocked', text: '✕ Geblokkeerd' })
+      : el('span', { class: 'role-badge driver', text: '✓ Actief' });
+
+    const head = el('div', { class: 'staff-card-header' }, [
+      el('div', {}, [
+        el('div', { class: 'staff-name-title' }, [
+          document.createTextNode(st.name),
+          isMe ? el('span', { class: 'pill', style: 'background:#5e5ce6;font-size:0.68rem', text: 'Jij' }) : null
+        ]),
+        el('div', { class: 'staff-email-sub', text: st.email || 'Geen e-mailadres' })
+      ]),
+      el('div', { style: 'display:flex;gap:6px;flex-direction:column;align-items:flex-end' }, [
+        roleBadge, statusBadge
+      ])
+    ]);
+
+    const lastLoginText = st.last_login_at
+      ? fmtCreated(st.last_login_at)
+      : 'Nog niet ingelogd';
+    const createdText = st.created_at ? fmtCreated(st.created_at) : '-';
+
+    const metaRow = el('div', { class: 'staff-meta-row' }, [
+      el('span', {}, [document.createTextNode('🕒 Laatst ingelogd: '), el('strong', { text: lastLoginText })]),
+      el('span', {}, [document.createTextNode('📅 Aangemaakt: '), el('strong', { text: createdText })])
+    ]);
+
+    const metrics = el('div', { class: 'staff-metrics' }, [
+      el('div', { class: 'staff-metric-box' }, [
+        el('div', { class: 'staff-metric-val', text: String(st.total_assigned || 0) }),
+        el('div', { class: 'staff-metric-lbl', text: 'Toegewezen' })
+      ]),
+      el('div', { class: 'staff-metric-box' }, [
+        el('div', { class: 'staff-metric-val', style: 'color:#30a46c', text: String(st.total_completed || 0) }),
+        el('div', { class: 'staff-metric-lbl', text: 'Afgerond' })
+      ]),
+      el('div', { class: 'staff-metric-box' }, [
+        el('div', { class: 'staff-metric-val', style: 'color:#5e5ce6', text: String(st.active_rides || 0) }),
+        el('div', { class: 'staff-metric-lbl', text: 'Actief Nu' })
+      ])
+    ]);
+
+    const isHistoryOpen = state.expandedStaffId === st.user_id;
+    const historyToggleBtn = el('button', {
+      class: 'btn ghost small',
+      text: isHistoryOpen ? 'Verberg Ritten ▲' : `Ritten Bekijken (${st.total_assigned || 0}) ▼`,
+      onclick: async () => {
+        state.expandedStaffId = state.expandedStaffId === st.user_id ? null : st.user_id;
+        render();
+      }
+    });
+
+    const actionRow = el('div', { class: 'staff-card-actions' });
+
+    if (!isOwnerCard && (!isMe || isRealOwner())) {
+      const roleSelect = el('select', { class: 'staff-role-select' }, [
+        el('option', { value: 'driver', text: 'Chauffeur', ...(st.role === 'driver' ? { selected: true } : {}) }),
+        el('option', { value: 'senior_driver', text: 'Senior Chauffeur', ...(st.role === 'senior_driver' ? { selected: true } : {}) }),
+        el('option', { value: 'admin', text: 'Admin (Beheerder)', ...(st.role === 'admin' ? { selected: true } : {}) })
+      ]);
+      if (isRealOwner()) {
+        roleSelect.append(el('option', { value: 'owner', text: 'Eigenaar (Owner)', ...(st.role === 'owner' ? { selected: true } : {}) }));
+      }
+      roleSelect.addEventListener('change', () => handleUpdateStaffRole(st, roleSelect.value));
+      actionRow.append(roleSelect);
+
+      const blockBtn = isBlocked
+        ? el('button', { class: 'btn success small', text: '✓ Deblokkeren', onclick: () => handleToggleStaffBlock(st) })
+        : el('button', { class: 'btn decline small', text: '✕ Blokkeren', onclick: () => handleToggleStaffBlock(st) });
+      actionRow.append(blockBtn);
+    } else if (isOwnerCard) {
+      actionRow.append(el('span', { class: 'muted', style: 'font-size:0.8rem', text: '★ Primaire Eigenaar' }));
+    }
+
+    actionRow.append(historyToggleBtn);
+
+    card.append(head, metaRow, metrics, actionRow);
+
+    if (isHistoryOpen) {
+      const historyDrawer = el('div', { class: 'staff-history-drawer' });
+      historyDrawer.append(el('div', { class: 'staff-history-title', text: `Ritgeschiedenis van ${st.name}` }));
+
+      const listEl = el('div', { class: 'staff-history-list' }, [
+        el('div', { class: 'muted', text: 'Laden van ritten…' })
+      ]);
+      historyDrawer.append(listEl);
+      card.append(historyDrawer);
+
+      loadDriverRideHistory(st.user_id).then((rides) => {
+        listEl.replaceChildren();
+        if (!rides || rides.length === 0) {
+          listEl.append(el('div', { class: 'muted', text: 'Nog geen ritten gereden door deze chauffeur.' }));
+          return;
+        }
+        rides.forEach((ride) => {
+          const item = el('div', { class: 'staff-history-item' }, [
+            el('div', {}, [
+              el('span', { class: 'ref-badge', text: ride.ref }),
+              document.createTextNode(' · '),
+              el('span', { class: 'route-text', text: `${ride.pickup} → ${ride.dropoff}` }),
+              el('div', { class: 'cell-sub', text: `${fmtDate(ride.pickup_at)} · ${ride.vehicle || '-'} · ${ride.ippa || ''}` })
+            ]),
+            el('span', { class: 'pill', style: `background:${statusColor(ride.status)}`, text: LABEL[ride.status] || ride.status })
+          ]);
+          listEl.append(item);
+        });
+      });
+    }
+
+    return card;
   }
 
   /* -------------------------------------------- Driver Dashboard Cards */
@@ -868,7 +1235,7 @@
       acts.push(el('a', { href: 'tel:' + digits(row.phone), text: 'Bel Klant' }));
       acts.push(el('a', { href: 'https://wa.me/' + waNumber(row.phone), target: '_blank', rel: 'noopener', text: 'WhatsApp' }));
     }
-    if (row.email && isOwner()) {
+    if (row.email && (isOwner() || isSeniorDriver())) {
       acts.push(el('a', { href: 'mailto:' + row.email, text: 'E-mail' }));
     }
     return acts;

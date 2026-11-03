@@ -35,7 +35,7 @@
           <span id="role-badge" class="role-badge"></span>
         </div>
 
-        <!-- Admin Navigation Tabs (owner only) -->
+        <!-- Admin Navigation Tabs (owner & admin only) -->
         <nav id="admin-tabs" class="segmented" role="tablist" hidden>
           <button class="seg active" data-tab="bookings" role="tab">
             Ritten <span class="badge" id="badge-bookings" hidden></span>
@@ -43,15 +43,21 @@
           <button class="seg" data-tab="messages" role="tab">
             Berichten <span class="badge" id="badge-messages" hidden></span>
           </button>
+          <button class="seg" data-tab="staff" role="tab" id="tab-staff-btn">
+            Personeel <span class="badge badge-blue" id="badge-staff-count" hidden></span>
+          </button>
         </nav>
 
-        <!-- Driver Navigation Tabs (driver only) -->
+        <!-- Driver Navigation Tabs (driver & senior_driver only) -->
         <nav id="driver-tabs" class="segmented" role="tablist" hidden>
           <button class="seg active" data-dtab="available" role="tab">
             Beschikbare Ritten <span class="badge" id="badge-available" hidden></span>
           </button>
           <button class="seg" data-dtab="my-rides" role="tab">
             Mijn Ritten <span class="badge badge-blue" id="badge-my-rides" hidden></span>
+          </button>
+          <button class="seg" data-dtab="messages" role="tab" id="dtab-messages" hidden>
+            Berichten <span class="badge" id="badge-driver-messages" hidden></span>
           </button>
         </nav>
 

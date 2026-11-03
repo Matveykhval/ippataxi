@@ -14,19 +14,21 @@ create extension if not exists pgcrypto;
 
 -- ---------------------------------------------------------------- staff
 create table if not exists public.staff (
-  user_id uuid primary key references auth.users(id) on delete cascade,
-  name    text not null,
-  role    text not null default 'driver' check (role in ('owner', 'driver'))
+  user_id       uuid primary key references auth.users(id) on delete cascade,
+  name          text not null,
+  role          text not null default 'driver' check (role in ('owner', 'admin', 'senior_driver', 'driver')),
+  is_blocked    boolean not null default false,
+  last_login_at timestamptz
 );
 alter table public.staff enable row level security;
 
 create or replace function public.is_staff() returns boolean
 language plpgsql security definer set search_path = public stable as $$
 declare
-  v_exists boolean;
+  v_blocked boolean;
 begin
-  select exists (select 1 from public.staff where user_id = auth.uid()) into v_exists;
-  return coalesce(v_exists, false);
+  select is_blocked into v_blocked from public.staff where user_id = auth.uid();
+  return coalesce(not v_blocked, false);
 end;
 $$;
 
@@ -34,9 +36,10 @@ create or replace function public.is_owner() returns boolean
 language plpgsql security definer set search_path = public stable as $$
 declare
   v_role text;
+  v_blocked boolean;
 begin
-  select role into v_role from public.staff where user_id = auth.uid();
-  return coalesce(v_role = 'owner', false);
+  select role, is_blocked into v_role, v_blocked from public.staff where user_id = auth.uid();
+  return coalesce(not v_blocked and v_role in ('owner', 'admin'), false);
 end;
 $$;
 
@@ -44,9 +47,21 @@ create or replace function public.is_driver() returns boolean
 language plpgsql security definer set search_path = public stable as $$
 declare
   v_role text;
+  v_blocked boolean;
 begin
-  select role into v_role from public.staff where user_id = auth.uid();
-  return coalesce(v_role = 'driver', false);
+  select role, is_blocked into v_role, v_blocked from public.staff where user_id = auth.uid();
+  return coalesce(not v_blocked and v_role in ('driver', 'senior_driver'), false);
+end;
+$$;
+
+create or replace function public.can_read_messages() returns boolean
+language plpgsql security definer set search_path = public stable as $$
+declare
+  v_role text;
+  v_blocked boolean;
+begin
+  select role, is_blocked into v_role, v_blocked from public.staff where user_id = auth.uid();
+  return coalesce(not v_blocked and v_role in ('owner', 'admin', 'senior_driver'), false);
 end;
 $$;
 
