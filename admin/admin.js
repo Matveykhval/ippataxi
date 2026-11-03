@@ -851,10 +851,34 @@
     });
   }
 
+  function updateEmptyMessage() {
+    const el = $('empty');
+    if (!el) return;
+    if (isDriverView()) {
+      if (state.driverTab === 'messages') {
+        el.textContent = state.search ? 'Geen berichten gevonden voor deze zoekopdracht.' : 'Geen berichten op dit moment.';
+      } else if (state.driverTab === 'my-rides') {
+        el.textContent = state.search ? 'Geen eigen ritten gevonden voor deze zoekopdracht.' : 'U heeft op dit moment geen actieve of afgeronde ritten.';
+      } else {
+        el.textContent = state.search ? 'Geen beschikbare ritten gevonden voor deze zoekopdracht.' : 'Geen beschikbare ritten op dit moment.';
+      }
+    } else {
+      if (state.tab === 'staff') {
+        el.textContent = state.search ? 'Geen medewerkers gevonden voor deze zoekopdracht.' : 'Geen medewerkers gevonden.';
+      } else if (state.tab === 'messages') {
+        el.textContent = state.search ? 'Geen berichten gevonden voor deze zoekopdracht.' : 'Geen berichten gevonden.';
+      } else {
+        el.textContent = state.search ? 'Geen ritten gevonden voor deze zoekopdracht.' : 'Geen ritten gevonden.';
+      }
+    }
+  }
+
   function render() {
     const list = $('list');
     if (!list) return;
     list.replaceChildren();
+
+    updateEmptyMessage();
 
     if (state.tab === 'staff' && !isDriverView()) {
       const staffList = visibleStaffRows();
