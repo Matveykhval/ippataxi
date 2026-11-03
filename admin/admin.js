@@ -137,14 +137,19 @@
   // Statuses that e-mail the customer (see supabase/functions/notify-status)
   const NOTIFY = ['confirmed', 'assigned', 'cancelled'];
 
-  async function notifyCustomer(row, indicator) {
+  function toast(text, ok = true) {
+    const t = el('div', { class: 'toast' + (ok ? '' : ' bad'), text });
+    document.body.append(t);
+    setTimeout(() => t.remove(), 5000);
+  }
+
+  async function notifyCustomer(row) {
     if (!NOTIFY.includes(row.status)) return;
-    if (!row.email) { indicator.textContent = 'Opgeslagen · geen e-mail bekend'; return; }
-    indicator.textContent = 'E-mail versturen…';
+    if (!row.email) return toast('Opgeslagen · geen e-mail bekend voor deze klant', false);
     const { data, error } = await db.functions.invoke('notify-status', { body: { bookingId: row.id } });
-    indicator.textContent = !error && data?.sent
-      ? 'Opgeslagen · e-mail verstuurd ✓'
-      : 'Opgeslagen · e-mail mislukt ✗';
+    if (!error && data?.sent) return toast(`E-mail verstuurd naar ${row.email} ✓`);
+    console.error('notify-status failed', error, data);
+    toast('E-mail versturen mislukt ✗ (zie console of function logs)', false);
   }
 
   function updateBadges() {
@@ -232,7 +237,7 @@
     status.addEventListener('change', async () => {
       if (await update('bookings', r.id, { status: status.value }, saved)) {
         pill.textContent = LABEL[r.status]; pill.style.background = statusColor(r.status);
-        notifyCustomer(r, saved);
+        notifyCustomer(r);
         if (state.filter !== 'all') render();
       }
     });
