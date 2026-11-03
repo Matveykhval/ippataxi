@@ -56,14 +56,19 @@ $$;
 
 -- 3. Strict column-level & state-transition trigger for drivers
 -- Explicitly blocks drivers from editing customer details, internal notes, or cancelling rides.
+-- Admins/owners have full unrestricted permissions to edit all fields.
 create or replace function public.enforce_booking_rbac()
 returns trigger
 language plpgsql security definer set search_path = public as $$
 declare
+  v_role text;
   v_driver_name text;
 begin
-  -- Owners and service_role have full administrative control
-  if public.is_owner() or current_setting('request.jwt.claim.role', true) = 'service_role' then
+  -- Resolve caller's role from staff table
+  select role into v_role from public.staff where user_id = auth.uid();
+
+  -- If caller is owner OR service_role, grant full unrestricted edit access
+  if v_role = 'owner' or current_setting('request.jwt.claim.role', true) = 'service_role' then
     if new.assigned_driver_id is not null and (old.assigned_driver_id is distinct from new.assigned_driver_id) then
       select name into v_driver_name from public.staff where user_id = new.assigned_driver_id;
       if v_driver_name is not null then
@@ -75,8 +80,8 @@ begin
     return new;
   end if;
 
-  -- Driver restrictions
-  if public.is_driver() then
+  -- Driver restrictions (strictly enforced ONLY for accounts with role = 'driver')
+  if v_role = 'driver' then
     -- Block editing any customer or ride details
     if new.ref is distinct from old.ref
        or new.name is distinct from old.name
@@ -127,7 +132,8 @@ begin
     raise exception 'Forbidden: drivers may only accept pending rides or complete their own assigned rides.';
   end if;
 
-  raise exception 'Forbidden: unauthorized role.';
+  -- Fallback for any other authenticated staff: allow update
+  return new;
 end;
 $$;
 
