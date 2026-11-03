@@ -142,6 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactForm();
   setDefaultDateTime();
   initNavigationScrollspy();
+  loadRecaptcha();
 });
 
 /**
@@ -518,7 +519,40 @@ function populateModalSummary() {
 
 
 /**
- * Saves a row to Supabase (insert-only for visitors, enforced by Row Level Security).
+ * Dynamically loads Google reCAPTCHA v3 if recaptchaSiteKey is configured in js/config.js.
+ */
+function loadRecaptcha() {
+  const siteKey = window.IPPA_CONFIG?.recaptchaSiteKey;
+  if (!siteKey) return;
+  if (document.querySelector('script[data-recaptcha]')) return;
+  const script = document.createElement('script');
+  script.src = `https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(siteKey)}`;
+  script.async = true;
+  script.defer = true;
+  script.setAttribute('data-recaptcha', 'true');
+  document.head.appendChild(script);
+}
+
+/**
+ * Obtains a Google reCAPTCHA v3 token for the given action ('booking' | 'contact').
+ */
+async function getRecaptchaToken(action) {
+  const siteKey = window.IPPA_CONFIG?.recaptchaSiteKey;
+  if (!siteKey || !window.grecaptcha) return null;
+  try {
+    return await new Promise((resolve, reject) => {
+      window.grecaptcha.ready(() => {
+        window.grecaptcha.execute(siteKey, { action }).then(resolve, reject);
+      });
+    });
+  } catch (err) {
+    console.warn('reCAPTCHA token error:', err);
+    return null;
+  }
+}
+
+/**
+ * Saves a row to Supabase with Google reCAPTCHA v3 protection.
  * Settings live in js/config.js.
  */
 async function sendToSupabase(table, row) {
@@ -526,6 +560,36 @@ async function sendToSupabase(table, row) {
   if (!cfg.supabaseUrl || cfg.supabaseUrl.includes('YOUR-PROJECT')) {
     throw new Error('Supabase is not configured (js/config.js)');
   }
+
+  const action = table === 'bookings' ? 'booking' : 'contact';
+  const token = await getRecaptchaToken(action);
+
+  // If reCAPTCHA token is available and submitFunction is configured, try Edge Function first
+  if (token && cfg.submitFunction) {
+    try {
+      const fnResp = await fetch(`${cfg.supabaseUrl}/functions/v1/${cfg.submitFunction}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': cfg.supabaseAnonKey,
+          'Authorization': `Bearer ${cfg.supabaseAnonKey}`
+        },
+        body: JSON.stringify({ type: action, token, data: row })
+      });
+      if (fnResp.ok) return;
+      if (fnResp.status === 403 || fnResp.status === 400) {
+        const err = await fnResp.json().catch(() => ({}));
+        throw new Error(err.error || 'Spam check failed');
+      }
+      // If 404 (Edge Function not deployed yet), fall through to direct REST insert
+    } catch (err) {
+      if (err.message === 'Spam check failed' || err.message?.includes('Captcha')) {
+        throw err;
+      }
+      // Network/CORS on undeployed function -> fall through to REST insert
+    }
+  }
+
   const response = await fetch(`${cfg.supabaseUrl}/rest/v1/${table}`, {
     method: 'POST',
     headers: {

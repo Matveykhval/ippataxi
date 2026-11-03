@@ -14,6 +14,6 @@ window.IPPA_CONFIG = {
   // Google reCAPTCHA v3 site key (public). Get one free at:
   // https://www.google.com/recaptcha/admin/create -> select "reCAPTCHA v3" -> add domain ippataxi.nl
   // Leave empty ('') until you have created the key and deployed the submit-form function.
-  recaptchaSiteKey: ''
+  recaptchaSiteKey: '6LekMg4uAAAAAJBgLPKbjd8BQayhFbmQkfx0UM8j'
 };
 
