@@ -189,11 +189,35 @@ drop policy if exists "owner delete messages" on public.messages;
 create policy "owner delete messages" on public.messages
   for delete to authenticated using (public.is_owner());
 
+-- ----------------------------------------------------------- site_settings
+create table if not exists public.site_settings (
+  key        text primary key,
+  value      text not null,
+  updated_at timestamptz not null default now(),
+  updated_by uuid references auth.users(id) on delete set null
+);
+
+insert into public.site_settings (key, value)
+values ('currency_mode', 'ippa')
+on conflict (key) do nothing;
+
+alter table public.site_settings enable row level security;
+
+drop policy if exists "public read site_settings" on public.site_settings;
+create policy "public read site_settings" on public.site_settings
+  for select to anon, authenticated using (true);
+
+drop policy if exists "admin write site_settings" on public.site_settings;
+create policy "admin write site_settings" on public.site_settings
+  for all to authenticated using (public.is_owner()) with check (public.is_owner());
+
 -- ------------------------------------------------- grants (least privilege)
 revoke all on public.bookings, public.messages, public.staff from anon, authenticated;
 grant insert on public.bookings, public.messages to anon;
 grant select, update, delete on public.bookings, public.messages to authenticated;
 grant select on public.staff to authenticated;
+grant select on public.site_settings to anon, authenticated;
+grant insert, update on public.site_settings to authenticated;
 
 -- ------------------------------------------------ make yourself the owner
 -- 1) Create your user in Authentication -> Users.

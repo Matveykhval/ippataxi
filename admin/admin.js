@@ -46,6 +46,7 @@
   const state = {
     uid: null,
     staff: null,        // { user_id, name, role, is_blocked }
+    currencyMode: localStorage.getItem('ippa_currency_mode') || 'ippa', // 'ippa' | 'real_money'
     staffList: [],      // all staff rows (loaded for owner)
     staffMap: {},       // user_id -> { user_id, name, role }
     staffOverview: [],  // staff dashboard metrics & auth details
@@ -143,6 +144,215 @@
   function isRealOwner() {
     return state.staff?.role === 'owner' && !forceDriverMode;
   }
+
+  function isRealMoneyMode() {
+    return state.currencyMode === 'real_money';
+  }
+
+  function formatEuro(amount) {
+    return '€ ' + Number(amount || 0).toFixed(2).replace('.', ',');
+  }
+
+  /**
+   * Calculates 2026 Dutch Taxi Rate financials & Driver Payout (85% after 15% commission)
+   * for any booking row.
+   */
+  function calculateRideFinancials(row) {
+    const rates = cfg.taxiRates2026 || { baseFare: 4.31, perKm: 3.17, perMin: 0.52 };
+    const commRate = cfg.platformCommissionRate ?? 0.15;
+    const rawIppa = String(row.ippa || '').trim();
+
+    let grossFare = 0;
+    let paymentMethodNote = '';
+    let hasExplicitEuro = false;
+
+    // 1. Check if booking already contains a euro price (e.g. "€ 71,77 (iDEAL - ING)")
+    const euroMatch = rawIppa.match(/€\s*([0-9]+[.,][0-9]{2})/);
+    if (euroMatch) {
+      grossFare = parseFloat(euroMatch[1].replace(',', '.'));
+      hasExplicitEuro = true;
+      const parenMatch = rawIppa.match(/\(([^)]+)\)/);
+      if (parenMatch) paymentMethodNote = parenMatch[1];
+    } else {
+      // 2. Estimate distance & duration from route using 2026 Dutch Taxi Rates
+      const pickup = String(row.pickup || '').toLowerCase();
+      const dropoff = String(row.dropoff || '').toLowerCase();
+      const pairs = [
+        { match: ['amsterdam', 'schiphol'], km: 18, min: 20 },
+        { match: ['utrecht', 'schiphol'], km: 48, min: 35 },
+        { match: ['den haag', 'schiphol'], km: 45, min: 35 },
+        { match: ['rotterdam', 'schiphol'], km: 60, min: 45 },
+        { match: ['haarlem', 'schiphol'], km: 20, min: 22 },
+        { match: ['almere', 'schiphol'], km: 42, min: 34 },
+        { match: ['amstelveen', 'schiphol'], km: 12, min: 15 },
+        { match: ['eindhoven', 'schiphol'], km: 125, min: 80 },
+        { match: ['rotterdam', 'den haag'], km: 26, min: 25 },
+        { match: ['amsterdam', 'rotterdam'], km: 70, min: 55 },
+        { match: ['amsterdam', 'utrecht'], km: 42, min: 35 },
+        { match: ['centrum', 'zuid'], km: 7, min: 15 },
+        { match: ['centrum', 'noord'], km: 8, min: 16 }
+      ];
+      let km = 18;
+      let min = 20;
+      let matched = false;
+      for (const p of pairs) {
+        if ((pickup.includes(p.match[0]) || dropoff.includes(p.match[0])) &&
+            (pickup.includes(p.match[1]) || dropoff.includes(p.match[1]))) {
+          km = p.km;
+          min = p.min;
+          matched = true;
+          break;
+        }
+      }
+      if (!matched) {
+        if (rawIppa.includes('Type A')) { km = 10; min = 15; }
+        else if (rawIppa.includes('Type C')) { km = 65; min = 50; }
+        else { km = 18; min = 20; }
+      }
+      grossFare = +(rates.baseFare + km * rates.perKm + min * rates.perMin).toFixed(2);
+    }
+
+    const commission = +(grossFare * commRate).toFixed(2);
+    const netPayout = +(grossFare - commission).toFixed(2);
+
+    // Determine what to display in badges depending on active currencyMode
+    let ippaFallback = rawIppa;
+    if (hasExplicitEuro && !isRealMoneyMode()) {
+      ippaFallback = grossFare < 55 ? '1x Type A IPPA' : (grossFare <= 185 ? '1x Type B IPPA' : '1x Type C IPPA');
+    }
+
+    const displayFare = isRealMoneyMode()
+      ? `${formatEuro(grossFare)}${paymentMethodNote ? ` (${paymentMethodNote})` : ''}`
+      : (ippaFallback || '1x Type B IPPA');
+
+    return {
+      grossFare,
+      commission,
+      netPayout,
+      commissionPct: Math.round(commRate * 100),
+      payoutPct: Math.round((1 - commRate) * 100),
+      paymentMethodNote,
+      displayFare
+    };
+  }
+
+  function updateCurrencyModeBarUI() {
+    const bar = $('currency-mode-bar');
+    const dot = $('currency-mode-dot');
+    const desc = $('currency-mode-status-text');
+    const btnIppa = $('btn-mode-ippa');
+    const btnReal = $('btn-mode-real');
+    const realMoney = isRealMoneyMode();
+
+    if (bar) {
+      bar.hidden = isDriverView();
+      bar.classList.toggle('real-money-active', realMoney);
+    }
+    if (dot) {
+      dot.classList.toggle('real-money', realMoney);
+    }
+    if (btnIppa) btnIppa.classList.toggle('active', !realMoney);
+    if (btnReal) btnReal.classList.toggle('active', realMoney);
+
+    if (desc) {
+      desc.innerHTML = realMoney
+        ? 'Actieve modus: <b>Real Money Mode (€)</b> — 2026 NL Taxitarieven (€ 4,31 start + € 3,17/km + € 0,52/min), iDEAL/Stripe &amp; 85% chauffeursuitbetaling.'
+        : 'Actieve modus: <b>Ippa Currency Mode</b> — Klanten betalen ritten met Type A, B of C IPPA zonder geldbetaling.';
+    }
+
+    // Also update driver banner to reflect active currency mode
+    const banner = $('driver-rbac-banner');
+    if (banner && isDriverView()) {
+      const descDiv = banner.querySelector('div');
+      if (descDiv) {
+        const modeBadge = realMoney
+          ? '<span style="color:#30a46c;font-weight:700">[💶 Real Money Mode (€) Actief — 85% Netto Uitbetaling]</span> '
+          : '<span style="color:#d8b14c;font-weight:700">[💎 Ippa Currency Mode Actief]</span> ';
+        descDiv.innerHTML = modeBadge + (isSeniorDriver()
+          ? '<strong>Senior Chauffeursmodus</strong> — Bekijk beschikbare ritten, uw exacte netto verdiensten en het klantenberichten-inbox.'
+          : '<strong>Chauffeursmodus</strong> — Bekijk openstaande ritten en uw exacte uitbetaling voordat u op <b>Accept</b> klikt.');
+      }
+    }
+  }
+
+  async function loadCurrencyMode() {
+    try {
+      const { data, error } = await db
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'currency_mode')
+        .maybeSingle();
+      if (!error && data && (data.value === 'ippa' || data.value === 'real_money')) {
+        state.currencyMode = data.value;
+        localStorage.setItem('ippa_currency_mode', data.value);
+      }
+    } catch (_) {}
+    updateCurrencyModeBarUI();
+  }
+
+  async function setGlobalCurrencyMode(newMode) {
+    if (!isOwner()) {
+      return toast('Alleen beheerders kunnen de Currency Mode wijzigen.', false);
+    }
+    const normalized = newMode === 'real_money' ? 'real_money' : 'ippa';
+    state.currencyMode = normalized;
+    localStorage.setItem('ippa_currency_mode', normalized);
+
+    // Broadcast immediately to open tabs (ippataxi.nl, driver, status)
+    try {
+      const bc = new BroadcastChannel('ippa_currency_channel');
+      bc.postMessage({ currencyMode: normalized });
+      bc.close();
+    } catch (_) {}
+
+    updateCurrencyModeBarUI();
+    renderStats();
+    render();
+
+    // Persist in Supabase DB (RPC first, then direct upsert fallback)
+    try {
+      const { error: rpcErr } = await db.rpc('set_currency_mode', { p_mode: normalized });
+      if (rpcErr) {
+        await db.from('site_settings').upsert({
+          key: 'currency_mode',
+          value: normalized,
+          updated_at: new Date().toISOString(),
+          updated_by: state.uid
+        });
+      }
+    } catch (_) {}
+
+    toast(
+      normalized === 'real_money'
+        ? 'Currency Mode gewijzigd naar Real Money (€) — Live op de hele site ✓'
+        : 'Currency Mode gewijzigd naar Ippa Currency Mode — Live op de hele site ✓'
+    );
+  }
+
+  $('btn-mode-ippa')?.addEventListener('click', () => setGlobalCurrencyMode('ippa'));
+  $('btn-mode-real')?.addEventListener('click', () => setGlobalCurrencyMode('real_money'));
+
+  try {
+    const bc = new BroadcastChannel('ippa_currency_channel');
+    bc.onmessage = (ev) => {
+      if (ev.data?.currencyMode && ev.data.currencyMode !== state.currencyMode) {
+        state.currencyMode = ev.data.currencyMode;
+        localStorage.setItem('ippa_currency_mode', state.currencyMode);
+        updateCurrencyModeBarUI();
+        renderStats();
+        render();
+      }
+    };
+  } catch (_) {}
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'ippa_currency_mode' && e.newValue && e.newValue !== state.currencyMode) {
+      state.currencyMode = e.newValue;
+      updateCurrencyModeBarUI();
+      renderStats();
+      render();
+    }
+  });
 
   /**
    * Resolves the assigned driver's display name for a ride.
@@ -333,6 +543,12 @@
         .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
           load();
         })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, () => {
+          loadCurrencyMode().then(() => {
+            renderStats();
+            render();
+          });
+        })
         .subscribe();
     } catch (_) {}
   }
@@ -444,6 +660,7 @@
   }
 
   async function load() {
+    await loadCurrencyMode();
     if (isDriverView()) {
       const queries = [
         db.from('bookings').select('*').order('created_at', { ascending: false }).limit(300)
@@ -682,7 +899,7 @@
     const acceptedCount = all.filter((r) => !isRideUnassigned(r) && ['accepted', 'confirmed'].includes(normalizeStatus(r.status))).length;
     const completedCount = all.filter((r) => normalizeStatus(r.status) === 'completed').length;
 
-    bar.replaceChildren(
+    const cards = [
       el('div', { class: 'stat-card pending' }, [
         el('span', { class: 'stat-label', text: 'Pending (Unassigned)' }),
         el('span', { class: 'stat-val', text: String(unassignedCount) })
@@ -694,12 +911,29 @@
       el('div', { class: 'stat-card completed' }, [
         el('span', { class: 'stat-label', text: 'Completed (Afgerond)' }),
         el('span', { class: 'stat-val', text: String(completedCount) })
-      ]),
-      el('div', { class: 'stat-card' }, [
-        el('span', { class: 'stat-label', text: 'Totaal Ritten' }),
-        el('span', { class: 'stat-val', text: String(all.length) })
       ])
-    );
+    ];
+
+    if (isRealMoneyMode()) {
+      const activeOrCompleted = all.filter(r => normalizeStatus(r.status) !== 'cancelled');
+      const totalGross = activeOrCompleted.reduce((acc, r) => acc + calculateRideFinancials(r).grossFare, 0);
+      const totalCommission = activeOrCompleted.reduce((acc, r) => acc + calculateRideFinancials(r).commission, 0);
+      cards.push(
+        el('div', { class: 'stat-card' }, [
+          el('span', { class: 'stat-label', text: 'Bruto Omzet (15% Comm: ' + formatEuro(totalCommission) + ')' }),
+          el('span', { class: 'stat-val', style: 'color:#30a46c', text: formatEuro(totalGross) })
+        ])
+      );
+    } else {
+      cards.push(
+        el('div', { class: 'stat-card' }, [
+          el('span', { class: 'stat-label', text: 'Totaal Ritten (IPPA Mode)' }),
+          el('span', { class: 'stat-val', text: String(all.length) })
+        ])
+      );
+    }
+
+    bar.replaceChildren(...cards);
   }
 
   /* ----------------------------------------------------------- filters */
@@ -1040,12 +1274,34 @@
     pill.style.background = statusColor(norm);
 
     const availableMode = state.driverTab === 'available';
+    const fin = calculateRideFinancials(r);
+    const realMoney = isRealMoneyMode();
+
+    let earningsBox = null;
+    if (realMoney) {
+      earningsBox = el('div', { class: 'driver-earnings-box' }, [
+        el('div', { class: 'earnings-item' }, [
+          el('span', { class: 'earnings-lbl', text: 'Totale Ritprijs (Klant)' }),
+          el('span', { class: 'earnings-val', text: formatEuro(fin.grossFare) })
+        ]),
+        el('div', { class: 'earnings-item' }, [
+          el('span', { class: 'earnings-lbl', text: `Platformcommissie (${fin.commissionPct}%)` }),
+          el('span', { class: 'earnings-val commission', text: `- ${formatEuro(fin.commission)}` })
+        ]),
+        el('div', { class: 'earnings-item payout' }, [
+          el('span', { class: 'earnings-lbl', text: `Uw Netto Uitbetaling (${fin.payoutPct}%)` }),
+          el('span', { class: 'earnings-val net-payout', text: formatEuro(fin.netPayout) })
+        ])
+      ]);
+    }
 
     let actionArea = null;
     if (availableMode) {
       const acceptBtn = el('button', {
         class: 'btn success',
-        text: '✓ Accept (Rit Accepteren)',
+        text: realMoney
+          ? `✓ Accept Rit (Uw Uitbetaling: ${formatEuro(fin.netPayout)})`
+          : '✓ Accept (Rit Accepteren)',
         onclick: () => handleDriverAccept(r, acceptBtn)
       });
       const declineBtn = el('button', {
@@ -1082,8 +1338,9 @@
         el('span', {}, [document.createTextNode('Ophaaltijd: '), el('b', { text: fmtDate(r.pickup_at) })]),
         el('span', { text: `Voertuig: ${r.vehicle || '-'}` }),
         el('span', { text: `Passagiers: ${r.passengers ?? '-'}` }),
-        el('span', { class: 'ippa-tag', text: r.ippa || '' })
+        el('span', { class: 'ippa-tag', text: fin.displayFare })
       ]),
+      earningsBox,
       r.notes ? el('div', { class: 'note', text: `Opmerking klant: ${r.notes}` }) : null,
       actionArea
     ]);
@@ -1092,11 +1349,13 @@
   /* ---------------------------------------------- Admin Dispatch Table */
   function adminBookingsTable(rows) {
     const tbody = el('tbody');
+    const realMoney = isRealMoneyMode();
 
     rows.forEach((r) => {
       const norm = normalizeStatus(r.status);
       const assignedName = getAssignedDriverName(r);
       const isExpanded = state.expandedId === r.id;
+      const fin = calculateRideFinancials(r);
 
       // Dedicated Assigned Driver Column: shows driver's name or 'Pending'
       const driverBadge = assignedName
@@ -1137,7 +1396,10 @@
         ]),
         el('td', {}, [
           el('div', { text: `${r.vehicle || '-'} (${r.passengers ?? 1}p)` }),
-          el('div', { class: 'cell-sub ippa-tag', text: r.ippa || '-' })
+          el('div', { class: 'cell-sub ippa-tag', text: fin.displayFare }),
+          realMoney
+            ? el('div', { class: 'cell-sub', style: 'color:#30a46c;font-weight:600', text: `Chauffeur (${fin.payoutPct}%): ${formatEuro(fin.netPayout)} · Comm: ${formatEuro(fin.commission)}` })
+            : null
         ]),
         // Requirement 4: Assigned Driver column right next to every ride
         el('td', {}, [driverBadge]),
@@ -1158,7 +1420,7 @@
           el('th', { text: 'Ref / Ophaaltijd' }),
           el('th', { text: 'Klant' }),
           el('th', { text: 'Route (Van → Naar)' }),
-          el('th', { text: 'Voertuig & IPPA' }),
+          el('th', { text: realMoney ? 'Voertuig & Ritprijs (€)' : 'Voertuig & IPPA' }),
           el('th', { text: 'Assigned Driver' }),
           el('th', { text: 'Status' }),
           el('th', { style: 'text-align:right', text: 'Actie' })

@@ -284,22 +284,45 @@
               </div>
             </div>
 
-            <!-- Dynamic IPPA Result Box -->
+            <!-- Dynamic IPPA / Real Money Result Box -->
             <div class="ippa-result-box tier-b" id="ippa-result-box">
               <div class="ippa-result-left">
-                <span class="ippa-result-title" data-i18n="fareTag">Benodigde betaling</span>
+                <span class="ippa-result-title" id="calc-fare-tag" data-i18n="fareTag">Benodigde betaling</span>
                 <div class="ippa-tier-name" id="ippa-tier-name">Type B IPPA</div>
                 <span class="ippa-distance-note" id="ippa-distance-display">Geschat ~18 km • Middelmatige Rit</span>
+                <div class="real-money-breakdown" id="real-money-breakdown" hidden></div>
               </div>
               <div class="ippa-result-badge-wrap">
                 <div class="ippa-payment-pill" id="ippa-payment-pill">1x Type B IPPA</div>
-                <div class="ippa-no-money-note" data-i18n="fareNote">Overhandig bij aankomst</div>
+                <div class="ippa-no-money-note" id="calc-fare-note" data-i18n="fareNote">Overhandig bij aankomst</div>
+              </div>
+            </div>
+
+            <!-- Real Money Payment Gateway Scaffold (Visible only when Real Money Mode is active) -->
+            <div class="calc-payment-scaffold" id="calc-payment-scaffold" hidden>
+              <div class="calc-payment-header">
+                <span class="calc-payment-label" id="lbl-calc-pay-method">Betaalmethode kiezen</span>
+                <span class="calc-payment-secure">🔒 iDEAL • Stripe • Pin</span>
+              </div>
+              <div class="payment-method-pills" id="calc-payment-pills">
+                <button type="button" class="pay-pill active" data-pay="ideal">
+                  <span class="pay-badge-ideal">iDEAL</span>
+                  <span>iDEAL</span>
+                </button>
+                <button type="button" class="pay-pill" data-pay="stripe">
+                  <span>💳</span>
+                  <span>Creditcard / Stripe</span>
+                </button>
+                <button type="button" class="pay-pill" data-pay="taxi">
+                  <span>🚖</span>
+                  <span>Pin / Contant in Taxi</span>
+                </button>
               </div>
             </div>
 
             <!-- Primary Submit CTA -->
             <button type="button" class="btn-primary booking-submit-btn" id="btn-submit-booking">
-              <span data-i18n="btnBookSubmit">Rit Reserveren met IPPA</span>
+              <span id="btn-submit-booking-text" data-i18n="btnBookSubmit">Rit Reserveren met IPPA</span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
           </form>
@@ -935,6 +958,10 @@
           <span class="summary-val" id="sum-dropoff">-</span>
         </div>
         <div class="summary-row">
+          <span class="summary-label">Afstand &amp; geschatte rijtijd</span>
+          <span class="summary-val" id="sum-route-metrics">-</span>
+        </div>
+        <div class="summary-row">
           <span class="summary-label">Datum &amp; tijd</span>
           <span class="summary-val" id="sum-datetime">-</span>
         </div>
@@ -946,8 +973,12 @@
           <span class="summary-label">Passagiers</span>
           <span class="summary-val" id="sum-passengers">-</span>
         </div>
+        <div class="summary-row" id="sum-rate-breakdown-row" hidden>
+          <span class="summary-label">Tariefopbouw (2026)</span>
+          <span class="summary-val" id="sum-rate-breakdown" style="font-size:0.8rem; color:var(--color-text-muted);">-</span>
+        </div>
         <div class="summary-row summary-row-highlight">
-          <span class="summary-label">Betaling bij aankomst</span>
+          <span class="summary-label" id="sum-payment-label">Betaling bij aankomst</span>
           <span class="summary-val" id="sum-ippa">1x Type B IPPA</span>
         </div>
       </div>
@@ -975,6 +1006,74 @@
         <div class="form-group">
           <label for="modal-notes" class="form-label">Vluchtnummer of opmerkingen (optioneel)</label>
           <input type="text" id="modal-notes" class="form-input" placeholder="Bijv. Vlucht KL1234, kinderzitje of extra koffers...">
+        </div>
+
+        <!-- Real Money Payment Gateway UI Scaffold (Only visible in Real Money Mode) -->
+        <div class="modal-payment-gateway" id="modal-payment-gateway" hidden>
+          <div class="payment-gateway-header">
+            <span class="payment-gateway-title">Betaalmethode (2026 Vast Tarief)</span>
+            <span class="payment-gateway-lock">🔒 256-bit SSL • Stripe / iDEAL</span>
+          </div>
+
+          <div class="payment-gateway-tabs" id="modal-payment-tabs">
+            <button type="button" class="pg-tab active" data-pg="ideal">
+              <span class="pay-badge-ideal">iDEAL</span>
+              <span>iDEAL</span>
+            </button>
+            <button type="button" class="pg-tab" data-pg="stripe">
+              <span>💳</span>
+              <span>Creditcard / Stripe</span>
+            </button>
+            <button type="button" class="pg-tab" data-pg="taxi">
+              <span>🚖</span>
+              <span>Pin / Contant in Taxi</span>
+            </button>
+          </div>
+
+          <!-- iDEAL Panel -->
+          <div class="pg-panel" id="pg-panel-ideal">
+            <label for="ideal-bank-select" class="form-label" style="font-size:0.8rem;">Selecteer uw bank voor iDEAL-betaling</label>
+            <select id="ideal-bank-select" class="form-select">
+              <option value="ING">ING Bank</option>
+              <option value="Rabobank">Rabobank</option>
+              <option value="ABN AMRO">ABN AMRO</option>
+              <option value="SNS Bank">SNS Bank</option>
+              <option value="ASN Bank">ASN Bank</option>
+              <option value="RegioBank">RegioBank</option>
+              <option value="Bunq">bunq</option>
+              <option value="Knab">Knab</option>
+              <option value="Revolut">Revolut</option>
+              <option value="Triodos Bank">Triodos Bank</option>
+            </select>
+            <div class="pg-foot-note">Na bevestiging wordt uw rit direct vastgelegd met iDEAL-betaalreferentie.</div>
+          </div>
+
+          <!-- Stripe / Card Panel -->
+          <div class="pg-panel" id="pg-panel-stripe" hidden>
+            <div class="form-group" style="margin-bottom:8px;">
+              <label class="form-label" style="font-size:0.8rem;">Kaartnummer (Visa / Mastercard / Amex)</label>
+              <input type="text" id="stripe-card-num" class="form-input" placeholder="4242 •••• •••• 4242" maxlength="19" autocomplete="cc-number">
+            </div>
+            <div class="form-row-2" style="gap:8px;">
+              <div>
+                <label class="form-label" style="font-size:0.78rem;">Vervaldatum</label>
+                <input type="text" id="stripe-card-exp" class="form-input" placeholder="MM / JJ" maxlength="7" autocomplete="cc-exp">
+              </div>
+              <div>
+                <label class="form-label" style="font-size:0.78rem;">CVC</label>
+                <input type="text" id="stripe-card-cvc" class="form-input" placeholder="123" maxlength="4" autocomplete="cc-csc">
+              </div>
+            </div>
+            <div class="pg-foot-note">Geautoriseerd via Stripe Checkout. Geen extra transactiekosten.</div>
+          </div>
+
+          <!-- Pay in Taxi Panel -->
+          <div class="pg-panel" id="pg-panel-taxi" hidden>
+            <div class="pg-taxi-box">
+              <strong>🚖 Betaal in de Mercedes bij uw chauffeur</strong>
+              <p>U betaalt het vaste bedrag bij aankomst via contactloos pinnen (Maestro, VPAY, Visa, Mastercard, Apple Pay) of contant.</p>
+            </div>
+          </div>
         </div>
 
         <button type="submit" class="btn-primary modal-submit-btn" id="btn-confirm-reservation">

@@ -80,6 +80,27 @@
         </div>
       </div>
 
+      <!-- Global Currency Mode Toggle Switch (Admin Only) -->
+      <section id="currency-mode-bar" class="currency-mode-bar" hidden>
+        <div class="currency-mode-info">
+          <div class="currency-mode-label">
+            <span class="currency-dot" id="currency-mode-dot"></span>
+            <span>Currency Mode: <strong>Ippa / Real Money</strong></span>
+          </div>
+          <p class="currency-mode-desc" id="currency-mode-status-text">
+            Actieve modus: <b>Ippa Currency Mode</b> — Klanten betalen ritten met Type A, B of C IPPA.
+          </p>
+        </div>
+        <div class="currency-toggle-group" role="group" aria-label="Currency Mode: Ippa / Real Money">
+          <button type="button" class="currency-toggle-btn active" id="btn-mode-ippa" data-cmode="ippa">
+            💎 Ippa Mode
+          </button>
+          <button type="button" class="currency-toggle-btn" id="btn-mode-real" data-cmode="real_money">
+            💶 Real Money (€)
+          </button>
+        </div>
+      </section>
+
       <!-- KPI Summary Bar (Admin) -->
       <section id="stats-bar" class="stats-grid" hidden></section>
 

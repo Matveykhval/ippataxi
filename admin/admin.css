@@ -359,3 +359,122 @@ textarea { resize: vertical; min-height: 60px; }
 }
 .staff-history-item .ref-badge { font-weight: 700; font-variant-numeric: tabular-nums; }
 .staff-history-item .route-text { font-weight: 500; }
+
+/* ==========================================================================
+   Global Currency Mode Bar (Admin) & Driver Earnings Box
+   ========================================================================== */
+.currency-mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.currency-mode-bar.real-money-active {
+  border-color: rgba(48, 164, 108, 0.45);
+  background: color-mix(in srgb, var(--card) 94%, #30a46c);
+}
+.currency-mode-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+.currency-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #d8b14c;
+  box-shadow: 0 0 0 3px rgba(216, 177, 76, 0.22);
+}
+.currency-dot.real-money {
+  background: #30a46c;
+  box-shadow: 0 0 0 3px rgba(48, 164, 108, 0.24);
+}
+.currency-mode-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.currency-toggle-group {
+  display: inline-flex;
+  background: rgba(127, 127, 127, 0.14);
+  border-radius: 980px;
+  padding: 4px;
+  gap: 4px;
+}
+.currency-toggle-btn {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  padding: 7px 15px;
+  border-radius: 980px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.currency-toggle-btn:hover {
+  color: var(--text);
+}
+.currency-toggle-btn.active[data-cmode="ippa"] {
+  background: linear-gradient(135deg, #d8b14c, #a88219);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(216, 177, 76, 0.35);
+}
+.currency-toggle-btn.active[data-cmode="real_money"] {
+  background: linear-gradient(135deg, #30a46c, #218838);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(48, 164, 108, 0.35);
+}
+
+/* Driver Payout & Earnings Breakdown Box */
+.driver-earnings-box {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bg) 90%, #30a46c);
+  border: 1px solid rgba(48, 164, 108, 0.35);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.earnings-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.earnings-lbl {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+.earnings-val {
+  font-size: 1.02rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.earnings-val.commission {
+  color: #ff9f0a;
+}
+.earnings-item.payout .earnings-val.net-payout {
+  color: #30a46c;
+  font-size: 1.14rem;
+  font-weight: 800;
+}
+@media (max-width: 600px) {
+  .driver-earnings-box {
+    grid-template-columns: 1fr;
+  }
+}

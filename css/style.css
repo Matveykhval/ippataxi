@@ -1869,3 +1869,174 @@ a.channel-item:hover {
     right: 16px;
   }
 }
+
+/* ==========================================================================
+   Real Money Mode & Payment Gateway Scaffold Styles
+   ========================================================================== */
+.ippa-result-box.tier-euro {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(226, 193, 90, 0.1));
+  border-color: rgba(16, 185, 129, 0.45);
+}
+
+.ippa-result-box.tier-euro .ippa-payment-pill {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+
+.real-money-breakdown {
+  margin-top: 6px;
+  font-size: 0.76rem;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  line-height: 1.4;
+}
+
+.calc-payment-scaffold {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.calc-payment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+}
+
+.calc-payment-label {
+  font-weight: 600;
+  color: var(--color-text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.calc-payment-secure {
+  color: #10b981;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.payment-method-pills,
+.payment-gateway-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.pay-pill,
+.pg-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.pay-pill:hover,
+.pg-tab:hover {
+  border-color: rgba(226, 193, 90, 0.45);
+  color: #ffffff;
+}
+
+.pay-pill.active,
+.pg-tab.active {
+  background: rgba(226, 193, 90, 0.16);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(226, 193, 90, 0.3);
+}
+
+.pay-badge-ideal {
+  background: #cc0066;
+  color: #ffffff;
+  font-size: 0.66rem;
+  font-weight: 800;
+  padding: 2px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+.modal-payment-gateway {
+  margin: 14px 0 16px;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(226, 193, 90, 0.28);
+}
+
+.payment-gateway-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.payment-gateway-title {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.payment-gateway-lock {
+  font-size: 0.74rem;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.pg-panel {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pg-foot-note {
+  margin-top: 6px;
+  font-size: 0.74rem;
+  color: var(--color-text-muted);
+}
+
+.pg-taxi-box {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+}
+
+.pg-taxi-box strong {
+  display: block;
+  color: #10b981;
+  margin-bottom: 4px;
+}
+
+.pg-taxi-box p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+@media (max-width: 560px) {
+  .payment-method-pills,
+  .payment-gateway-tabs {
+    grid-template-columns: 1fr;
+  }
+}

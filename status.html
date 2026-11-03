@@ -73,7 +73,13 @@
         meta.append(el('span', '', '📅 ' + when), el('span', '', '🚗 ' + (b.vehicle || '-')));
         card.append(route, meta);
         if (b.driver && ['accepted', 'assigned', 'completed'].includes(b.status)) card.append(el('div', 'note', 'Uw chauffeur: ' + b.driver));
-        if (b.ippa) card.append(el('div', 'note', 'Betaling: ' + b.ippa + ' aan de chauffeur bij aankomst'));
+        if (b.ippa) {
+          const isEuro = String(b.ippa).includes('€');
+          const payText = isEuro
+            ? 'Ritprijs & Betaling: ' + b.ippa
+            : 'Betaling: ' + b.ippa + ' aan de chauffeur bij aankomst';
+          card.append(el('div', 'note', payText));
+        }
         out.append(card);
 
         const stepsCard = el('div', 'card'); stepsCard.style.marginTop = '14px';

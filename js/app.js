@@ -9,19 +9,23 @@
 // Application State
 const appState = {
   currentLang: localStorage.getItem('ippa_lang') || 'nl',
+  currencyMode: localStorage.getItem('ippa_currency_mode') || 'ippa', // 'ippa' | 'real_money'
+  paymentMethod: 'ideal', // 'ideal' | 'stripe' | 'taxi'
   activeTab: 'standard', // 'standard' | 'airport' | 'hourly'
   vehicleType: 'sedan',  // 'sedan' | 'estate' | 'van'
   isBookingSubmitting: false,
   bookingCompleted: false,
+  routeCache: {},        // key -> { distanceKm, durationMin, source }
+  liveRouteMetrics: null, // { key, distanceKm, durationMin, source }
   routesPreset: {
-    'ams-schiphol': { from: 'Amsterdam Centrum', to: 'Schiphol Airport (AMS)', km: 18, tier: 'B', tierName: 'Type B IPPA' },
-    'utr-schiphol': { from: 'Utrecht', to: 'Schiphol Airport (AMS)', km: 48, tier: 'B', tierName: 'Type B IPPA' },
-    'dh-schiphol': { from: 'Den Haag', to: 'Schiphol Airport (AMS)', km: 45, tier: 'B', tierName: 'Type B IPPA' },
-    'rtm-schiphol': { from: 'Rotterdam', to: 'Schiphol Airport (AMS)', km: 60, tier: 'C', tierName: 'Type C IPPA' },
-    'hlm-schiphol': { from: 'Haarlem', to: 'Schiphol Airport (AMS)', km: 20, tier: 'B', tierName: 'Type B IPPA' },
-    'alm-schiphol': { from: 'Almere', to: 'Schiphol Airport (AMS)', km: 42, tier: 'B', tierName: 'Type B IPPA' },
-    'ams-stad': { from: 'Amsterdam Centrum', to: 'Amsterdam Zuid / Station', km: 8, tier: 'A', tierName: 'Type A IPPA' },
-    'ehv-schiphol': { from: 'Eindhoven', to: 'Schiphol Airport (AMS)', km: 125, tier: 'C', tierName: 'Type C IPPA' }
+    'ams-schiphol': { from: 'Amsterdam Centrum', to: 'Schiphol Airport (AMS)', km: 18, min: 20, tier: 'B', tierName: 'Type B IPPA' },
+    'utr-schiphol': { from: 'Utrecht', to: 'Schiphol Airport (AMS)', km: 48, min: 35, tier: 'B', tierName: 'Type B IPPA' },
+    'dh-schiphol': { from: 'Den Haag', to: 'Schiphol Airport (AMS)', km: 45, min: 35, tier: 'B', tierName: 'Type B IPPA' },
+    'rtm-schiphol': { from: 'Rotterdam', to: 'Schiphol Airport (AMS)', km: 60, min: 45, tier: 'C', tierName: 'Type C IPPA' },
+    'hlm-schiphol': { from: 'Haarlem', to: 'Schiphol Airport (AMS)', km: 20, min: 22, tier: 'B', tierName: 'Type B IPPA' },
+    'alm-schiphol': { from: 'Almere', to: 'Schiphol Airport (AMS)', km: 42, min: 34, tier: 'B', tierName: 'Type B IPPA' },
+    'ams-stad': { from: 'Amsterdam Centrum', to: 'Amsterdam Zuid / Station', km: 7, min: 15, tier: 'A', tierName: 'Type A IPPA' },
+    'ehv-schiphol': { from: 'Eindhoven', to: 'Schiphol Airport (AMS)', km: 125, min: 80, tier: 'C', tierName: 'Type C IPPA' }
   }
 };
 
@@ -136,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLanguage();
   initBookingTabs();
   initVehicleSelector();
+  initPaymentGatewayScaffold();
   initFareCalculation();
   initPresetRoutes();
   initFAQAccordion();
@@ -145,7 +150,224 @@ document.addEventListener('DOMContentLoaded', () => {
   setDefaultDateTime();
   initNavigationScrollspy();
   loadRecaptcha();
+  initCurrencyModeSync();
 });
+
+/**
+ * Global Currency Mode Synchronization ('ippa' vs 'real_money')
+ * Syncs with Supabase public.site_settings, BroadcastChannel, and localStorage.
+ */
+function isRealMoneyMode() {
+  return appState.currencyMode === 'real_money';
+}
+
+function formatEuro(amount) {
+  return '€ ' + Number(amount || 0).toFixed(2).replace('.', ',');
+}
+
+function get2026Rates() {
+  const cfgRates = window.IPPA_CONFIG?.taxiRates2026 || {};
+  return {
+    baseFare: cfgRates.baseFare ?? 4.31,
+    perKm: cfgRates.perKm ?? 3.17,
+    perMin: cfgRates.perMin ?? 0.52
+  };
+}
+
+function calculate2026DutchTaxiFare(distanceKm, durationMin) {
+  const r = get2026Rates();
+  const km = Math.max(1, Number(distanceKm) || 18);
+  const min = Math.max(3, Number(durationMin) || Math.round(km * 1.15));
+  const basePart = r.baseFare;
+  const kmPart = km * r.perKm;
+  const minPart = min * r.perMin;
+  const total = +(basePart + kmPart + minPart).toFixed(2);
+  return {
+    baseFare: basePart,
+    perKm: r.perKm,
+    perMin: r.perMin,
+    distanceKm: +km.toFixed(1),
+    durationMin: Math.round(min),
+    kmCost: +kmPart.toFixed(2),
+    minCost: +minPart.toFixed(2),
+    totalFare: total,
+    formattedTotal: formatEuro(total)
+  };
+}
+
+function setCurrencyModeLocal(mode) {
+  const normalized = mode === 'real_money' ? 'real_money' : 'ippa';
+  const changed = appState.currencyMode !== normalized;
+  appState.currencyMode = normalized;
+  localStorage.setItem('ippa_currency_mode', normalized);
+  applyCurrencyModeUI();
+  updateFareDisplay();
+  if (changed && document.getElementById('booking-modal')?.classList.contains('active')) {
+    populateModalSummary();
+  }
+}
+
+async function fetchGlobalCurrencyMode() {
+  const cfg = window.IPPA_CONFIG || {};
+  if (!cfg.supabaseUrl || cfg.supabaseUrl.includes('YOUR-PROJECT')) return;
+
+  try {
+    const res = await fetch(`${cfg.supabaseUrl}/rest/v1/site_settings?key=eq.currency_mode&select=value`, {
+      headers: {
+        'apikey': cfg.supabaseAnonKey,
+        'Authorization': `Bearer ${cfg.supabaseAnonKey}`
+      }
+    });
+    if (res.ok) {
+      const rows = await res.json();
+      if (Array.isArray(rows) && rows.length > 0 && rows[0].value) {
+        setCurrencyModeLocal(rows[0].value);
+        return;
+      }
+    }
+  } catch (_) {}
+}
+
+function initCurrencyModeSync() {
+  // Apply current cached mode immediately
+  applyCurrencyModeUI();
+  updateFareDisplay();
+
+  // Fetch authoritative mode from Supabase DB
+  fetchGlobalCurrencyMode();
+  setInterval(fetchGlobalCurrencyMode, 15000);
+
+  // Instant cross-tab sync via BroadcastChannel & storage event
+  try {
+    const bc = new BroadcastChannel('ippa_currency_channel');
+    bc.onmessage = (ev) => {
+      if (ev.data && ev.data.currencyMode) {
+        setCurrencyModeLocal(ev.data.currencyMode);
+      }
+    };
+  } catch (_) {}
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'ippa_currency_mode' && e.newValue) {
+      setCurrencyModeLocal(e.newValue);
+    }
+  });
+}
+
+function applyCurrencyModeUI() {
+  const isEn = appState.currentLang === 'en';
+  const realMoney = isRealMoneyMode();
+
+  // 1. Toggle Payment Scaffolds visibility
+  const calcScaffold = document.getElementById('calc-payment-scaffold');
+  const modalGateway = document.getElementById('modal-payment-gateway');
+  const breakdownEl = document.getElementById('real-money-breakdown');
+  const sumBreakdownRow = document.getElementById('sum-rate-breakdown-row');
+
+  if (calcScaffold) calcScaffold.hidden = !realMoney;
+  if (modalGateway) modalGateway.hidden = !realMoney;
+  if (breakdownEl) breakdownEl.hidden = !realMoney;
+  if (sumBreakdownRow) sumBreakdownRow.hidden = !realMoney;
+
+  // 2. Update Hero & Calculator texts dynamically based on active mode
+  const heroTitle = document.querySelector('[data-i18n="heroTitle"]');
+  const heroDesc = document.querySelector('[data-i18n="heroDesc"]');
+  const cardSubtitle = document.querySelector('[data-i18n="cardSubtitle"]');
+  const btnBookSubmitText = document.getElementById('btn-submit-booking-text') || document.querySelector('[data-i18n="btnBookSubmit"]');
+  const fareTag = document.getElementById('calc-fare-tag');
+  const fareNote = document.getElementById('calc-fare-note');
+
+  if (realMoney) {
+    if (heroTitle) {
+      heroTitle.textContent = isEn
+        ? 'First-class chauffeur service with transparent 2026 fixed euro fares.'
+        : 'Eersteklas taxivervoer met vaste 2026 tarieven vooraf in euro’s.';
+    }
+    if (heroDesc) {
+      heroDesc.textContent = isEn
+        ? 'Calculate your exact distance and travel time upfront based on official 2026 Dutch rates (Base €4.31 • €3.17/km • €0.52/min) and pay securely via iDEAL, Stripe or in the taxi.'
+        : 'Bereken direct uw ritprijs vooraf op basis van de officiële 2026 Nederlandse taxitarieven (Start € 4,31 • € 3,17/km • € 0,52/min) en betaal veilig via iDEAL, Creditcard of in de taxi.';
+    }
+    if (cardSubtitle) {
+      cardSubtitle.textContent = isEn
+        ? 'Live route & fare calculation (2026 Rates: €4.31 + €3.17/km + €0.52/min)'
+        : 'Live route- & prijsberekening (Tarief 2026: € 4,31 + € 3,17/km + € 0,52/min)';
+    }
+    if (fareTag) {
+      fareTag.textContent = isEn ? 'Estimated Total Fare (2026 Rate)' : 'Berekende Ritprijs (Tarief 2026)';
+    }
+    if (fareNote) {
+      fareNote.textContent = isEn ? 'Fixed price upfront • Incl. VAT' : 'Vast tarief vooraf • Incl. btw';
+    }
+    if (btnBookSubmitText) {
+      btnBookSubmitText.textContent = isEn ? 'Book & Pay Ride (€)' : 'Rit Reserveren & Betalen (€)';
+    }
+  } else {
+    const t = translations[appState.currentLang] || translations.nl;
+    if (heroTitle) heroTitle.textContent = t.heroTitle;
+    if (heroDesc) heroDesc.textContent = t.heroDesc;
+    if (cardSubtitle) cardSubtitle.textContent = t.cardSubtitle;
+    if (fareTag) fareTag.textContent = t.fareTag;
+    if (fareNote) fareNote.textContent = t.fareNote;
+    if (btnBookSubmitText) btnBookSubmitText.textContent = t.btnBookSubmit;
+  }
+
+  // 3. Update Popular Preset Route Cards dynamically (€ vs IPPA)
+  const routeData = [
+    { km: 18, min: 20, tier: 'B' },
+    { km: 48, min: 35, tier: 'B' },
+    { km: 45, min: 35, tier: 'B' },
+    { km: 60, min: 45, tier: 'C' },
+    { km: 7,  min: 15, tier: 'A' },
+    { km: 125, min: 80, tier: 'C' }
+  ];
+  document.querySelectorAll('.airport-routes-grid .route-card').forEach((card, idx) => {
+    const info = routeData[idx];
+    if (!info) return;
+    const badgeEl = card.querySelector('.route-badge');
+    const priceEl = card.querySelector('.route-price-val');
+    if (realMoney) {
+      const calc = calculate2026DutchTaxiFare(info.km, info.min);
+      if (badgeEl) badgeEl.textContent = isEn ? '2026 Fixed Rate' : 'Vast Tarief 2026';
+      if (priceEl) priceEl.textContent = calc.formattedTotal;
+    } else {
+      if (badgeEl) badgeEl.textContent = `Type ${info.tier} IPPA`;
+      if (priceEl) priceEl.textContent = `1x Type ${info.tier} IPPA`;
+    }
+  });
+
+  // 4. Update Fleet Rate Labels dynamically
+  document.querySelectorAll('.fleet-rate-val').forEach((el) => {
+    el.textContent = realMoney
+      ? (isEn ? '€4.31 base + €3.17/km' : '€ 4,31 start + € 3,17/km')
+      : (isEn ? '1x IPPA per ride' : '1x IPPA per rit');
+  });
+}
+
+function initPaymentGatewayScaffold() {
+  const calcPills = document.querySelectorAll('#calc-payment-pills .pay-pill');
+  const modalTabs = document.querySelectorAll('#modal-payment-tabs .pg-tab');
+
+  function selectPaymentMethod(method) {
+    appState.paymentMethod = method;
+    calcPills.forEach(p => p.classList.toggle('active', p.dataset.pay === method));
+    modalTabs.forEach(t => t.classList.toggle('active', t.dataset.pg === method));
+
+    const idealPanel = document.getElementById('pg-panel-ideal');
+    const stripePanel = document.getElementById('pg-panel-stripe');
+    const taxiPanel = document.getElementById('pg-panel-taxi');
+    if (idealPanel) idealPanel.hidden = method !== 'ideal';
+    if (stripePanel) stripePanel.hidden = method !== 'stripe';
+    if (taxiPanel) taxiPanel.hidden = method !== 'taxi';
+  }
+
+  calcPills.forEach(pill => {
+    pill.addEventListener('click', () => selectPaymentMethod(pill.dataset.pay));
+  });
+  modalTabs.forEach(tab => {
+    tab.addEventListener('click', () => selectPaymentMethod(tab.dataset.pg));
+  });
+}
 
 /**
  * Language Switching Handler
@@ -174,6 +396,7 @@ function setLanguage(lang) {
   });
 
   applyTranslations(lang);
+  applyCurrencyModeUI();
   updateFareDisplay();
 }
 
@@ -260,58 +483,241 @@ function initVehicleSelector() {
 }
 
 /**
- * 3-TIER IPPA CALCULATION LOGIC
- * Distance-based tier assignment:
- * - < 15 km: Type A IPPA (Korte rit)
- * - 15 - 50 km: Type B IPPA (Middelmatige rit)
- * - > 50 km: Type C IPPA (Lange rit)
+ * DUTCH LOCATION GAZETTEER & LIVE ROUTING API (OSRM / Mapbox / Google Maps)
+ */
+const DUTCH_COORDS = {
+  'schiphol': [4.7641, 52.3086],
+  'ams': [4.7641, 52.3086],
+  'amsterdam zuid': [4.8729, 52.3389],
+  'amsterdam noord': [4.9314, 52.3913],
+  'amsterdam oost': [4.9367, 52.3563],
+  'amsterdam west': [4.8535, 52.3731],
+  'amsterdam sloterdijk': [4.8377, 52.3888],
+  'amsterdam arena': [4.9417, 52.3144],
+  'amsterdam': [4.8952, 52.3702],
+  'amstelveen': [4.8639, 52.3009],
+  'haarlem': [4.6462, 52.3874],
+  'zaandam': [4.8286, 52.4388],
+  'hoofddorp': [4.6889, 52.3025],
+  'aalsmeer': [4.7606, 52.2665],
+  'almere': [5.2647, 52.3508],
+  'hilversum': [5.1764, 52.2292],
+  'utrecht': [5.1214, 52.0907],
+  'amersfoort': [5.3878, 52.1561],
+  'leiden': [4.4970, 52.1601],
+  'den haag': [4.3007, 52.0705],
+  'the hague': [4.3007, 52.0705],
+  'scheveningen': [4.2756, 52.1047],
+  'delft': [4.3571, 52.0116],
+  'zoetermeer': [4.4931, 52.0575],
+  'rotterdam airport': [4.4372, 51.9555],
+  'rotterdam': [4.4777, 51.9244],
+  'gouda': [4.7105, 52.0115],
+  'dordrecht': [4.6901, 51.8133],
+  'alkmaar': [4.7534, 52.6324],
+  'hoorn': [5.0597, 52.6424],
+  'lelystad': [5.4714, 52.5185],
+  'zwolle': [6.0830, 52.5168],
+  'apeldoorn': [5.9699, 52.2112],
+  'arnhem': [5.8987, 51.9851],
+  'nijmegen': [5.8372, 51.8126],
+  'den bosch': [5.3037, 51.6978],
+  'breda': [4.7683, 51.5719],
+  'tilburg': [5.0913, 51.5555],
+  'eindhoven airport': [5.3921, 51.4584],
+  'eindhoven': [5.4697, 51.4416],
+  'maastricht': [5.6910, 50.8514],
+  'groningen': [6.5665, 53.2194],
+  'leeuwarden': [5.7999, 53.2012],
+  'enschede': [6.8937, 52.2215],
+  'venlo': [6.1724, 51.3704],
+  'roermond': [5.9875, 51.1942],
+  'antwerpen': [4.4025, 51.2194],
+  'brussel': [4.3517, 50.8503],
+  'dusseldorf': [6.7735, 51.2277]
+};
+
+function findKnownCoords(query) {
+  const q = (query || '').toLowerCase().trim();
+  if (!q) return null;
+  for (const [key, coords] of Object.entries(DUTCH_COORDS)) {
+    if (q.includes(key)) return coords;
+  }
+  return null;
+}
+
+async function geocodeAddressNL(query) {
+  const known = findKnownCoords(query);
+  if (known) return known;
+
+  const cfg = window.IPPA_CONFIG || {};
+  if (cfg.mapboxAccessToken) {
+    try {
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?country=nl,be,de&limit=1&access_token=${encodeURIComponent(cfg.mapboxAccessToken)}`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.features?.[0]?.center) return data.features[0].center;
+      }
+    } catch (_) {}
+  }
+
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=nl,be,de&q=${encodeURIComponent(query)}`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'nl' } });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data[0]?.lon && data[0]?.lat) {
+        return [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+      }
+    }
+  } catch (_) {}
+  return null;
+}
+
+async function fetchLiveDrivingRoute(pickup, dropoff) {
+  const p = (pickup || '').trim();
+  const d = (dropoff || '').trim();
+  if (p.length < 2 || d.length < 2) return null;
+
+  const cacheKey = `${p.toLowerCase()}__${d.toLowerCase()}`;
+  if (appState.routeCache[cacheKey]) {
+    appState.liveRouteMetrics = { key: cacheKey, ...appState.routeCache[cacheKey] };
+    return appState.liveRouteMetrics;
+  }
+
+  const c1 = await geocodeAddressNL(p);
+  const c2 = await geocodeAddressNL(d);
+  if (!c1 || !c2) return null;
+
+  const cfg = window.IPPA_CONFIG || {};
+
+  // 1. Optional Mapbox Directions API
+  if (cfg.mapboxAccessToken) {
+    try {
+      const mbUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${c1[0]},${c1[1]};${c2[0]},${c2[1]}?overview=false&access_token=${encodeURIComponent(cfg.mapboxAccessToken)}`;
+      const res = await fetch(mbUrl);
+      if (res.ok) {
+        const json = await res.json();
+        const route = json.routes?.[0];
+        if (route) {
+          const metrics = {
+            distanceKm: Math.max(1, +(route.distance / 1000).toFixed(1)),
+            durationMin: Math.max(3, Math.round(route.duration / 60)),
+            source: 'Mapbox Routing'
+          };
+          appState.routeCache[cacheKey] = metrics;
+          appState.liveRouteMetrics = { key: cacheKey, ...metrics };
+          return appState.liveRouteMetrics;
+        }
+      }
+    } catch (_) {}
+  }
+
+  // 2. OSRM Public Driving Route API
+  try {
+    const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${c1[0]},${c1[1]};${c2[0]},${c2[1]}?overview=false`;
+    const res = await fetch(osrmUrl);
+    if (res.ok) {
+      const json = await res.json();
+      const route = json.routes?.[0];
+      if (route) {
+        const metrics = {
+          distanceKm: Math.max(1, +(route.distance / 1000).toFixed(1)),
+          durationMin: Math.max(3, Math.round(route.duration / 60)),
+          source: 'Live Route API'
+        };
+        appState.routeCache[cacheKey] = metrics;
+        appState.liveRouteMetrics = { key: cacheKey, ...metrics };
+        return appState.liveRouteMetrics;
+      }
+    }
+  } catch (_) {}
+
+  // 3. Haversine road-factor fallback if offline
+  const R = 6371;
+  const dLat = (c2[1] - c1[1]) * Math.PI / 180;
+  const dLon = (c2[0] - c1[0]) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(c1[1] * Math.PI / 180) * Math.cos(c2[1] * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+  const straightKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const roadKm = Math.max(2, +(straightKm * 1.26).toFixed(1));
+  const roadMin = Math.max(5, Math.round((roadKm / 55) * 60 + 5));
+  const metrics = { distanceKm: roadKm, durationMin: roadMin, source: 'NL Wegennet' };
+  appState.routeCache[cacheKey] = metrics;
+  appState.liveRouteMetrics = { key: cacheKey, ...metrics };
+  return appState.liveRouteMetrics;
+}
+
+/**
+ * DUAL-MODE FARE CALCULATION LOGIC (3-Tier IPPA + 2026 Real Money Rates)
+ * - IPPA Mode:
+ *   < 15 km: Type A IPPA | 15 - 50 km: Type B IPPA | > 50 km: Type C IPPA
+ * - Real Money Mode (2026 Dutch Taxi Rates):
+ *   Base: € 4,31 | Per KM: € 3,17 | Per Min: € 0,52
  */
 function calculateEstimatedFare() {
-  const pickup = (document.getElementById('ride-pickup')?.value || '').toLowerCase().trim();
-  const dropoff = (document.getElementById('ride-dropoff')?.value || '').toLowerCase().trim();
+  const pickupRaw = document.getElementById('ride-pickup')?.value || '';
+  const dropoffRaw = document.getElementById('ride-dropoff')?.value || '';
+  const pickup = pickupRaw.toLowerCase().trim();
+  const dropoff = dropoffRaw.toLowerCase().trim();
+  const cacheKey = `${pickup}__${dropoff}`;
 
-  // Known city pairs matcher
+  // Known city pairs matcher (instant baseline)
   const pairs = [
-    { match: ['amsterdam', 'schiphol'], km: 18, tier: 'B' },
-    { match: ['utrecht', 'schiphol'], km: 48, tier: 'B' },
-    { match: ['den haag', 'schiphol'], km: 45, tier: 'B' },
-    { match: ['rotterdam', 'schiphol'], km: 60, tier: 'C' },
-    { match: ['haarlem', 'schiphol'], km: 20, tier: 'B' },
-    { match: ['almere', 'schiphol'], km: 42, tier: 'B' },
-    { match: ['amstelveen', 'schiphol'], km: 12, tier: 'A' },
-    { match: ['eindhoven', 'schiphol'], km: 125, tier: 'C' },
-    { match: ['rotterdam', 'den haag'], km: 26, tier: 'B' },
-    { match: ['amsterdam', 'rotterdam'], km: 70, tier: 'C' },
-    { match: ['amsterdam', 'utrecht'], km: 42, tier: 'B' },
-    { match: ['centrum', 'zuid'], km: 7, tier: 'A' },
-    { match: ['centrum', 'noord'], km: 8, tier: 'A' }
+    { match: ['amsterdam', 'schiphol'], km: 18, min: 20, tier: 'B' },
+    { match: ['utrecht', 'schiphol'], km: 48, min: 35, tier: 'B' },
+    { match: ['den haag', 'schiphol'], km: 45, min: 35, tier: 'B' },
+    { match: ['rotterdam', 'schiphol'], km: 60, min: 45, tier: 'C' },
+    { match: ['haarlem', 'schiphol'], km: 20, min: 22, tier: 'B' },
+    { match: ['almere', 'schiphol'], km: 42, min: 34, tier: 'B' },
+    { match: ['amstelveen', 'schiphol'], km: 12, min: 15, tier: 'A' },
+    { match: ['eindhoven', 'schiphol'], km: 125, min: 80, tier: 'C' },
+    { match: ['rotterdam', 'den haag'], km: 26, min: 25, tier: 'B' },
+    { match: ['amsterdam', 'rotterdam'], km: 70, min: 55, tier: 'C' },
+    { match: ['amsterdam', 'utrecht'], km: 42, min: 35, tier: 'B' },
+    { match: ['centrum', 'zuid'], km: 7, min: 15, tier: 'A' },
+    { match: ['centrum', 'noord'], km: 8, min: 16, tier: 'A' }
   ];
 
   let distanceKm = 18;
+  let durationMin = 20;
   let tier = 'B';
   let matched = false;
+  let routeSource = 'Standaard traject';
 
-  for (const pair of pairs) {
-    const has0 = pickup.includes(pair.match[0]) || dropoff.includes(pair.match[0]);
-    const has1 = pickup.includes(pair.match[1]) || dropoff.includes(pair.match[1]);
-    if (has0 && has1) {
-      distanceKm = pair.km;
-      tier = pair.tier;
-      matched = true;
-      break;
+  if (appState.routeCache[cacheKey]) {
+    distanceKm = appState.routeCache[cacheKey].distanceKm;
+    durationMin = appState.routeCache[cacheKey].durationMin;
+    routeSource = appState.routeCache[cacheKey].source || 'Live Route API';
+    tier = distanceKm < 15 ? 'A' : (distanceKm <= 50 ? 'B' : 'C');
+    matched = true;
+  } else {
+    for (const pair of pairs) {
+      const has0 = pickup.includes(pair.match[0]) || dropoff.includes(pair.match[0]);
+      const has1 = pickup.includes(pair.match[1]) || dropoff.includes(pair.match[1]);
+      if (has0 && has1) {
+        distanceKm = pair.km;
+        durationMin = pair.min;
+        tier = pair.tier;
+        matched = true;
+        break;
+      }
     }
-  }
 
-  if (!matched) {
-    if (pickup.includes('schiphol') || dropoff.includes('schiphol')) {
-      distanceKm = 25;
-      tier = 'B';
-    } else if (pickup.length > 2 && dropoff.length > 2) {
-      distanceKm = 12;
-      tier = 'A';
-    } else {
-      distanceKm = 18;
-      tier = 'B';
+    if (!matched) {
+      if (pickup.includes('schiphol') || dropoff.includes('schiphol')) {
+        distanceKm = 25;
+        durationMin = 26;
+        tier = 'B';
+      } else if (pickup.length > 2 && dropoff.length > 2) {
+        distanceKm = 12;
+        durationMin = 17;
+        tier = 'A';
+      } else {
+        distanceKm = 18;
+        durationMin = 20;
+        tier = 'B';
+      }
     }
   }
 
@@ -343,30 +749,75 @@ function calculateEstimatedFare() {
     }
   };
 
+  const euroCalc = calculate2026DutchTaxiFare(distanceKm, durationMin);
+
+  if (isRealMoneyMode()) {
+    const isEn = appState.currentLang === 'en';
+    return {
+      currencyMode: 'real_money',
+      distanceKm: euroCalc.distanceKm,
+      durationMin: euroCalc.durationMin,
+      routeSource,
+      tier: tier,
+      name: euroCalc.formattedTotal,
+      subtext: `~${euroCalc.durationMin} min rijtijd (${routeSource})`,
+      subtextEn: `~${euroCalc.durationMin} min drive (${routeSource})`,
+      badgeClass: 'tier-euro',
+      giveText: euroCalc.formattedTotal,
+      euroCalc
+    };
+  }
+
   return {
+    currencyMode: 'ippa',
     distanceKm: distanceKm,
+    durationMin: durationMin,
+    routeSource,
+    euroCalc,
     ...tierInfo[tier]
   };
 }
+
+const triggerAsyncRouteCalculation = debounce(async () => {
+  const pickup = document.getElementById('ride-pickup')?.value || '';
+  const dropoff = document.getElementById('ride-dropoff')?.value || '';
+  if (pickup.trim().length < 2 || dropoff.trim().length < 2) return;
+  const route = await fetchLiveDrivingRoute(pickup, dropoff);
+  if (route) {
+    updateFareDisplay(true);
+  }
+}, 400);
 
 function initFareCalculation() {
   const pickupInput = document.getElementById('ride-pickup');
   const dropoffInput = document.getElementById('ride-dropoff');
   const passengersInput = document.getElementById('ride-passengers');
 
-  if (pickupInput) pickupInput.addEventListener('input', debounce(updateFareDisplay, 250));
-  if (dropoffInput) dropoffInput.addEventListener('input', debounce(updateFareDisplay, 250));
-  if (passengersInput) passengersInput.addEventListener('change', updateFareDisplay);
+  if (pickupInput) {
+    pickupInput.addEventListener('input', () => {
+      updateFareDisplay();
+      triggerAsyncRouteCalculation();
+    });
+  }
+  if (dropoffInput) {
+    dropoffInput.addEventListener('input', () => {
+      updateFareDisplay();
+      triggerAsyncRouteCalculation();
+    });
+  }
+  if (passengersInput) passengersInput.addEventListener('change', () => updateFareDisplay());
 
   updateFareDisplay();
+  triggerAsyncRouteCalculation();
 }
 
-function updateFareDisplay() {
+function updateFareDisplay(skipAsync = false) {
   const result = calculateEstimatedFare();
   const box = document.getElementById('ippa-result-box');
   const tierNameEl = document.getElementById('ippa-tier-name');
   const distanceEl = document.getElementById('ippa-distance-display');
   const paymentPill = document.getElementById('ippa-payment-pill');
+  const breakdownEl = document.getElementById('real-money-breakdown');
 
   if (box) {
     box.className = `ippa-result-box ${result.badgeClass}`;
@@ -379,11 +830,28 @@ function updateFareDisplay() {
   if (distanceEl) {
     const isEn = appState.currentLang === 'en';
     const sub = isEn ? result.subtextEn : result.subtext;
-    distanceEl.textContent = `Geschat ~${result.distanceKm} km • ${sub}`;
+    distanceEl.textContent = `${isEn ? 'Est.' : 'Geschat'} ~${result.distanceKm} km • ${sub}`;
   }
 
   if (paymentPill) {
     paymentPill.textContent = result.giveText;
+  }
+
+  if (breakdownEl) {
+    if (isRealMoneyMode() && result.euroCalc) {
+      const ec = result.euroCalc;
+      const isEn = appState.currentLang === 'en';
+      breakdownEl.hidden = false;
+      breakdownEl.textContent = isEn
+        ? `2026 Rate: Base ${formatEuro(ec.baseFare)} + ${ec.distanceKm} km × €3,17 (${formatEuro(ec.kmCost)}) + ${ec.durationMin} min × €0,52 (${formatEuro(ec.minCost)})`
+        : `Tarief 2026: Start ${formatEuro(ec.baseFare)} + ${ec.distanceKm} km × € 3,17 (${formatEuro(ec.kmCost)}) + ${ec.durationMin} min × € 0,52 (${formatEuro(ec.minCost)})`;
+    } else {
+      breakdownEl.hidden = true;
+    }
+  }
+
+  if (!skipAsync) {
+    triggerAsyncRouteCalculation();
   }
 }
 
@@ -531,8 +999,9 @@ function populateModalSummary() {
   const dropoff = document.getElementById('ride-dropoff')?.value || 'Schiphol Airport';
   const datetime = document.getElementById('ride-datetime')?.value || 'Zo snel mogelijk';
   const passengers = document.getElementById('ride-passengers')?.value || '1';
-  const luggage = document.getElementById('ride-luggage')?.value || '1';
   const res = calculateEstimatedFare();
+  const realMoney = isRealMoneyMode();
+  const isEn = appState.currentLang === 'en';
 
   const vNames = {
     sedan: 'Executive Sedan',
@@ -543,9 +1012,42 @@ function populateModalSummary() {
 
   document.getElementById('sum-pickup').textContent = pickup;
   document.getElementById('sum-dropoff').textContent = dropoff;
+  const routeMetricsEl = document.getElementById('sum-route-metrics');
+  if (routeMetricsEl) {
+    routeMetricsEl.textContent = `~${res.distanceKm} km • ~${res.durationMin} min`;
+  }
   document.getElementById('sum-datetime').textContent = datetime.replace('T', ' om ');
   document.getElementById('sum-vehicle').textContent = vehicleName;
   document.getElementById('sum-passengers').textContent = `${passengers} pers.`;
+
+  const sumPayLabel = document.getElementById('sum-payment-label');
+  const sumBreakdownRow = document.getElementById('sum-rate-breakdown-row');
+  const sumBreakdownVal = document.getElementById('sum-rate-breakdown');
+  const modalGateway = document.getElementById('modal-payment-gateway');
+  const confirmBtn = document.getElementById('btn-confirm-reservation');
+
+  if (realMoney && res.euroCalc) {
+    const ec = res.euroCalc;
+    if (sumPayLabel) sumPayLabel.textContent = isEn ? 'Total Fare (2026 Rate)' : 'Totale Ritprijs (2026 Tarief)';
+    if (sumBreakdownRow) sumBreakdownRow.hidden = false;
+    if (sumBreakdownVal) {
+      sumBreakdownVal.textContent = `${formatEuro(ec.baseFare)} start + ${formatEuro(ec.kmCost)} (${ec.distanceKm} km) + ${formatEuro(ec.minCost)} (${ec.durationMin} min)`;
+    }
+    if (modalGateway) modalGateway.hidden = false;
+    if (confirmBtn && !appState.bookingCompleted) {
+      confirmBtn.innerHTML = isEn
+        ? `Confirm & Pay (${res.giveText})`
+        : `Bevestig & Betaal (${res.giveText})`;
+    }
+  } else {
+    if (sumPayLabel) sumPayLabel.textContent = isEn ? 'Payment upon arrival' : 'Betaling bij aankomst';
+    if (sumBreakdownRow) sumBreakdownRow.hidden = true;
+    if (modalGateway) modalGateway.hidden = true;
+    if (confirmBtn && !appState.bookingCompleted) {
+      confirmBtn.innerHTML = isEn ? 'Confirm Reservation' : 'Bevestig Reservering';
+    }
+  }
+
   document.getElementById('sum-ippa').textContent = res.giveText;
 }
 
@@ -684,6 +1186,18 @@ function handleReservationSubmit(e) {
   if (statusBox) statusBox.style.display = 'none';
 
   const pickupDate = new Date(datetime);
+  let paymentValue = res.giveText;
+  if (isRealMoneyMode()) {
+    const bank = document.getElementById('ideal-bank-select')?.value || 'ING';
+    if (appState.paymentMethod === 'ideal') {
+      paymentValue = `${res.giveText} (iDEAL - ${bank})`;
+    } else if (appState.paymentMethod === 'stripe') {
+      paymentValue = `${res.giveText} (Stripe Card)`;
+    } else {
+      paymentValue = `${res.giveText} (Pin in taxi)`;
+    }
+  }
+
   const row = {
     track_token: crypto.randomUUID(),
     ref: refCode,
@@ -695,7 +1209,7 @@ function handleReservationSubmit(e) {
     pickup_at: isNaN(pickupDate) ? null : pickupDate.toISOString(),
     vehicle: vehicleName,
     passengers: parseInt(passengers, 10) || 1,
-    ippa: res.giveText,
+    ippa: paymentValue,
     notes: notes === 'Geen' ? null : notes
   };
 
@@ -714,9 +1228,17 @@ function handleReservationSubmit(e) {
     if (statusBox) {
       const statusUrl = `status.html?t=${row.track_token}`;
       statusBox.className = 'form-status-success';
+      const paymentSummaryLine = isRealMoneyMode()
+        ? (appState.currentLang === 'en'
+            ? `Total Fare: <strong>${paymentValue}</strong>.`
+            : `Ritprijs & Betaling: <strong>${paymentValue}</strong>.`)
+        : (appState.currentLang === 'en'
+            ? `Hand <strong>${res.giveText}</strong> to your driver upon arrival.`
+            : `U overhandigt <strong>${res.giveText}</strong> aan de chauffeur bij aankomst.`);
+
       statusBox.innerHTML = appState.currentLang === 'en'
-        ? `✓ <strong>Reservation successfully sent!</strong> Details dispatched to our team.<br>Ref: <strong>${refCode}</strong>. Hand <strong>${res.giveText}</strong> to your driver upon arrival.<br><a href="${statusUrl}" style="color:inherit;text-decoration:underline">Track your ride status →</a>`
-        : `✓ <strong>Reservering succesvol verzonden!</strong> De ritdetails zijn doorgestuurd naar de centrale.<br>Referentie: <strong>${refCode}</strong>. U overhandigt <strong>${res.giveText}</strong> aan de chauffeur bij aankomst.<br><a href="${statusUrl}" style="color:inherit;text-decoration:underline">Bekijk de status van uw rit →</a>`;
+        ? `✓ <strong>Reservation successfully sent!</strong> Details dispatched to our team.<br>Ref: <strong>${refCode}</strong>. ${paymentSummaryLine}<br><a href="${statusUrl}" style="color:inherit;text-decoration:underline">Track your ride status →</a>`
+        : `✓ <strong>Reservering succesvol verzonden!</strong> De ritdetails zijn doorgestuurd naar de centrale.<br>Referentie: <strong>${refCode}</strong>. ${paymentSummaryLine}<br><a href="${statusUrl}" style="color:inherit;text-decoration:underline">Bekijk de status van uw rit →</a>`;
       statusBox.style.display = 'block';
     }
 
