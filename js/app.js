@@ -11,6 +11,8 @@ const appState = {
   currentLang: localStorage.getItem('ippa_lang') || 'nl',
   activeTab: 'standard', // 'standard' | 'airport' | 'hourly'
   vehicleType: 'sedan',  // 'sedan' | 'estate' | 'van'
+  isBookingSubmitting: false,
+  bookingCompleted: false,
   routesPreset: {
     'ams-schiphol': { from: 'Amsterdam Centrum', to: 'Schiphol Airport (AMS)', km: 18, tier: 'B', tierName: 'Type B IPPA' },
     'utr-schiphol': { from: 'Utrecht', to: 'Schiphol Airport (AMS)', km: 48, tier: 'B', tierName: 'Type B IPPA' },
@@ -468,10 +470,31 @@ function initModal() {
   const openBtn = document.getElementById('btn-submit-booking');
   const closeBtn = document.getElementById('modal-close-btn');
   const confirmBtn = document.getElementById('btn-confirm-reservation');
+  const form = document.getElementById('modal-booking-form');
+
+  function resetModalState() {
+    appState.bookingCompleted = false;
+    appState.isBookingSubmitting = false;
+    const statusBox = document.getElementById('modal-form-status');
+    if (statusBox) {
+      statusBox.style.display = 'none';
+      statusBox.innerHTML = '';
+      statusBox.className = 'form-status-box';
+    }
+    if (confirmBtn) {
+      confirmBtn.disabled = false;
+      confirmBtn.style.cursor = '';
+      confirmBtn.innerHTML = appState.currentLang === 'en' ? 'Confirm Reservation' : 'Bevestig Reservering';
+    }
+  }
 
   if (openBtn) {
     openBtn.addEventListener('click', (e) => {
       e.preventDefault();
+      // If previous reservation completed, reset the modal for a fresh booking
+      if (appState.bookingCompleted) {
+        resetModalState();
+      }
       populateModalSummary();
       modal.classList.add('active');
     });
@@ -480,17 +503,26 @@ function initModal() {
   if (closeBtn) {
     closeBtn.addEventListener('click', () => {
       modal.classList.remove('active');
+      if (appState.bookingCompleted) {
+        resetModalState();
+      }
     });
   }
 
   window.addEventListener('click', (e) => {
     if (e.target === modal) {
       modal.classList.remove('active');
+      if (appState.bookingCompleted) {
+        resetModalState();
+      }
     }
   });
 
   if (confirmBtn) {
     confirmBtn.addEventListener('click', handleReservationSubmit);
+  }
+  if (form) {
+    form.addEventListener('submit', handleReservationSubmit);
   }
 }
 
@@ -607,7 +639,13 @@ async function sendToSupabase(table, row) {
 }
 
 function handleReservationSubmit(e) {
-  e.preventDefault();
+  if (e) e.preventDefault();
+
+  // Prevent duplicate submissions if already submitting or if already sent
+  if (appState.isBookingSubmitting || appState.bookingCompleted) {
+    return;
+  }
+
   const name = document.getElementById('modal-name')?.value.trim();
   const phone = document.getElementById('modal-phone')?.value.trim();
   const email = document.getElementById('modal-email')?.value.trim();
@@ -635,6 +673,9 @@ function handleReservationSubmit(e) {
   const vehicleName = vNames[appState.vehicleType] || 'Executive Sedan';
   const refCode = 'IPPA-' + Math.floor(1000 + Math.random() * 9000);
 
+  // Mark in-flight to lock out double clicks
+  appState.isBookingSubmitting = true;
+
   // Set loading state on button
   if (confirmBtn) {
     confirmBtn.disabled = true;
@@ -660,8 +701,13 @@ function handleReservationSubmit(e) {
 
   sendToSupabase('bookings', row)
   .then(() => {
+    appState.isBookingSubmitting = false;
+    appState.bookingCompleted = true;
+
+    // Keep button disabled so clicking "Reservering Verzonden" cannot create duplicates!
     if (confirmBtn) {
-      confirmBtn.disabled = false;
+      confirmBtn.disabled = true;
+      confirmBtn.style.cursor = 'default';
       confirmBtn.innerHTML = '✓ ' + (appState.currentLang === 'en' ? 'Reservation Sent!' : 'Reservering Verzonden!');
     }
 
@@ -678,16 +724,20 @@ function handleReservationSubmit(e) {
       ? `Booking sent to dispatch! Ref: ${refCode}` 
       : `Reservering verstuurd naar centrale! Ref: ${refCode}`);
 
-    // Auto close modal after 3 seconds
+    // Auto close modal after 3.5 seconds
     setTimeout(() => {
       const modal = document.getElementById('booking-modal');
-      if (modal) modal.classList.remove('active');
-    }, 3000);
+      if (modal && modal.classList.contains('active')) {
+        modal.classList.remove('active');
+      }
+    }, 3500);
   })
   .catch(err => {
     console.error('Error submitting reservation:', err);
+    appState.isBookingSubmitting = false;
     if (confirmBtn) {
       confirmBtn.disabled = false;
+      confirmBtn.style.cursor = '';
       confirmBtn.textContent = appState.currentLang === 'en' ? 'Try Again' : 'Opnieuw Proberen';
     }
     if (statusBox) {
@@ -707,11 +757,13 @@ function initContactForm() {
   const form = document.getElementById('contact-form');
   const submitBtn = document.getElementById('contact-submit-btn');
   const statusBox = document.getElementById('contact-form-status');
+  let isSubmitting = false;
 
   if (!form) return;
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
     const name = document.getElementById('contact-name')?.value.trim();
     const phone = document.getElementById('contact-phone')?.value.trim();
@@ -727,6 +779,7 @@ function initContactForm() {
       return;
     }
 
+    isSubmitting = true;
     if (submitBtn) {
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<span class="btn-spinner"></span> Bezig met versturen...';
@@ -736,7 +789,7 @@ function initContactForm() {
     sendToSupabase('messages', { name, phone: phone || null, email, message })
     .then(() => {
       if (submitBtn) {
-        submitBtn.disabled = false;
+        submitBtn.disabled = true; // keep disabled briefly
         submitBtn.textContent = '✓ Bericht Verzonden!';
       }
       if (statusBox) {
@@ -748,11 +801,16 @@ function initContactForm() {
       form.reset();
 
       setTimeout(() => {
-        if (submitBtn) submitBtn.textContent = 'Verstuur Bericht naar Centrale';
+        isSubmitting = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Verstuur Bericht naar Centrale';
+        }
       }, 5000);
     })
     .catch(err => {
       console.error('Error submitting contact form:', err);
+      isSubmitting = false;
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Verstuur Bericht naar Centrale';
