@@ -23,6 +23,11 @@ const MESSAGES: Record<string, { subject: string; title: string; text: string }>
     title: 'Uw rit is bevestigd ✓',
     text: 'Goed nieuws: wij hebben uw reservering bevestigd.',
   },
+  accepted: {
+    subject: 'Uw chauffeur heeft uw rit geaccepteerd',
+    title: 'Uw chauffeur staat voor u klaar ✓',
+    text: 'Goed nieuws: een chauffeur heeft uw rit geaccepteerd en is aan uw reservering gekoppeld.',
+  },
   assigned: {
     subject: 'Uw chauffeur is toegewezen',
     title: 'Uw chauffeur staat voor u klaar',
@@ -58,7 +63,7 @@ Deno.serve(async (req) => {
           timeZone: 'Europe/Amsterdam', weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit',
         })
       : 'Zo snel mogelijk';
-    const driverLine = b.status === 'assigned' && b.driver ? `<p>Uw chauffeur: <b>${esc(b.driver)}</b></p>` : '';
+    const driverLine = (b.status === 'assigned' || b.status === 'accepted') && b.driver ? `<p>Uw chauffeur: <b>${esc(b.driver)}</b></p>` : '';
     const ippaLine = b.status !== 'cancelled' && b.ippa
       ? `<p style="color:#b88b39"><b>Betaling:</b> ${esc(b.ippa)} aan de chauffeur bij aankomst.</p>` : '';
 

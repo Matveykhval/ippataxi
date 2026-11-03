@@ -72,7 +72,7 @@
         const meta = el('div', 'meta');
         meta.append(el('span', '', '📅 ' + when), el('span', '', '🚗 ' + (b.vehicle || '-')));
         card.append(route, meta);
-        if (b.driver && ['assigned', 'completed'].includes(b.status)) card.append(el('div', 'note', 'Uw chauffeur: ' + b.driver));
+        if (b.driver && ['accepted', 'assigned', 'completed'].includes(b.status)) card.append(el('div', 'note', 'Uw chauffeur: ' + b.driver));
         if (b.ippa) card.append(el('div', 'note', 'Betaling: ' + b.ippa + ' aan de chauffeur bij aankomst'));
         out.append(card);
 
@@ -81,7 +81,8 @@
           stepsCard.append(el('div', 'cancelled-note', 'Deze rit is geannuleerd'));
         } else {
           const ul = el('ul', 'steps');
-          const idx = STEPS.findIndex(([k]) => k === b.status);
+          const normStatus = b.status === 'pending' ? 'new' : (b.status === 'accepted' ? 'assigned' : b.status);
+          const idx = STEPS.findIndex(([k]) => k === normStatus);
           STEPS.forEach(([, label], i) => ul.append(el('li', i < idx ? 'done' : i === idx ? 'current' : '', label)));
           stepsCard.append(ul);
         }

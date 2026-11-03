@@ -29,15 +29,16 @@ Deno.serve(async (req) => {
 
   try {
     const { type, token, data } = await req.json();
-    if (!['booking', 'message'].includes(type) || typeof token !== 'string' || typeof data !== 'object' || !data) {
+    if (!['booking', 'message', 'contact'].includes(type) || typeof token !== 'string' || typeof data !== 'object' || !data) {
       return json({ ok: false, reason: 'bad_request' }, 400);
     }
 
     // 1) Captcha
+    const secret = Deno.env.get('RECAPTCHA_SECRET_KEY') ?? Deno.env.get('RECAPTCHA_SECRET') ?? '';
     const verify = await fetch('https://www.google.com/recaptcha/api/siteverify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ secret: Deno.env.get('RECAPTCHA_SECRET') ?? '', response: token }),
+      body: new URLSearchParams({ secret, response: token }),
     }).then((r) => r.json());
     if (!verify.success || (verify.score ?? 0) < MIN_SCORE || verify.action !== type) {
       console.warn('captcha rejected', JSON.stringify({ success: verify.success, score: verify.score, action: verify.action, errors: verify['error-codes'] }));
@@ -65,7 +66,6 @@ Deno.serve(async (req) => {
         ippa: str(data.ippa, 1, 60),
         notes: data.notes ? str(data.notes, 1, 500) : null,
         track_token: typeof data.track_token === 'string' && UUID.test(data.track_token) ? data.track_token : undefined,
-        status: 'new',
       };
       if (!row.ref || !row.name || !row.phone || !row.email || !row.pickup || !row.dropoff) {
         return json({ ok: false, reason: 'invalid' }, 422);

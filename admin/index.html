@@ -17,7 +17,7 @@
     <form id="login-form" class="login-card" autocomplete="on">
       <div class="logo">IT</div>
       <h1>Inloggen</h1>
-      <p class="muted">IPPATAXI Dashboard</p>
+      <p class="muted">IPPATAXI Dispatch &amp; Chauffeurs</p>
       <input type="email" id="login-email" placeholder="E-mailadres" autocomplete="username" required>
       <input type="password" id="login-password" placeholder="Wachtwoord" autocomplete="current-password" required>
       <button type="submit" class="btn primary" id="login-btn">Doorgaan</button>
@@ -25,17 +25,39 @@
     </form>
   </main>
 
-  <!-- Dashboard -->
+  <!-- Dashboard (Adapts strictly to role: 'owner' vs 'driver') -->
   <div id="app-view" hidden>
     <header class="topbar">
       <div class="topbar-inner">
-        <strong>IPPATAXI</strong>
-        <nav class="segmented" role="tablist">
-          <button class="seg active" data-tab="bookings" role="tab">Ritten <span class="badge" id="badge-bookings" hidden></span></button>
-          <button class="seg" data-tab="messages" role="tab">Berichten <span class="badge" id="badge-messages" hidden></span></button>
+        <div class="brand-cluster">
+          <div class="logo-sm">IT</div>
+          <strong>IPPATAXI</strong>
+          <span id="role-badge" class="role-badge"></span>
+        </div>
+
+        <!-- Admin Navigation Tabs (owner only) -->
+        <nav id="admin-tabs" class="segmented" role="tablist" hidden>
+          <button class="seg active" data-tab="bookings" role="tab">
+            Ritten <span class="badge" id="badge-bookings" hidden></span>
+          </button>
+          <button class="seg" data-tab="messages" role="tab">
+            Berichten <span class="badge" id="badge-messages" hidden></span>
+          </button>
         </nav>
+
+        <!-- Driver Navigation Tabs (driver only) -->
+        <nav id="driver-tabs" class="segmented" role="tablist" hidden>
+          <button class="seg active" data-dtab="available" role="tab">
+            Beschikbare Ritten <span class="badge" id="badge-available" hidden></span>
+          </button>
+          <button class="seg" data-dtab="my-rides" role="tab">
+            Mijn Ritten <span class="badge badge-blue" id="badge-my-rides" hidden></span>
+          </button>
+        </nav>
+
         <div class="topbar-right">
           <span id="who" class="muted"></span>
+          <a href="../driver/" id="driver-portal-link" class="btn ghost" title="Open Chauffeursportaal" hidden>Chauffeursweergave ↗</a>
           <button class="btn ghost" id="refresh-btn" title="Vernieuwen">↻</button>
           <button class="btn ghost" id="logout-btn">Uitloggen</button>
         </div>
@@ -43,12 +65,24 @@
     </header>
 
     <main class="container">
+      <!-- Role security notice for drivers -->
+      <div id="driver-rbac-banner" class="rbac-banner" hidden>
+        <span class="rbac-dot"></span>
+        <div>
+          <strong>Chauffeursmodus (Beperkte rechten)</strong> — U kunt beschikbare ritten accepteren of weigeren en uw eigen geaccepteerde ritten afronden. Klantgegevens bewerken, annuleren of verwijderen is uitgeschakeld.
+        </div>
+      </div>
+
+      <!-- KPI Summary Bar (Admin) -->
+      <section id="stats-bar" class="stats-grid" hidden></section>
+
       <div class="toolbar">
         <div class="chips" id="filters"></div>
-        <input type="search" id="search" placeholder="Zoeken…">
+        <input type="search" id="search" placeholder="Zoek op referentie, klant, plaats of chauffeur…">
       </div>
+
       <div id="list" class="list"></div>
-      <p id="empty" class="empty" hidden>Niets gevonden.</p>
+      <p id="empty" class="empty" hidden>Geen ritten gevonden.</p>
     </main>
   </div>
 
@@ -56,7 +90,7 @@
   <main id="denied-view" class="login" hidden>
     <div class="login-card">
       <h1>Geen toegang</h1>
-      <p class="muted">Dit account is niet toegevoegd als medewerker.</p>
+      <p class="muted">Dit account is niet gekoppeld in de tabel <code>staff</code>.</p>
       <button class="btn primary" id="denied-logout">Uitloggen</button>
     </div>
   </main>
@@ -66,4 +100,3 @@
   <script src="admin.js"></script>
 </body>
 </html>
-

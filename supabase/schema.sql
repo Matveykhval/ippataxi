@@ -1,11 +1,14 @@
 -- IPPATAXI backend schema (Supabase / Postgres)
 -- Run once in: Supabase dashboard -> SQL Editor -> New query -> Run.
+-- (If upgrading an existing database, run supabase/004_driver_dispatch_rbac.sql instead.)
 --
--- Security model
---   * The public website (anon key) can ONLY insert new bookings/messages. It can never read them.
---   * Only logged-in users listed in `staff` can read/update. Only 'owner' can delete.
---   * Turn OFF public sign-ups (Authentication -> Sign In / Providers -> "Allow new users to sign up"),
---     then create users manually (Authentication -> Users -> Add user).
+-- Security model (Strict RBAC)
+--   * Public website (anon key): INSERT-only for bookings and messages. Cannot read anything.
+--   * Owner ('owner' role in public.staff): Full access to bookings, messages, driver assignment, and deletion.
+--   * Driver ('driver' role in public.staff):
+--       - Can ONLY view pending unassigned rides (not declined by them) and rides assigned to their user_id.
+--       - Can ONLY accept/decline pending rides or mark their own accepted rides as completed.
+--       - Explicitly blocked from deleting rides, cancelling rides, or editing customer details.
 
 create extension if not exists pgcrypto;
 
@@ -27,57 +30,97 @@ language sql security definer set search_path = public stable as $$
   select exists (select 1 from public.staff where user_id = auth.uid() and role = 'owner');
 $$;
 
+create or replace function public.is_driver() returns boolean
+language sql security definer set search_path = public stable as $$
+  select exists (select 1 from public.staff where user_id = auth.uid() and role = 'driver');
+$$;
+
 drop policy if exists "staff read own row" on public.staff;
 create policy "staff read own row" on public.staff
   for select to authenticated using (user_id = auth.uid() or public.is_owner());
 
 -- ------------------------------------------------------------- bookings
 create table if not exists public.bookings (
-  id           uuid primary key default gen_random_uuid(),
-  created_at   timestamptz not null default now(),
-  ref          text not null,
-  name         text not null,
-  phone        text not null,
-  email        text,
-  pickup       text not null,
-  dropoff      text not null,
-  pickup_at    timestamptz,
-  vehicle      text,
-  passengers   int,
-  ippa         text,
-  notes        text,
-  status       text not null default 'new'
-               check (status in ('new', 'confirmed', 'assigned', 'completed', 'cancelled')),
-  driver       text,
-  internal_note text
+  id                 uuid primary key default gen_random_uuid(),
+  created_at         timestamptz not null default now(),
+  track_token        uuid not null default gen_random_uuid(),
+  ref                text not null,
+  name               text not null,
+  phone              text not null,
+  email              text,
+  pickup             text not null,
+  dropoff            text not null,
+  pickup_at          timestamptz,
+  vehicle            text,
+  passengers         int,
+  ippa               text,
+  notes              text,
+  status             text not null default 'pending'
+                     check (status in ('pending', 'new', 'confirmed', 'accepted', 'assigned', 'completed', 'cancelled')),
+  assigned_driver_id uuid references public.staff(user_id) on delete set null,
+  driver             text,
+  declined_by        uuid[] not null default '{}',
+  internal_note      text
 );
 create index if not exists bookings_created_idx on public.bookings (created_at desc);
+create unique index if not exists bookings_track_token_idx on public.bookings (track_token);
+create index if not exists bookings_dispatch_idx on public.bookings (status, assigned_driver_id, created_at desc);
 alter table public.bookings enable row level security;
 
 drop policy if exists "public can create bookings" on public.bookings;
 create policy "public can create bookings" on public.bookings
   for insert to anon
   with check (
-    status = 'new' and driver is null and internal_note is null
+    status in ('pending', 'new')
+    and assigned_driver_id is null
+    and driver is null
+    and internal_note is null
     and char_length(name)    between 1 and 100
     and char_length(phone)   between 5 and 30
     and char_length(pickup)  between 1 and 200
     and char_length(dropoff) between 1 and 200
-    and (email is null or char_length(email) <= 150)
+    and email is not null and char_length(email) between 5 and 150 and position('@' in email) > 1
     and (notes is null or char_length(notes) <= 500)
   );
 
-drop policy if exists "staff read bookings" on public.bookings;
-create policy "staff read bookings" on public.bookings
-  for select to authenticated using (public.is_staff());
+drop policy if exists "owner select bookings" on public.bookings;
+create policy "owner select bookings" on public.bookings
+  for select to authenticated using (public.is_owner());
 
-drop policy if exists "staff update bookings" on public.bookings;
-create policy "staff update bookings" on public.bookings
-  for update to authenticated using (public.is_staff()) with check (public.is_staff());
+drop policy if exists "owner update bookings" on public.bookings;
+create policy "owner update bookings" on public.bookings
+  for update to authenticated using (public.is_owner()) with check (public.is_owner());
 
 drop policy if exists "owner delete bookings" on public.bookings;
 create policy "owner delete bookings" on public.bookings
   for delete to authenticated using (public.is_owner());
+
+drop policy if exists "driver select bookings" on public.bookings;
+create policy "driver select bookings" on public.bookings
+  for select to authenticated
+  using (
+    public.is_driver()
+    and (
+      (assigned_driver_id is null and status in ('pending', 'new', 'confirmed') and not (auth.uid() = any(declined_by)))
+      or assigned_driver_id = auth.uid()
+    )
+  );
+
+drop policy if exists "driver update bookings" on public.bookings;
+create policy "driver update bookings" on public.bookings
+  for update to authenticated
+  using (
+    public.is_driver()
+    and (
+      (assigned_driver_id is null and status in ('pending', 'new', 'confirmed'))
+      or assigned_driver_id = auth.uid()
+    )
+  )
+  with check (
+    public.is_driver()
+    and (assigned_driver_id = auth.uid() or assigned_driver_id is null)
+    and status in ('pending', 'new', 'confirmed', 'accepted', 'completed')
+  );
 
 -- ------------------------------------------------------------- messages
 create table if not exists public.messages (
@@ -103,13 +146,13 @@ create policy "public can send messages" on public.messages
     and (phone is null or char_length(phone) <= 30)
   );
 
-drop policy if exists "staff read messages" on public.messages;
-create policy "staff read messages" on public.messages
-  for select to authenticated using (public.is_staff());
+drop policy if exists "owner read messages" on public.messages;
+create policy "owner read messages" on public.messages
+  for select to authenticated using (public.is_owner());
 
-drop policy if exists "staff update messages" on public.messages;
-create policy "staff update messages" on public.messages
-  for update to authenticated using (public.is_staff()) with check (public.is_staff());
+drop policy if exists "owner update messages" on public.messages;
+create policy "owner update messages" on public.messages
+  for update to authenticated using (public.is_owner()) with check (public.is_owner());
 
 drop policy if exists "owner delete messages" on public.messages;
 create policy "owner delete messages" on public.messages
@@ -129,4 +172,3 @@ grant select on public.staff to authenticated;
 -- select id, 'Your Name', 'owner' from auth.users where email = 'you@example.com';
 --
 -- Drivers: same, with role 'driver'.
-

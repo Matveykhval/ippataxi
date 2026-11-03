@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Driver - ippataxi</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../admin/admin.css">
+</head>
+<body>
+  <!-- Login -->
+  <main id="login-view" class="login" hidden>
+    <form id="login-form" class="login-card" autocomplete="on">
+      <div class="logo">IT</div>
+      <h1>Chauffeur Portaal</h1>
+      <p class="muted">IPPATAXI Chauffeurs Login</p>
+      <input type="email" id="login-email" placeholder="E-mailadres chauffeur" autocomplete="username" required>
+      <input type="password" id="login-password" placeholder="Wachtwoord" autocomplete="current-password" required>
+      <button type="submit" class="btn primary" id="login-btn">Inloggen</button>
+      <p id="login-error" class="error" hidden></p>
+    </form>
+  </main>
+
+  <!-- Driver Dashboard -->
+  <div id="app-view" hidden>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand-cluster">
+          <div class="logo-sm">IT</div>
+          <strong>IPPATAXI</strong>
+          <span id="role-badge" class="role-badge driver">Chauffeur</span>
+        </div>
+
+        <!-- Driver Navigation Tabs -->
+        <nav id="driver-tabs" class="segmented" role="tablist">
+          <button class="seg active" data-dtab="available" role="tab">
+            Beschikbare Ritten <span class="badge" id="badge-available" hidden></span>
+          </button>
+          <button class="seg" data-dtab="my-rides" role="tab">
+            Mijn Ritten <span class="badge badge-blue" id="badge-my-rides" hidden></span>
+          </button>
+        </nav>
+
+        <div class="topbar-right">
+          <span id="who" class="muted"></span>
+          <button class="btn ghost" id="refresh-btn" title="Vernieuwen">↻</button>
+          <button class="btn ghost" id="logout-btn">Uitloggen</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div id="driver-rbac-banner" class="rbac-banner">
+        <span class="rbac-dot"></span>
+        <div>
+          <strong>Chauffeursportaal</strong> — Bekijk openstaande ritten en klik op <b>Accept</b> om een rit direct aan uw account te koppelen, of op <b>Decline</b> om deze te verbergen.
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="chips" id="filters"></div>
+        <input type="search" id="search" placeholder="Zoek op plaats of referentie…">
+      </div>
+
+      <div id="list" class="list"></div>
+      <p id="empty" class="empty" hidden>Geen beschikbare ritten op dit moment.</p>
+    </main>
+  </div>
+
+  <!-- No access -->
+  <main id="denied-view" class="login" hidden>
+    <div class="login-card">
+      <h1>Geen toegang</h1>
+      <p class="muted">Dit account is niet geregistreerd als chauffeur in <code>staff</code>.</p>
+      <button class="btn primary" id="denied-logout">Uitloggen</button>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script>window.IPPA_FORCE_DRIVER_VIEW = true;</script>
+  <script src="../admin/admin.js"></script>
+</body>
+</html>
+
