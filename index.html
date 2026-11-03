@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IPPATAXI.nl | Betaal Uw Taxirit Met IPPA In Plaats Van Geld</title>
-  <meta name="description" content="Geen geld, geen pinpas. Bij IPPATAXI betaalt u simpelweg met IPPA: Type A voor korte ritten, Type B voor middellange ritten en Type C voor lange afstanden. Luxe vervoer in Nederland.">
-  <meta name="keywords" content="ippataxi, ippataxi.nl, ippa, betaal met ippa, type a ippa, type b ippa, type c ippa, taxi schiphol, taxidienst nederland">
+  <title>IPPATAXI.nl | Exclusief Taxivervoer &amp; Schiphol Transfers</title>
+  <meta name="description" content="Reis in eersteklas Mercedes-comfort door heel Nederland. Bij IPPATAXI betaalt u uw rit eenvoudig met IPPA: Type A voor korte ritten, Type B voor Schiphol &amp; regio, en Type C voor lange afstanden.">
+  <meta name="keywords" content="ippataxi, ippataxi.nl, ippa, taxi schiphol, luchthavenvervoer, directiechauffeur, mercedes taxi nederland, type a ippa, type b ippa, type c ippa">
   <meta name="author" content="IPPATAXI">
   <link rel="canonical" href="https://ippataxi.nl">
 
@@ -14,24 +14,24 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <meta name="theme-color" content="#0b0e14">
+  <meta name="theme-color" content="#0b0d11">
 
-  <!-- Open Graph / Social Media -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://ippataxi.nl">
-  <meta property="og:title" content="IPPATAXI.nl | Betaal Uw Taxirit Met IPPA In Plaats Van Geld">
-  <meta property="og:description" content="1 ding, 3 soorten: Type A voor korte ritten, Type B voor middelmatige ritten en Type C voor lange ritten. Geen euro's nodig.">
+  <meta property="og:title" content="IPPATAXI.nl | Eersteklas Taxivervoer Op IPPA">
+  <meta property="og:description" content="Geen contant geld, geen pinpas en geen lopende meter. Betaal uw rit eenvoudig met Type A, B of C IPPA.">
   <meta property="og:image" content="assets/images/hero.jpg">
 
-  <!-- Google Fonts -->
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Main Stylesheet -->
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- Structured Data / JSON-LD -->
+  <!-- Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -39,12 +39,14 @@
     "name": "IPPATAXI",
     "url": "https://ippataxi.nl",
     "logo": "https://ippataxi.nl/assets/images/hero.jpg",
-    "priceRange": "IPPA Type A/B/C",
+    "telephone": "+31202101234",
+    "email": "info@ippataxi.nl",
+    "priceRange": "IPPA Type A / B / C",
     "areaServed": {
       "@type": "Country",
       "name": "Netherlands"
     },
-    "description": "Exclusieve taxidienst waarbij ritten worden voldaan met IPPA (Type A, Type B of Type C) in plaats van geld.",
+    "description": "Exclusieve Nederlandse taxidienst waarbij ritten worden voldaan met IPPA (Type A, Type B of Type C) in plaats van geld.",
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
@@ -56,199 +58,189 @@
 </head>
 <body>
 
-  <!-- Top Notification & Contact Bar -->
-  <aside class="top-bar" aria-label="Meldingen en direct contact">
-    <div class="container top-bar-inner">
-      <div class="top-bar-features">
-        <span class="top-bar-badge">
-          <span class="live-dot" aria-hidden="true"></span>
-          <span data-i18n="topBarLive">Geen geld nodig • Betaal je rit simpelweg met IPPA</span>
-        </span>
-        <span class="badge-sub" style="display:inline-flex; align-items:center; gap:6px;">
-          <span>💎</span>
-          <span data-i18n="topBarSchiphol">Korte rit: Type A | Middel: Type B | Lang: Type C</span>
-        </span>
-      </div>
-
-      <div class="top-bar-actions">
-        <span class="top-phone-link" style="color:var(--color-primary-light);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <span data-i18n="topBarOnline">24/7 Digitale Dispatch & Bevestiging</span>
-        </span>
-
-        <!-- Language Switcher -->
-        <div class="lang-switch" role="group" aria-label="Taal selectie">
-          <button type="button" class="lang-btn active" data-lang="nl" title="Nederlands">NL</button>
-          <button type="button" class="lang-btn" data-lang="en" title="English">EN</button>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Main Navigation Header -->
-  <header class="site-header">
+  <!-- ====================================================================
+       NAVIGATION HEADER
+       ==================================================================== -->
+  <header class="site-header" id="top">
     <div class="container navbar">
       <a href="#home" class="brand-logo" id="main-brand-logo" aria-label="IPPATAXI Home">
-        <div class="brand-mark">IT</div>
-        <div class="brand-text">
-          <div class="brand-title">IPPA<span>TAXI</span></div>
-          <div class="brand-subtitle">ippataxi.nl • 100% IPPA Payment</div>
-        </div>
+        <span class="brand-mark">IT</span>
+        <span class="brand-text">
+          <span class="brand-title">IPPA<span>TAXI</span></span>
+          <span class="brand-subtitle">Chauffeursdiensten Nederland</span>
+        </span>
       </a>
 
-      <!-- Desktop Navigation Menu -->
+      <!-- Desktop Navigation -->
       <nav class="nav-links" aria-label="Hoofdnavigatie">
         <a href="#home" class="nav-link active" data-i18n="navHome">Home</a>
-        <a href="#ippa-system" class="nav-link" data-i18n="navIppaSystem">Wat is IPPA?</a>
-        <a href="#calculator" class="nav-link" data-i18n="navTariffs">Bereken IPPA</a>
-        <a href="#routes" class="nav-link" data-i18n="navAirport">Schiphol Transfers</a>
-        <a href="#fleet" class="nav-link" data-i18n="navFleet">Onze Vloot</a>
-        <a href="#why-us" class="nav-link" data-i18n="navWhyUs">Waarom IPPA</a>
+        <a href="#ippa-system" class="nav-link" data-i18n="navIppaSystem">Het Concept</a>
+        <a href="#routes" class="nav-link" data-i18n="navAirport">Schiphol &amp; Routes</a>
+        <a href="#fleet" class="nav-link" data-i18n="navFleet">Wagenpark</a>
+        <a href="#why-us" class="nav-link" data-i18n="navWhyUs">Zekerheden</a>
         <a href="#contact" class="nav-link" data-i18n="navContact">Contact</a>
       </nav>
 
-      <!-- Desktop Action Buttons -->
+      <!-- Header Right Actions -->
       <div class="nav-actions">
-        <a href="#contact" class="btn-nav-call" id="btn-header-call">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          <span>Stel een Vraag</span>
+        <div class="lang-switch" role="group" aria-label="Taalkeuze">
+          <button type="button" class="lang-btn active" data-lang="nl" title="Nederlands">NL</button>
+          <button type="button" class="lang-btn" data-lang="en" title="English">EN</button>
+        </div>
+
+        <a href="tel:+31202101234" class="btn-nav-phone" aria-label="Bel direct met de centrale">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>Direct Bellen</span>
         </a>
-        <a href="#calculator" class="btn-nav-book" id="btn-header-book" data-i18n="btnBookNav">Reserveer met IPPA</a>
+
+        <a href="#calculator" class="btn-nav-book" id="btn-header-book" data-i18n="btnBookNav">Rit Reserveren</a>
       </div>
 
-      <!-- Mobile Menu Toggle Button -->
-      <button class="mobile-menu-toggle" aria-label="Open mobiel menu" id="mobile-toggle">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      <!-- Mobile Menu Button -->
+      <button class="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" id="mobile-toggle">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="7" x2="21" y2="7"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="17" x2="21" y2="17"></line></svg>
       </button>
     </div>
 
     <!-- Mobile Navigation Drawer -->
     <div class="mobile-nav-drawer" id="mobile-drawer" aria-hidden="true">
-      <a href="#home" class="mobile-nav-link active" data-i18n="navHome">Home</a>
-      <a href="#ippa-system" class="mobile-nav-link" data-i18n="navIppaSystem">Wat is IPPA?</a>
-      <a href="#calculator" class="mobile-nav-link" data-i18n="navTariffs">Bereken IPPA</a>
-      <a href="#routes" class="mobile-nav-link" data-i18n="navAirport">Schiphol Transfers</a>
-      <a href="#fleet" class="mobile-nav-link" data-i18n="navFleet">Onze Vloot</a>
-      <a href="#why-us" class="mobile-nav-link" data-i18n="navWhyUs">Waarom IPPA</a>
-      <a href="#contact" class="mobile-nav-link" data-i18n="navContact">Contact</a>
-      <div style="display:flex; gap:10px; margin-top:8px;">
-        <a href="#calculator" class="btn-primary" style="flex:1; text-align:center;">💎 Bereken & Reserveer Rit</a>
+      <div class="mobile-nav-list">
+        <a href="#home" class="mobile-nav-link active" data-i18n="navHome">Home</a>
+        <a href="#ippa-system" class="mobile-nav-link" data-i18n="navIppaSystem">Het Concept</a>
+        <a href="#routes" class="mobile-nav-link" data-i18n="navAirport">Schiphol &amp; Routes</a>
+        <a href="#fleet" class="mobile-nav-link" data-i18n="navFleet">Wagenpark</a>
+        <a href="#why-us" class="mobile-nav-link" data-i18n="navWhyUs">Zekerheden</a>
+        <a href="#contact" class="mobile-nav-link" data-i18n="navContact">Contact</a>
+      </div>
+      <div class="mobile-drawer-footer">
+        <div class="lang-switch mobile-lang-switch" role="group" aria-label="Taalkeuze">
+          <button type="button" class="lang-btn active" data-lang="nl">NL</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <a href="#calculator" class="btn-primary mobile-drawer-cta" data-i18n="btnBookNav">Rit Reserveren</a>
       </div>
     </div>
   </header>
 
   <main>
     <!-- ====================================================================
-         HERO SECTION: Background Image + Title + 3-Tier IPPA Calculator
+         HERO SECTION & BOOKING WIDGET
          ==================================================================== -->
     <section class="hero-section" id="home">
       <div class="hero-background-wrapper" aria-hidden="true">
-        <img src="assets/images/hero.jpg" alt="Luxe Mercedes taxi van IPPATAXI bij de luchthaven" class="hero-bg-img">
+        <img src="assets/images/hero.jpg" alt="Mercedes-Benz E-Klasse van IPPATAXI gereed voor vertrek op Schiphol" class="hero-bg-img" fetchpriority="high">
         <div class="hero-overlay"></div>
       </div>
 
       <div class="container hero-grid">
-        <!-- Hero Left Column: Brand Statement & CTA -->
+        <!-- Left Column: Editorial Value Proposition -->
         <div class="hero-content">
-          <div class="hero-badge-pill">
-            <span class="star-icon">★</span>
-            <span data-i18n="heroTag">Reizen Zonder Geld • 100% IPPA</span>
+          <div class="hero-eyebrow">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span data-i18n="heroTag">24/7 Chauffeursservice • Heel Nederland</span>
           </div>
 
-          <h1 class="hero-title">
-            <span data-i18n="heroTitle">Betaal Uw Taxirit Met <span class="highlight-ippa">IPPA</span> In Plaats Van Geld</span>
+          <h1 class="hero-title" data-i18n="heroTitle">
+            Eersteklas taxivervoer, eenvoudig betaald met IPPA.
           </h1>
 
           <p class="hero-desc" data-i18n="heroDesc">
-            Vergeet euro’s, pinpassen en meters. Bij IPPATAXI reist u in eersteklas luxe en betaalt u de chauffeur simpelweg met een IPPA: Type A voor korte ritten, Type B voor middellange ritten en Type C voor lange afstanden.
+            Geen lopende meter, geen contant geld en geen pinpas. U reist in een comfortabele Mercedes met privéchauffeur en voldoet uw rit bij aankomst met één vaste IPPA op basis van de afstand.
           </p>
 
-          <!-- 3 Quick IPPA Type Badges -->
-          <div class="hero-ippa-pills">
-            <div class="ippa-mini-badge type-a">
-              <span>🟢</span>
-              <span>Type A: Korte Rit</span>
+          <!-- Clean 3-Tier Summary Strip -->
+          <div class="hero-tiers-summary" aria-label="Overzicht van de drie IPPA tarieftypes">
+            <div class="hero-tier-chip">
+              <span class="tier-dot dot-a" aria-hidden="true"></span>
+              <div>
+                <strong>Type A</strong>
+                <span>Stad &lt; 15 km</span>
+              </div>
             </div>
-            <div class="ippa-mini-badge type-b">
-              <span>🟡</span>
-              <span>Type B: Middelmatige Rit</span>
+            <div class="hero-tier-chip">
+              <span class="tier-dot dot-b" aria-hidden="true"></span>
+              <div>
+                <strong>Type B</strong>
+                <span>Regio &amp; Schiphol 15–50 km</span>
+              </div>
             </div>
-            <div class="ippa-mini-badge type-c">
-              <span>🟣</span>
-              <span>Type C: Lange Afstand</span>
-            </div>
-          </div>
-
-          <div class="hero-features-list">
-            <div class="hero-feature-item">
-              <span class="hero-feature-icon">✓</span>
-              <span data-i18n="feat1">Geen contant geld of euro’s nodig</span>
-            </div>
-            <div class="hero-feature-item">
-              <span class="hero-feature-icon">✓</span>
-              <span data-i18n="feat2">1 ding, 3 soorten (Type A, B & C)</span>
-            </div>
-            <div class="hero-feature-item">
-              <span class="hero-feature-icon">✓</span>
-              <span data-i18n="feat3">Luxe Mercedes vloot & privéchauffeur</span>
-            </div>
-            <div class="hero-feature-item">
-              <span class="hero-feature-icon">✓</span>
-              <span data-i18n="feat4">Schiphol vluchtmonitoring inbegrepen</span>
+            <div class="hero-tier-chip">
+              <span class="tier-dot dot-c" aria-hidden="true"></span>
+              <div>
+                <strong>Type C</strong>
+                <span>Intercity 50+ km</span>
+              </div>
             </div>
           </div>
 
+          <!-- Key Trust Points -->
+          <ul class="hero-features-list">
+            <li class="hero-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span data-i18n="feat1">Vast tarieftype vooraf — nooit verrassingen achteraf</span>
+            </li>
+            <li class="hero-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span data-i18n="feat2">Luxe Mercedes-Benz vloot met gecertificeerde chauffeurs</span>
+            </li>
+            <li class="hero-feature-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span data-i18n="feat3">Inclusief Schiphol vluchtmonitoring en wachttijdservice</span>
+            </li>
+          </ul>
+
+          <!-- Direct Action CTAs -->
           <div class="hero-cta-buttons">
-            <a href="#calculator" class="btn-primary" id="btn-hero-calc">
-              <span>💎 Bereken & Reserveer Rit</span>
+            <a href="https://wa.me/31202101234?text=Hallo%20IPPATAXI%2C%20ik%20wil%20graag%20een%20rit%20reserveren." target="_blank" rel="noopener" class="btn-whatsapp" id="btn-hero-wa">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              <span data-i18n="btnHeroWa">Boek via WhatsApp</span>
             </a>
-            <a href="#contact" class="btn-whatsapp" id="btn-hero-contact" style="background:rgba(229,184,105,0.12); border-color:rgba(229,184,105,0.35); color:var(--color-primary-light);">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-              <span>Vraag Stellen Aan Centrale</span>
+            <a href="tel:+31202101234" class="btn-hero-secondary" id="btn-hero-call">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span data-i18n="btnHeroCall">Bel Centrale (24/7)</span>
             </a>
           </div>
         </div>
 
-        <!-- Hero Right Column: Interactive 3-Tier IPPA Estimator Card -->
+        <!-- Right Column: Clean Interactive Booking & IPPA Calculator Card -->
         <div class="booking-card" id="calculator">
           <div class="booking-header">
-            <h3 data-i18n="cardTitle">Welke IPPA Heeft U Nodig?</h3>
-            <p data-i18n="cardSubtitle">Bereken direct of uw rit Type A, B of C vereist</p>
+            <h2 class="booking-card-title" data-i18n="cardTitle">Bereken &amp; Reserveer Uw Rit</h2>
+            <p class="booking-card-subtitle" data-i18n="cardSubtitle">Zie direct welk type IPPA uw route vereist</p>
           </div>
 
-          <!-- Booking Mode Tabs -->
-          <div class="booking-tabs" role="tablist">
+          <!-- Segmented Control Tabs -->
+          <div class="booking-tabs" role="tablist" aria-label="Type rit">
             <button type="button" class="booking-tab-btn active" data-tab="standard" data-i18n="tabStandard">Standaard Rit</button>
             <button type="button" class="booking-tab-btn" data-tab="airport" data-i18n="tabAirport">Schiphol Transfer</button>
             <button type="button" class="booking-tab-btn" data-tab="hourly" data-i18n="tabHourly">Lange Afstand</button>
           </div>
 
-          <!-- Booking Inputs Form -->
           <form class="booking-form" id="main-booking-form" onsubmit="return false;">
-            <!-- Pickup Address -->
+            <!-- Pickup -->
             <div class="form-group">
-              <label for="ride-pickup" class="form-label" data-i18n="lblPickup">Ophaaladres / Stad</label>
+              <label for="ride-pickup" class="form-label" data-i18n="lblPickup">Ophaaladres of plaats</label>
               <div class="input-with-icon">
-                <span class="input-icon">📍</span>
+                <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
                 <input type="text" id="ride-pickup" class="form-input" placeholder="Bijv. Amsterdam Centrum, Keizersgracht..." value="Amsterdam Centrum" required>
               </div>
             </div>
 
-            <!-- Destination Address -->
+            <!-- Dropoff -->
             <div class="form-group">
-              <label for="ride-dropoff" class="form-label" data-i18n="lblDropoff">Bestemming / Luchthaven</label>
+              <label for="ride-dropoff" class="form-label" data-i18n="lblDropoff">Bestemming of luchthaven</label>
               <div class="input-with-icon">
-                <span class="input-icon">🏁</span>
+                <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
                 <input type="text" id="ride-dropoff" class="form-input" placeholder="Bijv. Schiphol Airport (AMS)" value="Schiphol Airport (AMS)" required>
               </div>
             </div>
 
-            <!-- Date & Time + Passengers -->
+            <!-- Date/Time & Passengers -->
             <div class="form-row-2">
               <div class="form-group">
-                <label for="ride-datetime" class="form-label" data-i18n="lblDateTime">Datum & Ophaaltijd</label>
+                <label for="ride-datetime" class="form-label" data-i18n="lblDateTime">Datum &amp; tijd</label>
                 <div class="input-with-icon">
-                  <span class="input-icon">🕒</span>
+                  <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   <input type="datetime-local" id="ride-datetime" class="form-input" required>
                 </div>
               </div>
@@ -256,62 +248,59 @@
               <div class="form-group">
                 <label for="ride-passengers" class="form-label" data-i18n="lblPassengers">Passagiers</label>
                 <div class="input-with-icon">
-                  <span class="input-icon">👥</span>
+                  <svg class="input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                   <select id="ride-passengers" class="form-select">
                     <option value="1">1 Passagier</option>
                     <option value="2">2 Passagiers</option>
                     <option value="3">3 Passagiers</option>
                     <option value="4">4 Passagiers</option>
-                    <option value="5">5-8 Passagiers (Taxibus)</option>
+                    <option value="5">5–8 Passagiers (Minibus)</option>
                   </select>
                 </div>
               </div>
             </div>
 
-            <!-- Vehicle Selection Radio Cards -->
+            <!-- Vehicle Class Selector -->
             <div class="form-group">
-              <span class="vehicle-selector-title" data-i18n="lblVehicle">Kies Gewenst Voertuig</span>
+              <span class="vehicle-selector-title" data-i18n="lblVehicle">Kies voertuigklasse</span>
               <div class="vehicle-options">
                 <label class="vehicle-radio-label selected" id="veh-opt-sedan">
                   <input type="radio" name="vehicle" value="sedan" checked>
-                  <div class="vehicle-radio-icon">🚘</div>
-                  <div class="vehicle-radio-name" data-i18n="vehSedan">Executive Sedan</div>
-                  <div class="vehicle-radio-meta" data-i18n="vehSedanSub">1-4 pers • 3 koffers</div>
+                  <span class="vehicle-radio-name" data-i18n="vehSedan">Executive Sedan</span>
+                  <span class="vehicle-radio-meta" data-i18n="vehSedanSub">1–4 pers • 3 koffers</span>
                 </label>
 
                 <label class="vehicle-radio-label" id="veh-opt-estate">
                   <input type="radio" name="vehicle" value="estate">
-                  <div class="vehicle-radio-icon">🚙</div>
-                  <div class="vehicle-radio-name" data-i18n="vehEstate">Stationwagen</div>
-                  <div class="vehicle-radio-meta" data-i18n="vehEstateSub">1-4 pers • 5 koffers</div>
+                  <span class="vehicle-radio-name" data-i18n="vehEstate">Stationwagen</span>
+                  <span class="vehicle-radio-meta" data-i18n="vehEstateSub">1–4 pers • 5 koffers</span>
                 </label>
 
                 <label class="vehicle-radio-label" id="veh-opt-van">
                   <input type="radio" name="vehicle" value="van">
-                  <div class="vehicle-radio-icon">🚐</div>
-                  <div class="vehicle-radio-name" data-i18n="vehVan">VIP Taxibus</div>
-                  <div class="vehicle-radio-meta" data-i18n="vehVanSub">Tot 8 pers • 8 koffers</div>
+                  <span class="vehicle-radio-name" data-i18n="vehVan">VIP Taxibus</span>
+                  <span class="vehicle-radio-meta" data-i18n="vehVanSub">Tot 8 pers • 8 koffers</span>
                 </label>
               </div>
             </div>
 
-            <!-- DYNAMIC IPPA RESULT BOX -->
+            <!-- Dynamic IPPA Result Box -->
             <div class="ippa-result-box tier-b" id="ippa-result-box">
               <div class="ippa-result-left">
-                <span class="ippa-result-title" data-i18n="fareTag">Benodigde Betaling:</span>
+                <span class="ippa-result-title" data-i18n="fareTag">Benodigde betaling</span>
                 <div class="ippa-tier-name" id="ippa-tier-name">Type B IPPA</div>
                 <span class="ippa-distance-note" id="ippa-distance-display">Geschat ~18 km • Middelmatige Rit</span>
               </div>
               <div class="ippa-result-badge-wrap">
                 <div class="ippa-payment-pill" id="ippa-payment-pill">1x Type B IPPA</div>
-                <div class="ippa-no-money-note" data-i18n="fareNote">✓ Geen geld nodig • Overhandig 1x IPPA</div>
+                <div class="ippa-no-money-note" data-i18n="fareNote">Overhandig bij aankomst</div>
               </div>
             </div>
 
-            <!-- Submission Button -->
+            <!-- Primary Submit CTA -->
             <button type="button" class="btn-primary booking-submit-btn" id="btn-submit-booking">
               <span data-i18n="btnBookSubmit">Rit Reserveren met IPPA</span>
-              <span>→</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
           </form>
         </div>
@@ -319,58 +308,88 @@
     </section>
 
     <!-- ====================================================================
-         THE 3 IPPA TYPES SHOWCASE SECTION
+         TRUST METRICS BAR
          ==================================================================== -->
-    <section class="section section-alt" id="ippa-system">
+    <section class="stats-section" aria-label="Onze beloftes">
+      <div class="container stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Vaste IPPA per afstand</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">3 Types</div>
+          <div class="stat-label">Type A, B &amp; C systeem</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label" data-i18n="statAvailability">Dag en nacht beschikbaar</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">Schiphol</div>
+          <div class="stat-label">Vluchtmonitoring inbegrepen</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         HOW IPPA WORKS (3 TIERS)
+         ==================================================================== -->
+    <section class="section" id="ippa-system">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">Het IPPA Systeem</span>
-          <h2 class="section-title">1 Ding, Maar 3 Soorten</h2>
+          <span class="section-tag">Het Betaalconcept</span>
+          <h2 class="section-title">Eén duidelijk systeem. Drie afstanden.</h2>
           <p class="section-desc">
-            Bij IPPATAXI rekent u niet af in euro’s of met wisselgeld. Het is uiterst eenvoudig: afhankelijk van de afstand van uw rit overhandigt u de chauffeur een Type A, Type B of Type C IPPA.
+            Bij IPPATAXI betaalt u niet met contant geld of per minuut in de file. Afhankelijk van de reisafstand overhandigt u uw chauffeur een Type A, Type B of Type C IPPA.
           </p>
         </div>
 
         <div class="ippa-tiers-grid">
-          <!-- Type A IPPA Card -->
+          <!-- Type A -->
           <article class="ippa-tier-card card-type-a">
-            <span class="tier-card-badge">🟢 Korte Ritten</span>
-            <h3 class="tier-card-title">Type A IPPA</h3>
-            <div class="tier-card-scope">Tot circa 15 kilometer</div>
+            <div class="tier-card-top">
+              <span class="tier-card-badge badge-a">Type A • Korte Rit</span>
+              <span class="tier-card-scope">Tot 15 km</span>
+            </div>
+            <h3 class="tier-card-title">Stadsritten &amp; Lokaal</h3>
             <p class="tier-card-desc">
-              Voor al uw korte stadsritten en lokale verplaatsingen. Ideaal voor ritten binnen het centrum, van en naar het treinstation, doktersbezoeken of een avondje uit in een restaurant.
+              Voor al uw korte ritten binnen de stad en directe omgeving. Ideaal voor vervoer van en naar het treinstation, zakelijke afspraken in het centrum, hotels of een diner.
             </p>
             <div class="tier-card-give">
-              <div class="give-label">Wat overhandigt u aan de chauffeur?</div>
-              <div class="give-value" style="color: var(--color-ippa-a);">1x Type A IPPA</div>
+              <span class="give-label">Tarief bij aankomst</span>
+              <span class="give-value">1x Type A IPPA</span>
             </div>
           </article>
 
-          <!-- Type B IPPA Card -->
+          <!-- Type B -->
           <article class="ippa-tier-card card-type-b">
-            <span class="tier-card-badge">🟡 Middelmatige Ritten</span>
-            <h3 class="tier-card-title">Type B IPPA</h3>
-            <div class="tier-card-scope">Circa 15 tot 50 kilometer</div>
+            <div class="tier-card-top">
+              <span class="tier-card-badge badge-b">Type B • Middellange Rit</span>
+              <span class="tier-card-scope">15 tot 50 km</span>
+            </div>
+            <h3 class="tier-card-title">Schiphol &amp; Regio</h3>
             <p class="tier-card-desc">
-              Voor regionale ritten en de populairste Schiphol transfers. Denk aan ritten tussen Amsterdam, Utrecht, Haarlem, Almere of Den Haag en de luchthaven Schiphol.
+              Voor regionale verbindingen en de populairste luchthaventransfers. Geschikt voor ritten tussen onder andere Amsterdam, Utrecht, Haarlem, Almere of Den Haag en Schiphol.
             </p>
             <div class="tier-card-give">
-              <div class="give-label">Wat overhandigt u aan de chauffeur?</div>
-              <div class="give-value" style="color: var(--color-ippa-b);">1x Type B IPPA</div>
+              <span class="give-label">Tarief bij aankomst</span>
+              <span class="give-value">1x Type B IPPA</span>
             </div>
           </article>
 
-          <!-- Type C IPPA Card -->
+          <!-- Type C -->
           <article class="ippa-tier-card card-type-c">
-            <span class="tier-card-badge">🟣 Lange Afstand</span>
-            <h3 class="tier-card-title">Type C IPPA</h3>
-            <div class="tier-card-scope">Vanaf 50+ kilometer</div>
+            <div class="tier-card-top">
+              <span class="tier-card-badge badge-c">Type C • Lange Afstand</span>
+              <span class="tier-card-scope">Vanaf 50+ km</span>
+            </div>
+            <h3 class="tier-card-title">Intercity &amp; Landelijk</h3>
             <p class="tier-card-desc">
-              Voor lange intercity ritten door heel Nederland. Denk aan transfers tussen Rotterdam, Eindhoven, Groningen of Maastricht naar Schiphol en provinciegrensoverschrijdend zakelijk vervoer.
+              Voor lange afstanden door heel Nederland en daarbuiten. Denk aan ritten vanuit Rotterdam, Eindhoven, Groningen of Maastricht naar Schiphol of directievervoer tussen steden.
             </p>
             <div class="tier-card-give">
-              <div class="give-label">Wat overhandigt u aan de chauffeur?</div>
-              <div class="give-value" style="color: var(--color-ippa-c);">1x Type C IPPA</div>
+              <span class="give-label">Tarief bij aankomst</span>
+              <span class="give-value">1x Type C IPPA</span>
             </div>
           </article>
         </div>
@@ -378,166 +397,118 @@
     </section>
 
     <!-- ====================================================================
-         TRUST STATS BAR
+         POPULAR ROUTES & SCHIPHOL TRANSFERS
          ==================================================================== -->
-    <section class="stats-section" aria-label="Statistieken en zekerheden">
-      <div class="container stats-grid">
-        <div class="stat-item">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Geen Geld Nodig</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">3 Soorten</div>
-          <div class="stat-label">Type A, B & C IPPA</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">24/7</div>
-          <div class="stat-label" data-i18n="statAvailability">24/7 Bereikbaar</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Punctualiteitsgarantie</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ====================================================================
-         POPULAR ROUTES GRID (WITH IPPA TIERS)
-         ==================================================================== -->
-    <section class="section" id="routes">
+    <section class="section section-alt" id="routes">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag" data-i18n="routesTag">Populaire Bestemmingen</span>
-          <h2 class="section-title" data-i18n="routesTitle">Vaste IPPA Ritten</h2>
+          <span class="section-tag" data-i18n="routesTag">Schiphol &amp; Steden</span>
+          <h2 class="section-title" data-i18n="routesTitle">Veelgeboekte Vaste Routes</h2>
           <p class="section-desc" data-i18n="routesDesc">
-            Weet direct welk type IPPA u aan de chauffeur geeft voor uw rit.
+            Selecteer een veelgekozen traject om de gegevens direct in de reserveringsmodule in te vullen.
           </p>
         </div>
 
         <div class="airport-routes-grid">
-          <!-- Amsterdam - Schiphol -->
+          <!-- Route 1 -->
           <article class="route-card">
-            <span class="route-badge">Meest Gekozen</span>
+            <div class="route-card-header">
+              <span class="route-badge badge-b">Type B IPPA</span>
+              <span class="route-meta">ca. 20 min • 18 km</span>
+            </div>
             <div class="route-airports">
               <span class="route-point">Amsterdam Centrum</span>
-              <span class="route-arrow">⇄</span>
+              <span class="route-arrow" aria-hidden="true">⇄</span>
               <span class="route-point">Schiphol Airport</span>
             </div>
-            <div class="route-meta">
-              <span class="route-meta-item">⏱ ca. 20 min</span>
-              <span class="route-meta-item">📍 18 km</span>
-            </div>
             <div class="route-footer">
-              <div>
-                <div class="route-price-label">Betaling Chauffeur</div>
-                <div class="route-price-val type-b">1x Type B IPPA</div>
-              </div>
-              <button type="button" class="btn-route-book" data-from="Amsterdam Centrum" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Kies Deze Rit</button>
+              <div class="route-price-val">1x Type B IPPA</div>
+              <button type="button" class="btn-route-book" data-from="Amsterdam Centrum" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Selecteer rit</button>
             </div>
           </article>
 
-          <!-- Utrecht - Schiphol -->
+          <!-- Route 2 -->
           <article class="route-card">
-            <span class="route-badge">Zakelijk Favoriet</span>
+            <div class="route-card-header">
+              <span class="route-badge badge-b">Type B IPPA</span>
+              <span class="route-meta">ca. 35 min • 48 km</span>
+            </div>
             <div class="route-airports">
               <span class="route-point">Utrecht</span>
-              <span class="route-arrow">⇄</span>
+              <span class="route-arrow" aria-hidden="true">⇄</span>
               <span class="route-point">Schiphol Airport</span>
             </div>
-            <div class="route-meta">
-              <span class="route-meta-item">⏱ ca. 35 min</span>
-              <span class="route-meta-item">📍 48 km</span>
-            </div>
             <div class="route-footer">
-              <div>
-                <div class="route-price-label">Betaling Chauffeur</div>
-                <div class="route-price-val type-b">1x Type B IPPA</div>
-              </div>
-              <button type="button" class="btn-route-book" data-from="Utrecht" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Kies Deze Rit</button>
+              <div class="route-price-val">1x Type B IPPA</div>
+              <button type="button" class="btn-route-book" data-from="Utrecht" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Selecteer rit</button>
             </div>
           </article>
 
-          <!-- Den Haag - Schiphol -->
+          <!-- Route 3 -->
           <article class="route-card">
-            <span class="route-badge">Middelmatige Rit</span>
+            <div class="route-card-header">
+              <span class="route-badge badge-b">Type B IPPA</span>
+              <span class="route-meta">ca. 35 min • 45 km</span>
+            </div>
             <div class="route-airports">
               <span class="route-point">Den Haag</span>
-              <span class="route-arrow">⇄</span>
+              <span class="route-arrow" aria-hidden="true">⇄</span>
               <span class="route-point">Schiphol Airport</span>
             </div>
-            <div class="route-meta">
-              <span class="route-meta-item">⏱ ca. 35 min</span>
-              <span class="route-meta-item">📍 45 km</span>
-            </div>
             <div class="route-footer">
-              <div>
-                <div class="route-price-label">Betaling Chauffeur</div>
-                <div class="route-price-val type-b">1x Type B IPPA</div>
-              </div>
-              <button type="button" class="btn-route-book" data-from="Den Haag" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Kies Deze Rit</button>
+              <div class="route-price-val">1x Type B IPPA</div>
+              <button type="button" class="btn-route-book" data-from="Den Haag" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Selecteer rit</button>
             </div>
           </article>
 
-          <!-- Rotterdam - Schiphol -->
+          <!-- Route 4 -->
           <article class="route-card">
-            <span class="route-badge" style="color: var(--color-ippa-c); background: rgba(168, 85, 247, 0.15);">Lange Afstand</span>
+            <div class="route-card-header">
+              <span class="route-badge badge-c">Type C IPPA</span>
+              <span class="route-meta">ca. 45 min • 60 km</span>
+            </div>
             <div class="route-airports">
               <span class="route-point">Rotterdam</span>
-              <span class="route-arrow">⇄</span>
+              <span class="route-arrow" aria-hidden="true">⇄</span>
               <span class="route-point">Schiphol Airport</span>
             </div>
-            <div class="route-meta">
-              <span class="route-meta-item">⏱ ca. 45 min</span>
-              <span class="route-meta-item">📍 60 km</span>
-            </div>
             <div class="route-footer">
-              <div>
-                <div class="route-price-label">Betaling Chauffeur</div>
-                <div class="route-price-val type-c">1x Type C IPPA</div>
-              </div>
-              <button type="button" class="btn-route-book" data-from="Rotterdam" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Kies Deze Rit</button>
+              <div class="route-price-val">1x Type C IPPA</div>
+              <button type="button" class="btn-route-book" data-from="Rotterdam" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Selecteer rit</button>
             </div>
           </article>
 
-          <!-- Amsterdam Stadsrit -->
+          <!-- Route 5 -->
           <article class="route-card">
-            <span class="route-badge" style="color: var(--color-ippa-a); background: rgba(16, 185, 129, 0.15);">Korte Stadsrit</span>
+            <div class="route-card-header">
+              <span class="route-badge badge-a">Type A IPPA</span>
+              <span class="route-meta">ca. 15 min • 7 km</span>
+            </div>
             <div class="route-airports">
               <span class="route-point">Amsterdam Centrum</span>
-              <span class="route-arrow">⇄</span>
+              <span class="route-arrow" aria-hidden="true">⇄</span>
               <span class="route-point">Amsterdam Zuid</span>
             </div>
-            <div class="route-meta">
-              <span class="route-meta-item">⏱ ca. 15 min</span>
-              <span class="route-meta-item">📍 7 km</span>
-            </div>
             <div class="route-footer">
-              <div>
-                <div class="route-price-label">Betaling Chauffeur</div>
-                <div class="route-price-val type-a">1x Type A IPPA</div>
-              </div>
-              <button type="button" class="btn-route-book" data-from="Amsterdam Centrum" data-to="Amsterdam Zuid" data-i18n="btnBookRoute">Kies Deze Rit</button>
+              <div class="route-price-val">1x Type A IPPA</div>
+              <button type="button" class="btn-route-book" data-from="Amsterdam Centrum" data-to="Amsterdam Zuid" data-i18n="btnBookRoute">Selecteer rit</button>
             </div>
           </article>
 
-          <!-- Eindhoven - Schiphol -->
+          <!-- Route 6 -->
           <article class="route-card">
-            <span class="route-badge" style="color: var(--color-ippa-c); background: rgba(168, 85, 247, 0.15);">Lange Afstand</span>
+            <div class="route-card-header">
+              <span class="route-badge badge-c">Type C IPPA</span>
+              <span class="route-meta">ca. 80 min • 125 km</span>
+            </div>
             <div class="route-airports">
               <span class="route-point">Eindhoven</span>
-              <span class="route-arrow">⇄</span>
+              <span class="route-arrow" aria-hidden="true">⇄</span>
               <span class="route-point">Schiphol Airport</span>
             </div>
-            <div class="route-meta">
-              <span class="route-meta-item">⏱ ca. 80 min</span>
-              <span class="route-meta-item">📍 125 km</span>
-            </div>
             <div class="route-footer">
-              <div>
-                <div class="route-price-label">Betaling Chauffeur</div>
-                <div class="route-price-val type-c">1x Type C IPPA</div>
-              </div>
-              <button type="button" class="btn-route-book" data-from="Eindhoven" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Kies Deze Rit</button>
+              <div class="route-price-val">1x Type C IPPA</div>
+              <button type="button" class="btn-route-book" data-from="Eindhoven" data-to="Schiphol Airport (AMS)" data-i18n="btnBookRoute">Selecteer rit</button>
             </div>
           </article>
         </div>
@@ -545,111 +516,102 @@
     </section>
 
     <!-- ====================================================================
-         FLEET SHOWCASE SECTION
+         OUR FLEET
          ==================================================================== -->
-    <section class="section section-alt" id="fleet">
+    <section class="section" id="fleet">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag" data-i18n="fltTag">Eersteklas Vloot</span>
-          <h2 class="section-title" data-i18n="fltTitle">Onze Exclusieve Voertuigen</h2>
+          <span class="section-tag" data-i18n="fltTag">Ons Wagenpark</span>
+          <h2 class="section-title" data-i18n="fltTitle">Representatieve Mercedes-Benz Vloot</h2>
           <p class="section-desc" data-i18n="fltDesc">
-            Stap in een brandschone Mercedes, leun achterover en geef bij aankomst uw IPPA.
+            Elk voertuig is jong, rookvrij, voorzien van klimaatregeling en wordt bestuurd door een gecertificeerde privéchauffeur.
           </p>
         </div>
 
         <div class="fleet-grid">
-          <!-- Fleet 1: Mercedes-Benz E-Class Sedan -->
+          <!-- Vehicle 1 -->
           <article class="fleet-card">
             <div class="fleet-img-wrapper">
-              <img src="assets/images/sedan.jpg" alt="Luxe Mercedes-Benz Executive Sedan taxi" class="fleet-img" loading="lazy">
+              <img src="assets/images/sedan.jpg" alt="Mercedes-Benz E-Klasse Executive Sedan" class="fleet-img" loading="lazy">
               <span class="fleet-badge">Executive Sedan</span>
             </div>
             <div class="fleet-content">
-              <div class="fleet-category">Luxe Sedan</div>
+              <div class="fleet-category">Zakelijk &amp; Privé</div>
               <h3 class="fleet-name">Mercedes-Benz E-Klasse</h3>
-              
+
               <div class="fleet-specs">
-                <span class="spec-badge">👥 Max 4 Pers</span>
-                <span class="spec-badge">🧳 3 Koffers</span>
-                <span class="spec-badge">⚡ WiFi & USB</span>
+                <span class="spec-badge">Max. 4 passagiers</span>
+                <span class="spec-badge">3 koffers</span>
+                <span class="spec-badge">WiFi &amp; opladers</span>
               </div>
 
               <ul class="fleet-amenities">
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Lederen comfortstoelen & klimaatregeling</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Flesjes mineraalwater voor onderweg</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Betaalbaar met Type A, B of C IPPA</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Lederen interieur en achterbankverwarming</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Flesjes water en oplaadmogelijkheden</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Beschikbaar voor Type A, B en C ritten</li>
               </ul>
 
               <div class="fleet-footer">
-                <div>
-                  <div class="fleet-rate-text">Betaling</div>
-                  <div class="fleet-rate-val">1x IPPA (A, B of C)</div>
-                </div>
+                <span class="fleet-rate-val">1x IPPA per rit</span>
                 <a href="#calculator" class="btn-route-book">Kies Sedan</a>
               </div>
             </div>
           </article>
 
-          <!-- Fleet 2: Mercedes-Benz V-Class VIP Van -->
+          <!-- Vehicle 2 -->
           <article class="fleet-card">
             <div class="fleet-img-wrapper">
-              <img src="assets/images/van.jpg" alt="Luxe Mercedes-Benz V-Klasse VIP Taxibus" class="fleet-img" loading="lazy">
+              <img src="assets/images/van.jpg" alt="Mercedes-Benz V-Klasse VIP Taxibus" class="fleet-img" loading="lazy">
               <span class="fleet-badge">VIP Taxibus</span>
             </div>
             <div class="fleet-content">
-              <div class="fleet-category">Taxibus & Groepen</div>
+              <div class="fleet-category">Groepen &amp; Families</div>
               <h3 class="fleet-name">Mercedes-Benz V-Klasse</h3>
-              
+
               <div class="fleet-specs">
-                <span class="spec-badge">👥 Max 8 Pers</span>
-                <span class="spec-badge">🧳 8 Koffers</span>
-                <span class="spec-badge">🕶 Privacy Glas</span>
+                <span class="spec-badge">Max. 8 passagiers</span>
+                <span class="spec-badge">8 koffers</span>
+                <span class="spec-badge">Privacy glas</span>
               </div>
 
               <ul class="fleet-amenities">
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Ruimte voor groepen tot 8 personen</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Enorme bagageruimte voor alle koffers</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Ideaal voor families & zakelijke groepen</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Comfortabele captain chairs voor 7–8 personen</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Ruime kofferbak voor grote bagage en ski's</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Ideaal voor luchthaventransfers en roadshows</li>
               </ul>
 
               <div class="fleet-footer">
-                <div>
-                  <div class="fleet-rate-text">Betaling</div>
-                  <div class="fleet-rate-val">1x IPPA per rit</div>
-                </div>
-                <a href="#calculator" class="btn-route-book">Kies Minibus</a>
+                <span class="fleet-rate-val">1x IPPA per rit</span>
+                <a href="#calculator" class="btn-route-book">Kies Taxibus</a>
               </div>
             </div>
           </article>
 
-          <!-- Fleet 3: Executive Stationwagon -->
+          <!-- Vehicle 3 -->
           <article class="fleet-card">
             <div class="fleet-img-wrapper">
-              <img src="assets/images/hero.jpg" alt="Luxe Stationwagon Taxi Schiphol transfer" class="fleet-img" loading="lazy">
-              <span class="fleet-badge">Combi Ruimte</span>
+              <img src="assets/images/hero.jpg" alt="Mercedes-Benz Executive Stationwagon" class="fleet-img" loading="lazy">
+              <span class="fleet-badge">Ruime Stationwagon</span>
             </div>
             <div class="fleet-content">
-              <div class="fleet-category">Ruime Combi</div>
-              <h3 class="fleet-name">Executive Stationwagon</h3>
-              
+              <div class="fleet-category">Extra Bagageruimte</div>
+              <h3 class="fleet-name">Mercedes-Benz E-Estate</h3>
+
               <div class="fleet-specs">
-                <span class="spec-badge">👥 Max 4 Pers</span>
-                <span class="spec-badge">🧳 5 Koffers</span>
-                <span class="spec-badge">🌿 Zeer Zacht</span>
+                <span class="spec-badge">Max. 4 passagiers</span>
+                <span class="spec-badge">5 koffers</span>
+                <span class="spec-badge">Luchtvering</span>
               </div>
 
               <ul class="fleet-amenities">
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Extra ruimte voor vakantiegangers</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Stille, rustige en comfortabele rit</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Kinderzitjes op aanvraag</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Extra laadruimte voor lange reizen en vakanties</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Fluisterstille rit dankzij adaptieve vering</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Kinderzitjes kosteloos op aanvraag beschikbaar</li>
               </ul>
 
               <div class="fleet-footer">
-                <div>
-                  <div class="fleet-rate-text">Betaling</div>
-                  <div class="fleet-rate-val">1x IPPA per rit</div>
-                </div>
-                <a href="#calculator" class="btn-route-book">Kies Combi</a>
+                <span class="fleet-rate-val">1x IPPA per rit</span>
+                <a href="#calculator" class="btn-route-book">Kies Stationwagon</a>
               </div>
             </div>
           </article>
@@ -660,114 +622,122 @@
     <!-- ====================================================================
          WHY CHOOSE IPPATAXI
          ==================================================================== -->
-    <section class="section" id="why-us">
+    <section class="section section-alt" id="why-us">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag" data-i18n="whyTag">Waarom IPPATAXI</span>
-          <h2 class="section-title" data-i18n="whyTitle">De Revolutie Van IPPA Vervoer</h2>
+          <span class="section-tag" data-i18n="whyTag">Onze Standaard</span>
+          <h2 class="section-title" data-i18n="whyTitle">Waarom Reizigers Kiezen Voor IPPATAXI</h2>
           <p class="section-desc">
-            Geen gedoe met kleingeld, wisselkoersen, transactiekosten of meters die oplopen in de file.
+            Betrouwbaarheid, discretie en heldere afspraken vooraf — zonder verrassingen onderweg.
           </p>
         </div>
 
         <div class="why-grid">
           <div class="why-card">
-            <div class="why-icon">💎</div>
+            <div class="why-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            </div>
             <h3 class="why-title">100% Geldloos Reizen</h3>
-            <p class="why-desc">U hoeft nooit meer te pinnen of contant geld op zak te hebben. Uw rit is voldaan zodra u uw IPPA overhandigt.</p>
+            <p class="why-desc">Geen losgeld, geen pinstoringen en geen wisselkoersen. Uw rit is volledig voldaan zodra u de afgesproken IPPA overhandigt.</p>
           </div>
 
           <div class="why-card">
-            <div class="why-icon">⚖️</div>
-            <h3 class="why-title">3 Duidelijke Soorten</h3>
-            <p class="why-desc">Korte rit = Type A. Middelmatige rit = Type B. Lange rit = Type C. Eenvoudiger kan niet.</p>
+            <div class="why-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <h3 class="why-title">Stipt op Tijd Garantie</h3>
+            <p class="why-desc">Uw chauffeur staat minimaal 10 minuten voor de afgesproken tijd gereed op uw ophaallocatie, gekleed in kostuum.</p>
           </div>
 
           <div class="why-card">
-            <div class="why-icon">⏱</div>
-            <h3 class="why-title">Altijd Op Tijd Garantie</h3>
-            <p class="why-desc">Onze chauffeurs zijn altijd stipt aanwezig, gekleed in pak en zorgen voor een ontspannen reiservaring.</p>
+            <div class="why-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+            </div>
+            <h3 class="why-title">Actieve Vluchtmonitoring</h3>
+            <p class="why-desc">Landt uw vlucht op Schiphol eerder of later? Wij volgen uw vluchtnummer live en passen de ophaaltijd kosteloos aan.</p>
           </div>
 
           <div class="why-card">
-            <div class="why-icon">✈️</div>
-            <h3 class="why-title">Schiphol Vluchtmonitoring</h3>
-            <p class="why-desc">Heeft uw vlucht vertraging? Wij houden uw landing automatisch in de gaten zodat uw chauffeur gereedstaat.</p>
+            <div class="why-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+            </div>
+            <h3 class="why-title">Geen Meter in de File</h3>
+            <p class="why-desc">Omleiding of vertraging onderweg? Het benodigde IPPA-type verandert nooit tijdens de rit. U weet vooraf exact waar u aan toe bent.</p>
           </div>
 
           <div class="why-card">
-            <div class="why-icon">🚘</div>
-            <h3 class="why-title">Luxe Mercedes Voertuigen</h3>
-            <p class="why-desc">Altijd brandschoon, voorzien van airconditioning, privacy glas en gratis mineraalwater voor onderweg.</p>
+            <div class="why-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>
+            </div>
+            <h3 class="why-title">Jong Mercedes Wagenpark</h3>
+            <p class="why-desc">Uitsluitend zwarte, representatieve Mercedes-Benz E-Klasse en V-Klasse voertuigen met volledige privacy en comfort.</p>
           </div>
 
           <div class="why-card">
-            <div class="why-icon">⚡</div>
-            <h3 class="why-title">24/7 Snelle Dispatch</h3>
-            <p class="why-desc">Reserveer direct online. Onze chauffeur bevestigt uw rit vlot via uw opgegeven telefoonnummer.</p>
+            <div class="why-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <h3 class="why-title">Directe Statusupdates</h3>
+            <p class="why-desc">Na uw aanvraag ontvangt u direct een bevestiging per e-mail met een persoonlijke link om de status van uw rit te volgen.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ====================================================================
-         FAQ ACCORDION (IPPA EXPLAINER)
+         FAQ SECTION
          ==================================================================== -->
-    <section class="section section-alt">
+    <section class="section" id="faq">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag" data-i18n="faqTag">Alles over IPPA</span>
-          <h2 class="section-title" data-i18n="faqTitle">Veelgestelde Vragen Over IPPA</h2>
+          <span class="section-tag" data-i18n="faqTag">Veelgestelde Vragen</span>
+          <h2 class="section-title" data-i18n="faqTitle">Heldere Antwoorden Over IPPA</h2>
           <p class="section-desc">
-            Lees hier exact hoe het unieke IPPA betaalsysteem werkt.
+            Alles wat u moet weten over het reserveren en voldoen van uw rit.
           </p>
         </div>
 
         <div class="faq-list">
-          <!-- FAQ 1 -->
           <div class="faq-item active">
             <button class="faq-question" type="button">
-              <span>Hoe werkt betalen met IPPA in de taxi?</span>
+              <span>Hoe werkt het betalen met IPPA bij de chauffeur?</span>
               <span class="faq-toggle-icon" aria-hidden="true">+</span>
             </button>
             <div class="faq-answer">
-              <p>Het is heel eenvoudig: u berekent vooraf op onze website welk type IPPA nodig is voor uw route (Type A, B of C). Bij aankomst op uw bestemming geeft u simpelweg de betreffende IPPA aan uw chauffeur. Geen meter, geen geld, geen transactiekosten.</p>
+              <p>U berekent vooraf via het boekingsformulier welk type IPPA uw route vereist (Type A, B of C). Bij aankomst op uw bestemming overhandigt u de betreffende IPPA aan uw chauffeur. Er komt geen contant geld, pinapparaat of taximeter aan te pas.</p>
             </div>
           </div>
 
-          <!-- FAQ 2 -->
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>Wat is het verschil tussen Type A, Type B en Type C IPPA?</span>
+              <span>Wat is het exacte verschil tussen Type A, Type B en Type C?</span>
               <span class="faq-toggle-icon" aria-hidden="true">+</span>
             </button>
             <div class="faq-answer">
-              <p>Het is 1 ding, maar in 3 soorten afgestemd op de reisafstand:
-              <br>• <strong>Type A IPPA</strong>: Voor korte ritten (tot circa 15 km, zoals stadsritten).
-              <br>• <strong>Type B IPPA</strong>: Voor middelmatige ritten (circa 15 tot 50 km, zoals Schiphol transfers).
-              <br>• <strong>Type C IPPA</strong>: Voor lange afstanden (50+ km, intercity en provincieritten).</p>
+              <p>Het systeem is ingedeeld op reisafstand:<br>
+              • <strong>Type A IPPA:</strong> Korte ritten tot circa 15 kilometer (stadsritten en lokale verplaatsingen).<br>
+              • <strong>Type B IPPA:</strong> Middellange ritten van circa 15 tot 50 kilometer (zoals Schiphol transfers vanuit de Randstad).<br>
+              • <strong>Type C IPPA:</strong> Lange afstanden vanaf 50 kilometer (intercity vervoer door heel Nederland).</p>
             </div>
           </div>
 
-          <!-- FAQ 3 -->
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>Kan ik ook met euro's of pinpas betalen?</span>
+              <span>Kan ik onderweg ook met euro's of pinpas betalen?</span>
               <span class="faq-toggle-icon" aria-hidden="true">+</span>
             </button>
             <div class="faq-answer">
-              <p>Nee, het hele fundament van IPPATAXI is dat klanten uitsluitend met IPPA afrekenen in plaats van met geld. Zorg ervoor dat u het juiste IPPA aan uw chauffeur kunt geven.</p>
+              <p>Nee. IPPATAXI werkt uitsluitend op basis van het IPPA-systeem. Zorg ervoor dat u het juiste type IPPA bij u heeft wanneer u instapt.</p>
             </div>
           </div>
 
-          <!-- FAQ 4 -->
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>Hoe weet ik zeker welk type IPPA ik nodig heb?</span>
+              <span>Hoe snel ontvang ik een bevestiging van mijn reservering?</span>
               <span class="faq-toggle-icon" aria-hidden="true">+</span>
             </button>
             <div class="faq-answer">
-              <p>Gebruik onze ritcalculator bovenaan de pagina. Vul uw ophaaladres en bestemming in, en u ziet direct of u een Type A, Type B of Type C IPPA nodig heeft.</p>
+              <p>Direct na het versturen van uw aanvraag ontvangt u een referentienummer en een link naar uw persoonlijke statuspagina. Zodra de centrale uw rit bevestigt en een chauffeur toewijst, ontvangt u automatisch een e-mailupdate.</p>
             </div>
           </div>
         </div>
@@ -775,97 +745,92 @@
     </section>
 
     <!-- ====================================================================
-         CONTACT & QUICK DISPATCH SECTION
+         CONTACT & DISPATCH SECTION
          ==================================================================== -->
-    <section class="section" id="contact">
+    <section class="section section-alt" id="contact">
       <div class="container contact-grid">
-        <!-- Contact Information -->
+        <!-- Left: Direct Contact Channels -->
         <div class="contact-info-card">
-          <span class="section-tag" data-i18n="contactTag">24/7 Bereikbaar</span>
-          <h2 class="contact-info-title" data-i18n="contactTitle">Vragen Over IPPA Of Direct Boeken?</h2>
+          <span class="section-tag" data-i18n="contactTag">24/7 Centrale</span>
+          <h2 class="contact-info-title" data-i18n="contactTitle">Persoonlijk Contact Of Maatwerk Rit?</h2>
           <p class="contact-info-desc" data-i18n="contactDesc">
-            Heeft u een vraag over welk type IPPA u nodig heeft voor uw rit? Neem direct contact op met onze dispatch.
+            Heeft u een specifieke vraag over meerdere tussenstops, zakelijk vervoer of welk type IPPA uw route vereist? Neem direct contact op met onze centrale.
           </p>
 
           <div class="contact-channels">
-            <!-- Channel: Online Dispatch -->
-            <div class="channel-item">
-              <div class="channel-icon">⚡</div>
-              <div class="channel-details">
-                <span class="channel-label">Digitale Dispatch</span>
-                <span class="channel-value" style="font-size:0.95rem;">24/7 actieve online centrale</span>
+            <a href="tel:+31202101234" class="channel-item">
+              <div class="channel-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
               </div>
-            </div>
-
-            <!-- Channel: Chauffeur Contact -->
-            <div class="channel-item">
-              <div class="channel-icon">💬</div>
               <div class="channel-details">
-                <span class="channel-label">Chauffeursbevestiging</span>
-                <span class="channel-value" style="font-size:0.95rem;">Direct contact via uw opgegeven telefoonnummer</span>
+                <span class="channel-label">Telefonische Dispatch (24/7)</span>
+                <span class="channel-value">020 – 210 12 34</span>
               </div>
-            </div>
+            </a>
 
-            <!-- Channel: Email -->
-            <div class="channel-item">
-              <div class="channel-icon">✉️</div>
+            <a href="https://wa.me/31202101234?text=Hallo%20IPPATAXI%2C%20ik%20heb%20een%20vraag%20over%20een%20rit." target="_blank" rel="noopener" class="channel-item">
+              <div class="channel-icon channel-icon-wa" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              </div>
               <div class="channel-details">
-                <span class="channel-label">E-mail</span>
-                <a href="mailto:info@ippataxi.nl" class="channel-value">info@ippataxi.nl</a>
+                <span class="channel-label">WhatsApp Centrale</span>
+                <span class="channel-value">Direct bericht sturen →</span>
               </div>
-            </div>
+            </a>
 
-            <!-- Channel: Werkgebied -->
+            <a href="mailto:info@ippataxi.nl" class="channel-item">
+              <div class="channel-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div class="channel-details">
+                <span class="channel-label">E-mailadres</span>
+                <span class="channel-value">info@ippataxi.nl</span>
+              </div>
+            </a>
+
             <div class="channel-item">
-              <div class="channel-icon">🗺️</div>
+              <div class="channel-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+              </div>
               <div class="channel-details">
                 <span class="channel-label">Werkgebied</span>
-                <span class="channel-value" style="font-size:0.95rem;">Schiphol, Amsterdam, Utrecht, Randstad & heel Nederland</span>
+                <span class="channel-value">Amsterdam, Schiphol, Randstad &amp; heel Nederland</span>
               </div>
-            </div>
-          </div>
-
-          <div class="payment-methods-strip">
-            <div class="payment-title">Geaccepteerde Betaling</div>
-            <div class="payment-badges">
-              <span class="pay-badge badge-a">🟢 Type A IPPA (Kort)</span>
-              <span class="pay-badge badge-b">🟡 Type B IPPA (Middel)</span>
-              <span class="pay-badge badge-c">🟣 Type C IPPA (Lang)</span>
-              <span class="pay-badge badge-neutral">❌ Geen Euro's / Geen Geld</span>
             </div>
           </div>
         </div>
 
-        <!-- Contact / Query Form -->
+        <!-- Right: Clean Contact Form -->
         <div class="contact-form-card">
-          <h3 style="font-family:var(--font-heading); font-size:1.4rem; margin-bottom:12px; color:#fff;">Vraag over uw IPPA Rit</h3>
-          <p style="font-size:0.88rem; color:var(--color-text-muted); margin-bottom:24px;">Vul onderstaand formulier in voor speciale routes of afspraken.</p>
+          <h3 class="contact-card-heading">Stuur een bericht naar de centrale</h3>
+          <p class="contact-card-sub">Wij reageren doorgaans binnen enkele minuten op uw aanvraag.</p>
 
           <form id="contact-form">
-            <div id="contact-form-status" style="display:none; margin-bottom:14px; padding:12px; border-radius:var(--radius-sm); font-size:0.88rem;"></div>
+            <div id="contact-form-status" class="form-status-box" style="display:none;"></div>
 
             <div class="form-group">
-              <label for="contact-name" class="form-label">Uw Naam</label>
-              <input type="text" id="contact-name" class="form-input" placeholder="Uw naam" required>
+              <label for="contact-name" class="form-label">Uw naam *</label>
+              <input type="text" id="contact-name" class="form-input" placeholder="Voor- en achternaam" required>
             </div>
 
             <div class="form-row-2">
               <div class="form-group">
-                <label for="contact-phone" class="form-label">Telefoonnummer</label>
-                <input type="tel" id="contact-phone" class="form-input" placeholder="06 - ..." required>
+                <label for="contact-phone" class="form-label">Telefoonnummer *</label>
+                <input type="tel" id="contact-phone" class="form-input" placeholder="06 - 12345678" required>
               </div>
               <div class="form-group">
-                <label for="contact-email" class="form-label">E-mailadres</label>
+                <label for="contact-email" class="form-label">E-mailadres *</label>
                 <input type="email" id="contact-email" class="form-input" placeholder="uw@email.nl" required>
               </div>
             </div>
 
             <div class="form-group">
-              <label for="contact-message" class="form-label">Uw Vraag of Ritdetails</label>
-              <textarea id="contact-message" class="form-textarea" placeholder="Vertel ons over uw gewenste ophaallocatie, bestemming en welk type IPPA u wilt inzetten..." required></textarea>
+              <label for="contact-message" class="form-label">Uw vraag of ritdetails *</label>
+              <textarea id="contact-message" class="form-textarea" placeholder="Vermeld uw gewenste ophaallocatie, bestemming en eventuele vragen..." required></textarea>
             </div>
 
-            <button type="submit" class="btn-primary" id="contact-submit-btn" style="width:100%; margin-top:12px;">Verstuur Bericht naar Centrale</button>
+            <button type="submit" class="btn-primary contact-submit-btn" id="contact-submit-btn">Verstuur Bericht naar Centrale</button>
+            <p class="recaptcha-note">Beschermd door reCAPTCHA. Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacybeleid</a> en <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Voorwaarden</a> zijn van toepassing.</p>
           </form>
         </div>
       </div>
@@ -877,16 +842,16 @@
        ==================================================================== -->
   <footer class="site-footer">
     <div class="container footer-top">
-      <div>
-        <div class="brand-logo">
-          <div class="brand-mark">IT</div>
-          <div class="brand-text">
-            <div class="brand-title">IPPA<span>TAXI</span></div>
-            <div class="brand-subtitle">ippataxi.nl</div>
-          </div>
-        </div>
+      <div class="footer-brand-col">
+        <a href="#home" class="brand-logo footer-logo">
+          <span class="brand-mark">IT</span>
+          <span class="brand-text">
+            <span class="brand-title">IPPA<span>TAXI</span></span>
+            <span class="brand-subtitle">ippataxi.nl</span>
+          </span>
+        </a>
         <p class="footer-brand-desc">
-          IPPATAXI is Nederlands eerste exclusieve taxiservice waar klanten afrekenen met IPPA (Type A, B of C) in plaats van geld.
+          Exclusief chauffeurs- en luchthavenvervoer in heel Nederland. Reis comfortabel in onze Mercedes-Benz vloot en reken eenvoudig af met Type A, B of C IPPA.
         </p>
       </div>
 
@@ -894,53 +859,57 @@
         <h4 class="footer-heading">Navigatie</h4>
         <ul class="footer-links">
           <li><a href="#home" class="footer-link">Home</a></li>
-          <li><a href="#ippa-system" class="footer-link">Het IPPA Systeem</a></li>
-          <li><a href="#calculator" class="footer-link">Bereken IPPA</a></li>
+          <li><a href="#ippa-system" class="footer-link">Het IPPA Concept</a></li>
+          <li><a href="#calculator" class="footer-link">Rit Berekenen</a></li>
           <li><a href="#routes" class="footer-link">Schiphol Transfers</a></li>
-          <li><a href="#fleet" class="footer-link">Wagenpark</a></li>
+          <li><a href="#fleet" class="footer-link">Ons Wagenpark</a></li>
         </ul>
       </div>
 
       <div>
-        <h4 class="footer-heading">De 3 Soorten IPPA</h4>
+        <h4 class="footer-heading">IPPA Tarieftypes</h4>
         <ul class="footer-links">
-          <li><span class="footer-link" style="color: var(--color-ippa-a);">🟢 Type A: Korte Ritten (&lt; 15 km)</span></li>
-          <li><span class="footer-link" style="color: var(--color-ippa-b);">🟡 Type B: Middelmatige Ritten (15-50 km)</span></li>
-          <li><span class="footer-link" style="color: var(--color-ippa-c);">🟣 Type C: Lange Ritten (50+ km)</span></li>
+          <li><span class="footer-text-item">Type A — Korte rit (&lt; 15 km)</span></li>
+          <li><span class="footer-text-item">Type B — Regio &amp; Schiphol (15–50 km)</span></li>
+          <li><span class="footer-text-item">Type C — Lange afstand (50+ km)</span></li>
         </ul>
       </div>
 
       <div>
-        <h4 class="footer-heading">Contact & Reserveren</h4>
+        <h4 class="footer-heading">Direct Contact</h4>
         <ul class="footer-links">
-          <li><a href="#calculator" class="footer-link">💎 Direct IPPA Rit Reserveren</a></li>
-          <li><a href="#contact" class="footer-link">✉️ Bericht Sturen naar Centrale</a></li>
-          <li><a href="mailto:info@ippataxi.nl" class="footer-link">📧 info@ippataxi.nl</a></li>
+          <li><a href="tel:+31202101234" class="footer-link">Tel: 020 – 210 12 34</a></li>
+          <li><a href="https://wa.me/31202101234" target="_blank" rel="noopener" class="footer-link">WhatsApp Centrale</a></li>
+          <li><a href="mailto:info@ippataxi.nl" class="footer-link">info@ippataxi.nl</a></li>
+          <li><a href="#calculator" class="footer-link">Online Rit Reserveren →</a></li>
         </ul>
       </div>
     </div>
 
     <div class="container footer-bottom">
-      <div>
-        &copy; 2026 IPPATAXI (<span class="domain-pill">ippataxi.nl</span>). Alle rechten voorbehouden.
-      </div>
-      <div style="display:flex; gap:16px;">
-        <a href="#privacy" class="footer-link">Privacybeleid</a>
-        <a href="#voorwaarden" class="footer-link">Voorwaarden</a>
+      <div>&copy; 2026 IPPATAXI (ippataxi.nl). Alle rechten voorbehouden.</div>
+      <div class="footer-legal-links">
+        <a href="#faq" class="footer-link">Veelgestelde vragen</a>
+        <a href="#contact" class="footer-link">Contact</a>
       </div>
     </div>
   </footer>
 
   <!-- ====================================================================
-       MOBILE STICKY ACTION BAR
+       STICKY MOBILE & QUICK-ACTION BAR (PHONE + WHATSAPP + BOOK)
        ==================================================================== -->
-  <div class="floating-mobile-bar" aria-label="Snelle mobiele acties">
+  <div class="floating-mobile-bar" aria-label="Direct contact en reserveren">
     <div class="floating-mobile-grid">
-      <a href="#contact" class="floating-btn floating-btn-call">
-        <span>✉️ Vraag Stellen</span>
+      <a href="tel:+31202101234" class="floating-btn floating-btn-call" aria-label="Bel direct">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>Bel</span>
+      </a>
+      <a href="https://wa.me/31202101234?text=Hallo%20IPPATAXI%2C%20ik%20wil%20graag%20een%20rit%20reserveren." target="_blank" rel="noopener" class="floating-btn floating-btn-wa" aria-label="WhatsApp">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        <span>WhatsApp</span>
       </a>
       <a href="#calculator" class="floating-btn floating-btn-book">
-        <span>💎 Bereken & Boek</span>
+        <span>Reserveer</span>
       </a>
     </div>
   </div>
@@ -951,80 +920,72 @@
   <div class="modal-overlay" id="booking-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-box">
       <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Sluit venster">&times;</button>
-      
-      <h3 class="modal-title" id="modal-title">Bevestig Uw IPPA Reservering</h3>
-      <p class="modal-subtitle">Controleer uw ritgegevens en het benodigde type IPPA.</p>
+
+      <h3 class="modal-title" id="modal-title">Bevestig Uw Reservering</h3>
+      <p class="modal-subtitle">Controleer uw ritgegevens en vul uw contactgegevens in voor de bevestiging.</p>
 
       <!-- Trip Summary -->
       <div class="modal-summary-box">
         <div class="summary-row">
-          <span class="summary-label">Van:</span>
+          <span class="summary-label">Ophaallocatie</span>
           <span class="summary-val" id="sum-pickup">-</span>
         </div>
         <div class="summary-row">
-          <span class="summary-label">Naar:</span>
+          <span class="summary-label">Bestemming</span>
           <span class="summary-val" id="sum-dropoff">-</span>
         </div>
         <div class="summary-row">
-          <span class="summary-label">Datum & Tijd:</span>
+          <span class="summary-label">Datum &amp; tijd</span>
           <span class="summary-val" id="sum-datetime">-</span>
         </div>
         <div class="summary-row">
-          <span class="summary-label">Voertuig:</span>
+          <span class="summary-label">Voertuig</span>
           <span class="summary-val" id="sum-vehicle">-</span>
         </div>
         <div class="summary-row">
-          <span class="summary-label">Reizigers:</span>
+          <span class="summary-label">Passagiers</span>
           <span class="summary-val" id="sum-passengers">-</span>
         </div>
-        <div class="summary-row" style="font-size:1.1rem; color:var(--color-primary-light);">
-          <span class="summary-label" style="color:var(--color-primary);">Benodigde Betaling:</span>
-          <span class="summary-val" id="sum-ippa" style="font-weight: 800; color: #ffffff;">1x Type B IPPA</span>
+        <div class="summary-row summary-row-highlight">
+          <span class="summary-label">Betaling bij aankomst</span>
+          <span class="summary-val" id="sum-ippa">1x Type B IPPA</span>
         </div>
       </div>
 
-      <!-- Passenger Details Input -->
+      <!-- Passenger Details Form -->
       <form id="modal-booking-form" onsubmit="return false;">
-        <div id="modal-form-status" style="display:none; margin-bottom:14px; padding:12px; border-radius:var(--radius-sm); font-size:0.88rem;"></div>
+        <div id="modal-form-status" class="form-status-box" style="display:none;"></div>
 
-        <div class="form-group" style="margin-bottom:12px;">
-          <label for="modal-name" class="form-label">Uw Naam *</label>
+        <div class="form-group">
+          <label for="modal-name" class="form-label">Uw naam *</label>
           <input type="text" id="modal-name" class="form-input" placeholder="Voor- en achternaam" required>
         </div>
 
-        <div class="form-row-2" style="margin-bottom:12px;">
+        <div class="form-row-2">
           <div class="form-group">
             <label for="modal-phone" class="form-label">Telefoonnummer *</label>
-            <input type="tel" id="modal-phone" class="form-input" placeholder="06 - ..." required>
+            <input type="tel" id="modal-phone" class="form-input" placeholder="06 - 12345678" required>
           </div>
           <div class="form-group">
-            <label for="modal-email" class="form-label">E-mailadres * (voor bevestiging)</label>
+            <label for="modal-email" class="form-label">E-mailadres * (voor statuslink)</label>
             <input type="email" id="modal-email" class="form-input" placeholder="uw@email.nl" required>
           </div>
         </div>
 
-        <div class="form-group" style="margin-bottom:12px;">
-          <label for="modal-notes" class="form-label">Opmerkingen of Vluchtnummer (optioneel)</label>
-          <input type="text" id="modal-notes" class="form-input" placeholder="Bijv. Vlucht KL1234, kinderzitje of extra stops...">
+        <div class="form-group">
+          <label for="modal-notes" class="form-label">Vluchtnummer of opmerkingen (optioneel)</label>
+          <input type="text" id="modal-notes" class="form-input" placeholder="Bijv. Vlucht KL1234, kinderzitje of extra koffers...">
         </div>
 
-        <div class="form-group" style="margin-bottom:20px;">
-          <label class="form-label">Betalingsinstructie</label>
-          <div style="background: rgba(229, 184, 105, 0.1); border: 1px dashed var(--color-primary); padding: 12px; border-radius: var(--radius-sm); font-size: 0.86rem; color: #ffffff;">
-            💎 Geen geld of pinpas nodig. Overhandig simpelweg uw IPPA aan de chauffeur bij aankomst.
-          </div>
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:10px;">
-          <button type="submit" class="btn-primary" id="btn-confirm-reservation" style="width:100%;">
-            Bevestig Reservering (Verstuur naar Centrale)
-          </button>
-        </div>
+        <button type="submit" class="btn-primary modal-submit-btn" id="btn-confirm-reservation">
+          Bevestig Reservering
+        </button>
+        <p class="recaptcha-note">Beschermd door reCAPTCHA. Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacybeleid</a> en <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Voorwaarden</a> zijn van toepassing.</p>
       </form>
     </div>
   </div>
 
-  <!-- JavaScript -->
+  <!-- Scripts -->
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
 </body>
