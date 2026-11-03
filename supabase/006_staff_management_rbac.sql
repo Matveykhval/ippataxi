@@ -310,3 +310,4 @@ grant execute on function public.get_staff_dashboard() to authenticated;
 grant execute on function public.get_driver_ride_history(uuid) to authenticated;
 grant execute on function public.update_staff_member(uuid, text, boolean) to authenticated;
 grant execute on function public.record_staff_login() to authenticated;
+

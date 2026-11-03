@@ -125,7 +125,9 @@
   }
 
   function isSeniorDriver() {
-    return state.staff?.role === 'senior_driver';
+    const urlParams = new URLSearchParams(window.location.search);
+    const forceSenior = urlParams.get('mode') === 'senior' || Boolean(window.IPPA_FORCE_SENIOR_VIEW);
+    return state.staff?.role === 'senior_driver' || ((state.staff?.role === 'owner' || state.staff?.role === 'admin') && (forceDriverMode || forceSenior)) || forceSenior;
   }
 
   function isOwner() {
@@ -223,17 +225,29 @@
     const driverMode = isDriverView();
     document.title = driverMode ? 'Driver - ippataxi' : 'Admin - ippataxi';
 
-    if ($('who')) $('who').textContent = `${staff.name} (${formatRole(staff.role)})`;
+    if ($('who')) {
+      if (driverMode && (staff.role === 'owner' || staff.role === 'admin')) {
+        $('who').textContent = `${staff.name} (${formatRole(staff.role)} • Senior Preview)`;
+      } else {
+        $('who').textContent = `${staff.name} (${formatRole(staff.role)})`;
+      }
+    }
     const roleBadge = $('role-badge');
     if (roleBadge) {
       roleBadge.textContent = driverMode ? (isSeniorDriver() ? 'Senior Chauffeur' : 'Chauffeur') : (staff.role === 'owner' ? 'Owner' : 'Admin');
-      roleBadge.className = 'role-badge ' + (staff.role === 'senior_driver' ? 'senior' : staff.role);
+      roleBadge.className = 'role-badge ' + (driverMode ? (isSeniorDriver() ? 'senior' : 'driver') : (staff.role === 'owner' ? 'owner' : 'admin'));
     }
 
     if ($('admin-tabs')) $('admin-tabs').hidden = driverMode;
     if ($('driver-tabs')) $('driver-tabs').hidden = !driverMode;
     if ($('stats-bar')) $('stats-bar').hidden = driverMode;
     if ($('driver-portal-link')) $('driver-portal-link').hidden = driverMode;
+
+    const adminLink = $('admin-portal-link');
+    if (adminLink) {
+      const isAdminOrOwner = staff.role === 'owner' || staff.role === 'admin';
+      adminLink.hidden = !isAdminOrOwner;
+    }
 
     const banner = $('driver-rbac-banner');
     if (banner) {
