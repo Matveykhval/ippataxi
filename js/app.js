@@ -257,6 +257,14 @@ function initCurrencyModeSync() {
 function applyCurrencyModeUI() {
   const isEn = appState.currentLang === 'en';
   const realMoney = isRealMoneyMode();
+  const setText = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
+  const setHtml = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = val;
+  };
 
   // 1. Toggle Payment Scaffolds visibility
   const calcScaffold = document.getElementById('calc-payment-scaffold');
@@ -269,29 +277,40 @@ function applyCurrencyModeUI() {
   if (breakdownEl) breakdownEl.hidden = !realMoney;
   if (sumBreakdownRow) sumBreakdownRow.hidden = !realMoney;
 
-  // 2. Update Hero & Calculator texts dynamically based on active mode
+  // 2. Update Hero, Nav & Calculator texts dynamically based on active mode
   const heroTitle = document.querySelector('[data-i18n="heroTitle"]');
   const heroDesc = document.querySelector('[data-i18n="heroDesc"]');
+  const feat1 = document.querySelector('[data-i18n="feat1"]');
   const cardSubtitle = document.querySelector('[data-i18n="cardSubtitle"]');
   const btnBookSubmitText = document.getElementById('btn-submit-booking-text') || document.querySelector('[data-i18n="btnBookSubmit"]');
   const fareTag = document.getElementById('calc-fare-tag');
   const fareNote = document.getElementById('calc-fare-note');
+  const contactDesc = document.querySelector('[data-i18n="contactDesc"]');
+  const navConceptLinks = document.querySelectorAll('[data-i18n="navIppaSystem"]');
 
   if (realMoney) {
+    navConceptLinks.forEach(el => {
+      el.textContent = isEn ? '2026 Rates' : 'Tarieven';
+    });
     if (heroTitle) {
       heroTitle.textContent = isEn
-        ? 'First-class chauffeur service with transparent 2026 fixed euro fares.'
-        : 'Eersteklas taxivervoer met vaste 2026 tarieven vooraf in euro’s.';
+        ? 'First-class chauffeur service with fixed euro fares upfront.'
+        : 'Eersteklas taxivervoer met vaste ritprijzen vooraf.';
     }
     if (heroDesc) {
       heroDesc.textContent = isEn
-        ? 'Calculate your exact distance and travel time upfront based on official 2026 Dutch rates (Base €4.31 • €3.17/km • €0.52/min) and pay securely via iDEAL, Stripe or in the taxi.'
-        : 'Bereken direct uw ritprijs vooraf op basis van de officiële 2026 Nederlandse taxitarieven (Start € 4,31 • € 3,17/km • € 0,52/min) en betaal veilig via iDEAL, Creditcard of in de taxi.';
+        ? 'Calculate your exact distance and travel time upfront based on official 2026 Dutch rates (Base €4.31 • €3.17/km • €0.52/min) and pay securely via iDEAL, credit card, or in the taxi.'
+        : 'U ziet vooraf direct uw vaste ritprijs op basis van de officiële Nederlandse taxitarieven voor 2026 (Start € 4,31 • € 3,17/km • € 0,52/min). Betaal eenvoudig via iDEAL, creditcard of in de taxi.';
+    }
+    if (feat1) {
+      feat1.textContent = isEn
+        ? 'Fixed price calculated upfront — never any surprises'
+        : 'Vaste ritprijs vooraf berekend — nooit verrassingen achteraf';
     }
     if (cardSubtitle) {
       cardSubtitle.textContent = isEn
-        ? 'Live route & fare calculation (2026 Rates: €4.31 + €3.17/km + €0.52/min)'
-        : 'Live route- & prijsberekening (Tarief 2026: € 4,31 + € 3,17/km + € 0,52/min)';
+        ? 'Instant route & fare calculation (2026 Rates: €4.31 + €3.17/km + €0.52/min)'
+        : 'Directe route- & prijsberekening (Tarief 2026: € 4,31 + € 3,17/km + € 0,52/min)';
     }
     if (fareTag) {
       fareTag.textContent = isEn ? 'Estimated Total Fare (2026 Rate)' : 'Berekende Ritprijs (Tarief 2026)';
@@ -302,14 +321,207 @@ function applyCurrencyModeUI() {
     if (btnBookSubmitText) {
       btnBookSubmitText.textContent = isEn ? 'Book & Pay Ride (€)' : 'Rit Reserveren & Betalen (€)';
     }
+
+    // Hero 3-Chip Summary Strip (2026 Rate Components)
+    setText('hero-chip-1-title', '€ 4,31');
+    setText('hero-chip-1-sub', isEn ? 'Base fare (2026)' : 'Starttarief (Basis)');
+    setText('hero-chip-2-title', '€ 3,17 / km');
+    setText('hero-chip-2-sub', isEn ? 'Distance rate' : 'Kilometertarief');
+    setText('hero-chip-3-title', '€ 0,52 / min');
+    setText('hero-chip-3-sub', isEn ? 'Duration rate' : 'Tijdtarief per min');
+
+    // Calculator Payment Selector Labels
+    setText('lbl-calc-pay-method', isEn ? 'Select payment method' : 'Kies betaalmethode');
+    setText('lbl-calc-pay-secure', isEn ? 'Secure payment' : 'Beveiligde betaling');
+    setText('pay-meta-ideal', isEn ? 'Dutch bank transfer' : 'Direct via uw bank');
+    setText('pay-name-stripe', isEn ? 'Credit Card' : 'Creditcard');
+    setText('pay-meta-stripe', 'Visa • Mastercard');
+    setText('pay-name-taxi', isEn ? 'In the Taxi' : 'In de Taxi');
+    setText('pay-meta-taxi', isEn ? 'Card or cash' : 'Pin of contant');
+
+    // Stats Section
+    setText('stat-1-num', '100%');
+    setText('stat-1-lbl', isEn ? 'Fixed price upfront' : 'Vast tarief vooraf berekend');
+    setText('stat-2-num', '2026');
+    setText('stat-2-lbl', isEn ? 'iDEAL, Card & In-Taxi Pin' : 'iDEAL, Creditcard & Pin');
+
+    // Section: Het Betaalconcept -> Het Tariefsysteem (2026 Dutch Taxi Rates)
+    setText('concept-tag', isEn ? 'Transparent Pricing' : 'Het Tariefsysteem');
+    setText('concept-title', isEn ? 'Clear 2026 Dutch Taxi Rates. Calculated Upfront.' : 'Heldere 2026 Taxitarieven. Vooraf Berekend.');
+    setText('concept-desc', isEn
+      ? 'With IPPATAXI you know the exact cost of your ride before stepping in. Your fare is calculated directly from the official 2026 Dutch taxi rates, exact driving distance, and expected travel time.'
+      : 'Bij IPPATAXI weet u vooraf exact wat uw rit kost. Uw ritprijs wordt direct berekend op basis van de officiële Nederlandse taxitarieven voor 2026 en de exacte rijafstand en rijtijd van uw route.');
+
+    setText('tier-1-badge', isEn ? 'Base Rate • Start' : 'Starttarief • Basis');
+    setText('tier-1-scope', isEn ? 'Fixed per ride' : 'Vast bedrag per rit');
+    setText('tier-1-title', isEn ? 'Base & Boarding Fare' : 'Instap- & Basistarief');
+    setText('tier-1-desc', isEn
+      ? 'The official 2026 base rate for every reserved ride in our Mercedes-Benz fleet, including pickup, luggage assistance, and complimentary waiting time.'
+      : 'Het wettelijke basistarief voor elke gereserveerde rit in onze Mercedes-Benz vloot, inclusief voorrijden, bagageservice en 10 minuten kosteloze wachttijd.');
+    setText('tier-1-give-lbl', isEn ? '2026 Standard Rate' : 'Wettelijk 2026 tarief');
+    setText('tier-1-give-val', '€ 4,31 per rit');
+
+    setText('tier-2-badge', isEn ? 'Distance • Per KM' : 'Afstand • Kilometers');
+    setText('tier-2-scope', isEn ? 'Fastest driving route' : 'Snelste rijroute');
+    setText('tier-2-title', isEn ? 'Kilometer Rate' : 'Kilometertarief');
+    setText('tier-2-desc', isEn
+      ? 'Calculated over the exact driving distance from your pickup address to your destination via our routing engine. Locked in upfront before you book.'
+      : 'Berekend over de exacte rijafstand van uw ophaaladres naar uw bestemming via onze routeplanner. Deze prijs staat vooraf vast bij uw reservering.');
+    setText('tier-2-give-lbl', isEn ? '2026 Standard Rate' : 'Wettelijk 2026 tarief');
+    setText('tier-2-give-val', '€ 3,17 per km');
+
+    setText('tier-3-badge', isEn ? 'Duration • Per Min' : 'Rijtijd • Minuten');
+    setText('tier-3-scope', isEn ? 'Upfront travel time' : 'Geschatte rijtijd');
+    setText('tier-3-title', isEn ? 'Duration Rate & Payment' : 'Tijdtarief & Betaling');
+    setText('tier-3-desc', isEn
+      ? 'Calculated upfront from the estimated driving minutes of your trip. Pay effortlessly online via iDEAL or credit card, or by card/cash in the vehicle.'
+      : 'Vooraf berekend op basis van de verwachte rijtijd van uw traject. U rekent eenvoudig online af via iDEAL of creditcard, of betaalt per pin of contant in de taxi.');
+    setText('tier-3-give-lbl', isEn ? '2026 Standard Rate' : 'Wettelijk 2026 tarief');
+    setText('tier-3-give-val', isEn ? '€ 0,52 per minute' : '€ 0,52 per minuut');
+
+    // Fleet Bullet 3
+    setText('fleet-sedan-bullet-3', isEn
+      ? 'Available for city rides, Schiphol & intercity transfers'
+      : 'Beschikbaar voor stadsritten, Schiphol en lange afstanden');
+
+    // Why Us Section (#why-us)
+    setText('why-1-title', isEn ? 'Transparent Fixed Fares' : 'Transparant Vast Tarief');
+    setText('why-1-desc', isEn
+      ? 'You see the exact euro fare upfront based on official 2026 Dutch taxi rates. Pay effortlessly via iDEAL, credit card, or contactless pin in the taxi.'
+      : 'U ziet vooraf exact uw ritprijs op basis van de officiële Nederlandse taxitarieven (2026). Betaal eenvoudig via iDEAL, creditcard of contactloos in de taxi.');
+    setText('why-4-title', isEn ? 'No Surprises En Route' : 'Geen Verrassingen Onderweg');
+    setText('why-4-desc', isEn
+      ? 'Detour or traffic delay along the way? Your upfront calculated fare stays fixed once reserved. You always know the exact total cost in advance.'
+      : 'Omleiding of vertraging onderweg? De vooraf berekende ritprijs staat vast bij uw reservering. U weet vooraf exact waar u financieel aan toe bent.');
+
+    // FAQ Section (#faq)
+    setText('faq-section-title', isEn ? 'Clear Answers About Fares & Booking' : 'Heldere Antwoorden Over Tarieven & Boeken');
+    setText('faq-q1', isEn ? 'How is my ride fare calculated upfront?' : 'Hoe wordt mijn ritprijs vooraf berekend?');
+    setHtml('faq-a1', isEn
+      ? 'When you enter your pickup address and destination in the calculator, our routing system determines the shortest driving distance and travel time. Your fixed total fare is calculated immediately using the official 2026 Dutch taxi rates.'
+      : 'Zodra u uw ophaaladres en bestemming invult, berekent onze routeplanner direct de rijafstand en verwachte rijtijd. Uw vaste ritprijs wordt vooraf berekend volgens de officiële Nederlandse taxitarieven voor 2026.');
+    setText('faq-q2', isEn ? 'How are the 2026 Dutch taxi rates structured?' : 'Uit welke onderdelen bestaat het 2026 taxitarief?');
+    setHtml('faq-a2', isEn
+      ? 'The total fare consists of three official components:<br>• <strong>Base Fare (€ 4.31):</strong> Fixed starting rate per ride.<br>• <strong>Distance Rate (€ 3.17 per km):</strong> Calculated over the exact driving kilometers.<br>• <strong>Duration Rate (€ 0.52 per min):</strong> Calculated over the estimated driving time in minutes.'
+      : 'De vaste ritprijs is opgebouwd uit drie heldere onderdelen:<br>• <strong>Starttarief (€ 4,31):</strong> Vast basistarief per gereserveerde rit.<br>• <strong>Kilometertarief (€ 3,17 per km):</strong> Berekend over het exacte aantal kilometers van uw route.<br>• <strong>Tijdtarief (€ 0,52 per minuut):</strong> Berekend over de geschatte rijtijd in minuten.');
+    setText('faq-q3', isEn ? 'Which payment methods are accepted?' : 'Met welke betaalmethoden kan ik mijn rit betalen?');
+    setHtml('faq-a3', isEn
+      ? 'You can pay directly during booking via <strong>iDEAL</strong> or <strong>Credit Card (Visa, Mastercard, Amex via Stripe)</strong>, or choose to pay your chauffeur in the Mercedes via contactless pin (Maestro, VPAY, Apple Pay, credit card) or cash.'
+      : 'U kunt uw rit bij het reserveren direct voldoen via <strong>iDEAL</strong> of <strong>Creditcard (Visa, Mastercard, Amex via Stripe)</strong>, of ervoor kiezen om bij aankomst in de Mercedes te betalen via pin (Maestro, VPAY, Apple Pay, creditcard) of contant.');
+
+    // Contact & Footer
+    if (contactDesc) {
+      contactDesc.textContent = isEn
+        ? 'Have a question about multiple stops, corporate account billing, or a custom trip quote? Contact our dispatch directly.'
+        : 'Heeft u een specifieke vraag over meerdere tussenstops, zakelijk rijden op rekening of een prijsopgave op maat? Neem direct contact op met onze centrale.';
+    }
+    setText('footer-brand-desc', isEn
+      ? 'Executive chauffeur and airport transfers across the Netherlands. Travel comfortably in our Mercedes-Benz fleet with transparent 2026 fixed fares.'
+      : 'Exclusief chauffeurs- en luchthavenvervoer in heel Nederland. Reis comfortabel in onze Mercedes-Benz vloot tegen heldere, vooraf berekende 2026 tarieven.');
+    setText('footer-nav-concept', isEn ? '2026 Taxi Rates' : 'Tariefsysteem 2026');
+    setText('footer-tariffs-heading', isEn ? '2026 Taxi Rates' : 'Taxitarieven 2026');
+    setText('footer-tariff-1', isEn ? 'Base fare — € 4.31 per ride' : 'Starttarief — € 4,31 per rit');
+    setText('footer-tariff-2', isEn ? 'Distance rate — € 3.17 per km' : 'Kilometertarief — € 3,17 per km');
+    setText('footer-tariff-3', isEn ? 'Duration rate — € 0.52 per min' : 'Tijdtarief — € 0,52 per minuut');
   } else {
     const t = translations[appState.currentLang] || translations.nl;
+    navConceptLinks.forEach(el => { el.textContent = t.navIppaSystem; });
     if (heroTitle) heroTitle.textContent = t.heroTitle;
     if (heroDesc) heroDesc.textContent = t.heroDesc;
+    if (feat1) feat1.textContent = t.feat1;
     if (cardSubtitle) cardSubtitle.textContent = t.cardSubtitle;
     if (fareTag) fareTag.textContent = t.fareTag;
     if (fareNote) fareNote.textContent = t.fareNote;
     if (btnBookSubmitText) btnBookSubmitText.textContent = t.btnBookSubmit;
+    if (contactDesc) contactDesc.textContent = t.contactDesc;
+
+    // Hero 3-Chip Summary Strip (IPPA Tiers)
+    setText('hero-chip-1-title', 'Type A');
+    setText('hero-chip-1-sub', isEn ? 'City < 15 km' : 'Stad < 15 km');
+    setText('hero-chip-2-title', 'Type B');
+    setText('hero-chip-2-sub', isEn ? 'Airport & Region 15–50 km' : 'Regio & Schiphol 15–50 km');
+    setText('hero-chip-3-title', 'Type C');
+    setText('hero-chip-3-sub', 'Intercity 50+ km');
+
+    // Stats Section
+    setText('stat-1-num', '100%');
+    setText('stat-1-lbl', isEn ? 'Fixed IPPA per distance' : 'Vaste IPPA per afstand');
+    setText('stat-2-num', isEn ? '3 Tiers' : '3 Types');
+    setText('stat-2-lbl', isEn ? 'Type A, B & C system' : 'Type A, B & C systeem');
+
+    // Section: Het Betaalconcept (IPPA)
+    setText('concept-tag', isEn ? 'The Payment Concept' : 'Het Betaalconcept');
+    setText('concept-title', isEn ? 'One clear system. Three distances.' : 'Eén duidelijk systeem. Drie afstanden.');
+    setText('concept-desc', isEn
+      ? 'With IPPATAXI you do not pay with cash or per minute in traffic. Depending on the travel distance, you hand your chauffeur a Type A, Type B or Type C IPPA.'
+      : 'Bij IPPATAXI betaalt u niet met contant geld of per minuut in de file. Afhankelijk van de reisafstand overhandigt u uw chauffeur een Type A, Type B of Type C IPPA.');
+
+    setText('tier-1-badge', isEn ? 'Type A • Short Ride' : 'Type A • Korte Rit');
+    setText('tier-1-scope', isEn ? 'Up to 15 km' : 'Tot 15 km');
+    setText('tier-1-title', isEn ? 'City & Local Rides' : 'Stadsritten & Lokaal');
+    setText('tier-1-desc', isEn
+      ? 'For all short rides within the city and immediate surroundings. Ideal for transfers to and from the train station, business meetings, hotels or dinner.'
+      : 'Voor al uw korte ritten binnen de stad en directe omgeving. Ideaal voor vervoer van en naar het treinstation, zakelijke afspraken in het centrum, hotels of een diner.');
+    setText('tier-1-give-lbl', isEn ? 'Rate upon arrival' : 'Tarief bij aankomst');
+    setText('tier-1-give-val', '1x Type A IPPA');
+
+    setText('tier-2-badge', isEn ? 'Type B • Medium Ride' : 'Type B • Middellange Rit');
+    setText('tier-2-scope', isEn ? '15 to 50 km' : '15 tot 50 km');
+    setText('tier-2-title', isEn ? 'Schiphol & Region' : 'Schiphol & Regio');
+    setText('tier-2-desc', isEn
+      ? 'For regional connections and the most popular airport transfers. Suitable for rides between Amsterdam, Utrecht, Haarlem, Almere or The Hague and Schiphol.'
+      : 'Voor regionale verbindingen en de populairste luchthaventransfers. Geschikt voor ritten tussen onder andere Amsterdam, Utrecht, Haarlem, Almere of Den Haag en Schiphol.');
+    setText('tier-2-give-lbl', isEn ? 'Rate upon arrival' : 'Tarief bij aankomst');
+    setText('tier-2-give-val', '1x Type B IPPA');
+
+    setText('tier-3-badge', isEn ? 'Type C • Long Distance' : 'Type C • Lange Afstand');
+    setText('tier-3-scope', isEn ? 'From 50+ km' : 'Vanaf 50+ km');
+    setText('tier-3-title', isEn ? 'Intercity & Nationwide' : 'Intercity & Landelijk');
+    setText('tier-3-desc', isEn
+      ? 'For long distances across the Netherlands and beyond. Think of rides from Rotterdam, Eindhoven, Groningen or Maastricht to Schiphol or city-to-city executive travel.'
+      : 'Voor lange afstanden door heel Nederland en daarbuiten. Denk aan ritten vanuit Rotterdam, Eindhoven, Groningen of Maastricht naar Schiphol of directievervoer tussen steden.');
+    setText('tier-3-give-lbl', isEn ? 'Rate upon arrival' : 'Tarief bij aankomst');
+    setText('tier-3-give-val', '1x Type C IPPA');
+
+    // Fleet Bullet 3
+    setText('fleet-sedan-bullet-3', isEn
+      ? 'Available for Type A, B and C rides'
+      : 'Beschikbaar voor Type A, B en C ritten');
+
+    // Why Us Section (#why-us)
+    setText('why-1-title', isEn ? '100% Cashless Travel' : '100% Geldloos Reizen');
+    setText('why-1-desc', isEn
+      ? 'No loose change, no card terminal issues and no exchange rates. Your ride is settled in full as soon as you hand over the agreed IPPA.'
+      : 'Geen losgeld, geen pinstoringen en geen wisselkoersen. Uw rit is volledig voldaan zodra u de afgesproken IPPA overhandigt.');
+    setText('why-4-title', isEn ? 'No Running Meter in Traffic' : 'Geen Meter in de File');
+    setText('why-4-desc', isEn
+      ? 'Detour or delay along the way? The required IPPA tier never changes during the ride. You know exactly what to expect upfront.'
+      : 'Omleiding of vertraging onderweg? Het benodigde IPPA-type verandert nooit tijdens de rit. U weet vooraf exact waar u aan toe bent.');
+
+    // FAQ Section (#faq)
+    setText('faq-section-title', t.faqTitle);
+    setText('faq-q1', isEn ? 'How does paying with IPPA work with the chauffeur?' : 'Hoe werkt het betalen met IPPA bij de chauffeur?');
+    setHtml('faq-a1', isEn
+      ? 'You calculate in advance via the booking form which IPPA tier your route requires (Type A, B or C). Upon arrival at your destination, you hand the corresponding IPPA to your chauffeur. No cash, card terminal or taximeter is involved.'
+      : 'U berekent vooraf via het boekingsformulier welk type IPPA uw route vereist (Type A, B of C). Bij aankomst op uw bestemming overhandigt u de betreffende IPPA aan uw chauffeur. Er komt geen contant geld, pinapparaat of taximeter aan te pas.');
+    setText('faq-q2', isEn ? 'What is the exact difference between Type A, Type B and Type C?' : 'Wat is het exacte verschil tussen Type A, Type B en Type C?');
+    setHtml('faq-a2', isEn
+      ? 'The system is categorized by travel distance:<br>• <strong>Type A IPPA:</strong> Short rides up to approx. 15 km (city rides and local trips).<br>• <strong>Type B IPPA:</strong> Medium rides from approx. 15 to 50 km (such as Schiphol transfers from the Randstad).<br>• <strong>Type C IPPA:</strong> Long distances from 50 km onwards (intercity travel across the Netherlands).'
+      : 'Het systeem is ingedeeld op reisafstand:<br>• <strong>Type A IPPA:</strong> Korte ritten tot circa 15 kilometer (stadsritten en lokale verplaatsingen).<br>• <strong>Type B IPPA:</strong> Middellange ritten van circa 15 tot 50 kilometer (zoals Schiphol transfers vanuit de Randstad).<br>• <strong>Type C IPPA:</strong> Lange afstanden vanaf 50 kilometer (intercity vervoer door heel Nederland).');
+    setText('faq-q3', isEn ? 'Can I also pay with euros or a bank card along the way?' : 'Kan ik onderweg ook met euro\'s of pinpas betalen?');
+    setHtml('faq-a3', isEn
+      ? 'No. IPPATAXI operates exclusively on the IPPA system. Please make sure you have the appropriate IPPA tier with you when boarding.'
+      : 'Nee. IPPATAXI werkt uitsluitend op basis van het IPPA-systeem. Zorg ervoor dat u het juiste type IPPA bij u heeft wanneer u instapt.');
+
+    // Footer
+    setText('footer-brand-desc', isEn
+      ? 'Exclusive chauffeur and airport transfers across the Netherlands. Travel comfortably in our Mercedes-Benz fleet and settle your ride with Type A, B or C IPPA.'
+      : 'Exclusief chauffeurs- en luchthavenvervoer in heel Nederland. Reis comfortabel in onze Mercedes-Benz vloot en reken eenvoudig af met Type A, B of C IPPA.');
+    setText('footer-nav-concept', isEn ? 'The IPPA Concept' : 'Het IPPA Concept');
+    setText('footer-tariffs-heading', isEn ? 'IPPA Tariff Tiers' : 'IPPA Tarieftypes');
+    setText('footer-tariff-1', isEn ? 'Type A — Short ride (< 15 km)' : 'Type A — Korte rit (< 15 km)');
+    setText('footer-tariff-2', isEn ? 'Type B — Region & Schiphol (15–50 km)' : 'Type B — Regio & Schiphol (15–50 km)');
+    setText('footer-tariff-3', isEn ? 'Type C — Long distance (50+ km)' : 'Type C — Lange afstand (50+ km)');
   }
 
   // 3. Update Popular Preset Route Cards dynamically (€ vs IPPA)

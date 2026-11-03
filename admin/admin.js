@@ -266,8 +266,8 @@
       const descDiv = banner.querySelector('div');
       if (descDiv) {
         const modeBadge = realMoney
-          ? '<span style="color:#30a46c;font-weight:700">[💶 Real Money Mode (€) Actief — 85% Netto Uitbetaling]</span> '
-          : '<span style="color:#d8b14c;font-weight:700">[💎 Ippa Currency Mode Actief]</span> ';
+          ? '<span style="color:#30a46c;font-weight:700">[Real Money Mode (€) Actief — 85% Netto Uitbetaling]</span> '
+          : '<span style="color:#d8b14c;font-weight:700">[Ippa Currency Mode Actief]</span> ';
         descDiv.innerHTML = modeBadge + (isSeniorDriver()
           ? '<strong>Senior Chauffeursmodus</strong> — Bekijk beschikbare ritten, uw exacte netto verdiensten en het klantenberichten-inbox.'
           : '<strong>Chauffeursmodus</strong> — Bekijk openstaande ritten en uw exacte uitbetaling voordat u op <b>Accept</b> klikt.');
@@ -1181,8 +1181,8 @@
     const createdText = st.created_at ? fmtCreated(st.created_at) : '-';
 
     const metaRow = el('div', { class: 'staff-meta-row' }, [
-      el('span', {}, [document.createTextNode('🕒 Laatst ingelogd: '), el('strong', { text: lastLoginText })]),
-      el('span', {}, [document.createTextNode('📅 Aangemaakt: '), el('strong', { text: createdText })])
+      el('span', {}, [document.createTextNode('Laatst ingelogd: '), el('strong', { text: lastLoginText })]),
+      el('span', {}, [document.createTextNode('Aangemaakt: '), el('strong', { text: createdText })])
     ]);
 
     const metrics = el('div', { class: 'staff-metrics' }, [

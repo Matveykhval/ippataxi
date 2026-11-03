@@ -149,26 +149,26 @@
           </p>
 
           <!-- Clean 3-Tier Summary Strip -->
-          <div class="hero-tiers-summary" aria-label="Overzicht van de drie IPPA tarieftypes">
+          <div class="hero-tiers-summary" id="hero-tiers-summary" aria-label="Overzicht van de tarieven">
             <div class="hero-tier-chip">
               <span class="tier-dot dot-a" aria-hidden="true"></span>
               <div>
-                <strong>Type A</strong>
-                <span>Stad &lt; 15 km</span>
+                <strong id="hero-chip-1-title">Type A</strong>
+                <span id="hero-chip-1-sub">Stad &lt; 15 km</span>
               </div>
             </div>
             <div class="hero-tier-chip">
               <span class="tier-dot dot-b" aria-hidden="true"></span>
               <div>
-                <strong>Type B</strong>
-                <span>Regio &amp; Schiphol 15–50 km</span>
+                <strong id="hero-chip-2-title">Type B</strong>
+                <span id="hero-chip-2-sub">Regio &amp; Schiphol 15–50 km</span>
               </div>
             </div>
             <div class="hero-tier-chip">
               <span class="tier-dot dot-c" aria-hidden="true"></span>
               <div>
-                <strong>Type C</strong>
-                <span>Intercity 50+ km</span>
+                <strong id="hero-chip-3-title">Type C</strong>
+                <span id="hero-chip-3-sub">Intercity 50+ km</span>
               </div>
             </div>
           </div>
@@ -299,23 +299,26 @@
             </div>
 
             <!-- Real Money Payment Gateway Scaffold (Visible only when Real Money Mode is active) -->
-            <div class="calc-payment-scaffold" id="calc-payment-scaffold" hidden>
+            <div class="form-group calc-payment-scaffold" id="calc-payment-scaffold" hidden>
               <div class="calc-payment-header">
-                <span class="calc-payment-label" id="lbl-calc-pay-method">Betaalmethode kiezen</span>
-                <span class="calc-payment-secure">🔒 iDEAL • Stripe • Pin</span>
+                <span class="vehicle-selector-title" id="lbl-calc-pay-method">Kies betaalmethode</span>
+                <span class="calc-payment-secure">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  <span id="lbl-calc-pay-secure">Beveiligde betaling</span>
+                </span>
               </div>
               <div class="payment-method-pills" id="calc-payment-pills">
                 <button type="button" class="pay-pill active" data-pay="ideal">
-                  <span class="pay-badge-ideal">iDEAL</span>
-                  <span>iDEAL</span>
+                  <span class="pay-pill-name">iDEAL</span>
+                  <span class="pay-pill-meta" id="pay-meta-ideal">Direct via uw bank</span>
                 </button>
                 <button type="button" class="pay-pill" data-pay="stripe">
-                  <span>💳</span>
-                  <span>Creditcard / Stripe</span>
+                  <span class="pay-pill-name" id="pay-name-stripe">Creditcard</span>
+                  <span class="pay-pill-meta" id="pay-meta-stripe">Visa • Mastercard</span>
                 </button>
                 <button type="button" class="pay-pill" data-pay="taxi">
-                  <span>🚖</span>
-                  <span>Pin / Contant in Taxi</span>
+                  <span class="pay-pill-name" id="pay-name-taxi">In de Taxi</span>
+                  <span class="pay-pill-meta" id="pay-meta-taxi">Pin of contant</span>
                 </button>
               </div>
             </div>
@@ -336,12 +339,12 @@
     <section class="stats-section" aria-label="Onze beloftes">
       <div class="container stats-grid">
         <div class="stat-item">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Vaste IPPA per afstand</div>
+          <div class="stat-number" id="stat-1-num">100%</div>
+          <div class="stat-label" id="stat-1-lbl">Vaste IPPA per afstand</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number">3 Types</div>
-          <div class="stat-label">Type A, B &amp; C systeem</div>
+          <div class="stat-number" id="stat-2-num">3 Types</div>
+          <div class="stat-label" id="stat-2-lbl">Type A, B &amp; C systeem</div>
         </div>
         <div class="stat-item">
           <div class="stat-number">24/7</div>
@@ -349,70 +352,70 @@
         </div>
         <div class="stat-item">
           <div class="stat-number">Schiphol</div>
-          <div class="stat-label">Vluchtmonitoring inbegrepen</div>
+          <div class="stat-label" id="stat-4-lbl">Vluchtmonitoring inbegrepen</div>
         </div>
       </div>
     </section>
 
     <!-- ====================================================================
-         HOW IPPA WORKS (3 TIERS)
+         HOW IPPA / TARIEVEN WORKS (3 TIERS / 2026 RATES)
          ==================================================================== -->
     <section class="section" id="ippa-system">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag">Het Betaalconcept</span>
-          <h2 class="section-title">Eén duidelijk systeem. Drie afstanden.</h2>
-          <p class="section-desc">
+          <span class="section-tag" id="concept-tag">Het Betaalconcept</span>
+          <h2 class="section-title" id="concept-title">Eén duidelijk systeem. Drie afstanden.</h2>
+          <p class="section-desc" id="concept-desc">
             Bij IPPATAXI betaalt u niet met contant geld of per minuut in de file. Afhankelijk van de reisafstand overhandigt u uw chauffeur een Type A, Type B of Type C IPPA.
           </p>
         </div>
 
         <div class="ippa-tiers-grid">
-          <!-- Type A -->
+          <!-- Card 1 (Type A / Base Rate) -->
           <article class="ippa-tier-card card-type-a">
             <div class="tier-card-top">
-              <span class="tier-card-badge badge-a">Type A • Korte Rit</span>
-              <span class="tier-card-scope">Tot 15 km</span>
+              <span class="tier-card-badge badge-a" id="tier-1-badge">Type A • Korte Rit</span>
+              <span class="tier-card-scope" id="tier-1-scope">Tot 15 km</span>
             </div>
-            <h3 class="tier-card-title">Stadsritten &amp; Lokaal</h3>
-            <p class="tier-card-desc">
+            <h3 class="tier-card-title" id="tier-1-title">Stadsritten &amp; Lokaal</h3>
+            <p class="tier-card-desc" id="tier-1-desc">
               Voor al uw korte ritten binnen de stad en directe omgeving. Ideaal voor vervoer van en naar het treinstation, zakelijke afspraken in het centrum, hotels of een diner.
             </p>
             <div class="tier-card-give">
-              <span class="give-label">Tarief bij aankomst</span>
-              <span class="give-value">1x Type A IPPA</span>
+              <span class="give-label" id="tier-1-give-lbl">Tarief bij aankomst</span>
+              <span class="give-value" id="tier-1-give-val">1x Type A IPPA</span>
             </div>
           </article>
 
-          <!-- Type B -->
+          <!-- Card 2 (Type B / Per KM Rate) -->
           <article class="ippa-tier-card card-type-b">
             <div class="tier-card-top">
-              <span class="tier-card-badge badge-b">Type B • Middellange Rit</span>
-              <span class="tier-card-scope">15 tot 50 km</span>
+              <span class="tier-card-badge badge-b" id="tier-2-badge">Type B • Middellange Rit</span>
+              <span class="tier-card-scope" id="tier-2-scope">15 tot 50 km</span>
             </div>
-            <h3 class="tier-card-title">Schiphol &amp; Regio</h3>
-            <p class="tier-card-desc">
+            <h3 class="tier-card-title" id="tier-2-title">Schiphol &amp; Regio</h3>
+            <p class="tier-card-desc" id="tier-2-desc">
               Voor regionale verbindingen en de populairste luchthaventransfers. Geschikt voor ritten tussen onder andere Amsterdam, Utrecht, Haarlem, Almere of Den Haag en Schiphol.
             </p>
             <div class="tier-card-give">
-              <span class="give-label">Tarief bij aankomst</span>
-              <span class="give-value">1x Type B IPPA</span>
+              <span class="give-label" id="tier-2-give-lbl">Tarief bij aankomst</span>
+              <span class="give-value" id="tier-2-give-val">1x Type B IPPA</span>
             </div>
           </article>
 
-          <!-- Type C -->
+          <!-- Card 3 (Type C / Per Min Rate) -->
           <article class="ippa-tier-card card-type-c">
             <div class="tier-card-top">
-              <span class="tier-card-badge badge-c">Type C • Lange Afstand</span>
-              <span class="tier-card-scope">Vanaf 50+ km</span>
+              <span class="tier-card-badge badge-c" id="tier-3-badge">Type C • Lange Afstand</span>
+              <span class="tier-card-scope" id="tier-3-scope">Vanaf 50+ km</span>
             </div>
-            <h3 class="tier-card-title">Intercity &amp; Landelijk</h3>
-            <p class="tier-card-desc">
+            <h3 class="tier-card-title" id="tier-3-title">Intercity &amp; Landelijk</h3>
+            <p class="tier-card-desc" id="tier-3-desc">
               Voor lange afstanden door heel Nederland en daarbuiten. Denk aan ritten vanuit Rotterdam, Eindhoven, Groningen of Maastricht naar Schiphol of directievervoer tussen steden.
             </p>
             <div class="tier-card-give">
-              <span class="give-label">Tarief bij aankomst</span>
-              <span class="give-value">1x Type C IPPA</span>
+              <span class="give-label" id="tier-3-give-lbl">Tarief bij aankomst</span>
+              <span class="give-value" id="tier-3-give-val">1x Type C IPPA</span>
             </div>
           </article>
         </div>
@@ -571,7 +574,7 @@
               <ul class="fleet-amenities">
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Lederen interieur en achterbankverwarming</li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Flesjes water en oplaadmogelijkheden</li>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> Beschikbaar voor Type A, B en C ritten</li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg> <span id="fleet-sedan-bullet-3">Beschikbaar voor Type A, B en C ritten</span></li>
               </ul>
 
               <div class="fleet-footer">
@@ -660,48 +663,48 @@
             <div class="why-icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
             </div>
-            <h3 class="why-title">100% Geldloos Reizen</h3>
-            <p class="why-desc">Geen losgeld, geen pinstoringen en geen wisselkoersen. Uw rit is volledig voldaan zodra u de afgesproken IPPA overhandigt.</p>
+            <h3 class="why-title" id="why-1-title">100% Geldloos Reizen</h3>
+            <p class="why-desc" id="why-1-desc">Geen losgeld, geen pinstoringen en geen wisselkoersen. Uw rit is volledig voldaan zodra u de afgesproken IPPA overhandigt.</p>
           </div>
 
           <div class="why-card">
             <div class="why-icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
-            <h3 class="why-title">Stipt op Tijd Garantie</h3>
-            <p class="why-desc">Uw chauffeur staat minimaal 10 minuten voor de afgesproken tijd gereed op uw ophaallocatie, gekleed in kostuum.</p>
+            <h3 class="why-title" id="why-2-title">Stipt op Tijd Garantie</h3>
+            <p class="why-desc" id="why-2-desc">Uw chauffeur staat minimaal 10 minuten voor de afgesproken tijd gereed op uw ophaallocatie, gekleed in kostuum.</p>
           </div>
 
           <div class="why-card">
             <div class="why-icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
             </div>
-            <h3 class="why-title">Actieve Vluchtmonitoring</h3>
-            <p class="why-desc">Landt uw vlucht op Schiphol eerder of later? Wij volgen uw vluchtnummer live en passen de ophaaltijd kosteloos aan.</p>
+            <h3 class="why-title" id="why-3-title">Actieve Vluchtmonitoring</h3>
+            <p class="why-desc" id="why-3-desc">Landt uw vlucht op Schiphol eerder of later? Wij volgen uw vluchtnummer live en passen de ophaaltijd kosteloos aan.</p>
           </div>
 
           <div class="why-card">
             <div class="why-icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
             </div>
-            <h3 class="why-title">Geen Meter in de File</h3>
-            <p class="why-desc">Omleiding of vertraging onderweg? Het benodigde IPPA-type verandert nooit tijdens de rit. U weet vooraf exact waar u aan toe bent.</p>
+            <h3 class="why-title" id="why-4-title">Geen Meter in de File</h3>
+            <p class="why-desc" id="why-4-desc">Omleiding of vertraging onderweg? Het benodigde IPPA-type verandert nooit tijdens de rit. U weet vooraf exact waar u aan toe bent.</p>
           </div>
 
           <div class="why-card">
             <div class="why-icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>
             </div>
-            <h3 class="why-title">Jong Mercedes Wagenpark</h3>
-            <p class="why-desc">Uitsluitend zwarte, representatieve Mercedes-Benz E-Klasse en V-Klasse voertuigen met volledige privacy en comfort.</p>
+            <h3 class="why-title" id="why-5-title">Jong Mercedes Wagenpark</h3>
+            <p class="why-desc" id="why-5-desc">Uitsluitend zwarte, representatieve Mercedes-Benz E-Klasse en V-Klasse voertuigen met volledige privacy en comfort.</p>
           </div>
 
           <div class="why-card">
             <div class="why-icon" aria-hidden="true">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             </div>
-            <h3 class="why-title">Directe Statusupdates</h3>
-            <p class="why-desc">Na uw aanvraag ontvangt u direct een bevestiging per e-mail met een persoonlijke link om de status van uw rit te volgen.</p>
+            <h3 class="why-title" id="why-6-title">Directe Statusupdates</h3>
+            <p class="why-desc" id="why-6-desc">Na uw aanvraag ontvangt u direct een bevestiging per e-mail met een persoonlijke link om de status van uw rit te volgen.</p>
           </div>
         </div>
       </div>
@@ -714,8 +717,8 @@
       <div class="container">
         <div class="section-header">
           <span class="section-tag" data-i18n="faqTag">Veelgestelde Vragen</span>
-          <h2 class="section-title" data-i18n="faqTitle">Heldere Antwoorden Over IPPA</h2>
-          <p class="section-desc">
+          <h2 class="section-title" id="faq-section-title" data-i18n="faqTitle">Heldere Antwoorden Over IPPA</h2>
+          <p class="section-desc" id="faq-section-desc">
             Alles wat u moet weten over het reserveren en voldoen van uw rit.
           </p>
         </div>
@@ -723,21 +726,21 @@
         <div class="faq-list">
           <div class="faq-item active">
             <button class="faq-question" type="button">
-              <span>Hoe werkt het betalen met IPPA bij de chauffeur?</span>
+              <span id="faq-q1">Hoe werkt het betalen met IPPA bij de chauffeur?</span>
               <span class="faq-toggle-icon" aria-hidden="true">+</span>
             </button>
             <div class="faq-answer">
-              <p>U berekent vooraf via het boekingsformulier welk type IPPA uw route vereist (Type A, B of C). Bij aankomst op uw bestemming overhandigt u de betreffende IPPA aan uw chauffeur. Er komt geen contant geld, pinapparaat of taximeter aan te pas.</p>
+              <p id="faq-a1">U berekent vooraf via het boekingsformulier welk type IPPA uw route vereist (Type A, B of C). Bij aankomst op uw bestemming overhandigt u de betreffende IPPA aan uw chauffeur. Er komt geen contant geld, pinapparaat of taximeter aan te pas.</p>
             </div>
           </div>
 
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>Wat is het exacte verschil tussen Type A, Type B en Type C?</span>
+              <span id="faq-q2">Wat is het exacte verschil tussen Type A, Type B en Type C?</span>
               <span class="faq-toggle-icon" aria-hidden="true">+</span>
             </button>
             <div class="faq-answer">
-              <p>Het systeem is ingedeeld op reisafstand:<br>
+              <p id="faq-a2">Het systeem is ingedeeld op reisafstand:<br>
               • <strong>Type A IPPA:</strong> Korte ritten tot circa 15 kilometer (stadsritten en lokale verplaatsingen).<br>
               • <strong>Type B IPPA:</strong> Middellange ritten van circa 15 tot 50 kilometer (zoals Schiphol transfers vanuit de Randstad).<br>
               • <strong>Type C IPPA:</strong> Lange afstanden vanaf 50 kilometer (intercity vervoer door heel Nederland).</p>
@@ -746,21 +749,21 @@
 
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>Kan ik onderweg ook met euro's of pinpas betalen?</span>
+              <span id="faq-q3">Kan ik onderweg ook met euro's of pinpas betalen?</span>
               <span class="faq-toggle-icon" aria-hidden="true">+</span>
             </button>
             <div class="faq-answer">
-              <p>Nee. IPPATAXI werkt uitsluitend op basis van het IPPA-systeem. Zorg ervoor dat u het juiste type IPPA bij u heeft wanneer u instapt.</p>
+              <p id="faq-a3">Nee. IPPATAXI werkt uitsluitend op basis van het IPPA-systeem. Zorg ervoor dat u het juiste type IPPA bij u heeft wanneer u instapt.</p>
             </div>
           </div>
 
           <div class="faq-item">
             <button class="faq-question" type="button">
-              <span>Hoe snel ontvang ik een bevestiging van mijn reservering?</span>
+              <span id="faq-q4">Hoe snel ontvang ik een bevestiging van mijn reservering?</span>
               <span class="faq-toggle-icon" aria-hidden="true">+</span>
             </button>
             <div class="faq-answer">
-              <p>Direct na het versturen van uw aanvraag ontvangt u een referentienummer en een link naar uw persoonlijke statuspagina. Zodra de centrale uw rit bevestigt en een chauffeur toewijst, ontvangt u automatisch een e-mailupdate.</p>
+              <p id="faq-a4">Direct na het versturen van uw aanvraag ontvangt u een referentienummer en een link naar uw persoonlijke statuspagina. Zodra de centrale uw rit bevestigt en een chauffeur toewijst, ontvangt u automatisch een e-mailupdate.</p>
             </div>
           </div>
         </div>
@@ -873,7 +876,7 @@
             <span class="brand-subtitle">ippataxi.nl</span>
           </span>
         </a>
-        <p class="footer-brand-desc">
+        <p class="footer-brand-desc" id="footer-brand-desc">
           Exclusief chauffeurs- en luchthavenvervoer in heel Nederland. Reis comfortabel in onze Mercedes-Benz vloot en reken eenvoudig af met Type A, B of C IPPA.
         </p>
       </div>
@@ -882,7 +885,7 @@
         <h4 class="footer-heading">Navigatie</h4>
         <ul class="footer-links">
           <li><a href="#home" class="footer-link">Home</a></li>
-          <li><a href="#ippa-system" class="footer-link">Het IPPA Concept</a></li>
+          <li><a href="#ippa-system" class="footer-link" id="footer-nav-concept">Het IPPA Concept</a></li>
           <li><a href="#calculator" class="footer-link">Rit Berekenen</a></li>
           <li><a href="#routes" class="footer-link">Schiphol Transfers</a></li>
           <li><a href="#fleet" class="footer-link">Ons Wagenpark</a></li>
@@ -890,11 +893,11 @@
       </div>
 
       <div>
-        <h4 class="footer-heading">IPPA Tarieftypes</h4>
+        <h4 class="footer-heading" id="footer-tariffs-heading">IPPA Tarieftypes</h4>
         <ul class="footer-links">
-          <li><span class="footer-text-item">Type A — Korte rit (&lt; 15 km)</span></li>
-          <li><span class="footer-text-item">Type B — Regio &amp; Schiphol (15–50 km)</span></li>
-          <li><span class="footer-text-item">Type C — Lange afstand (50+ km)</span></li>
+          <li><span class="footer-text-item" id="footer-tariff-1">Type A — Korte rit (&lt; 15 km)</span></li>
+          <li><span class="footer-text-item" id="footer-tariff-2">Type B — Regio &amp; Schiphol (15–50 km)</span></li>
+          <li><span class="footer-text-item" id="footer-tariff-3">Type C — Lange afstand (50+ km)</span></li>
         </ul>
       </div>
 
@@ -975,7 +978,7 @@
         </div>
         <div class="summary-row" id="sum-rate-breakdown-row" hidden>
           <span class="summary-label">Tariefopbouw (2026)</span>
-          <span class="summary-val" id="sum-rate-breakdown" style="font-size:0.8rem; color:var(--color-text-muted);">-</span>
+          <span class="summary-val" id="sum-rate-breakdown" style="font-size:0.8rem; color:var(--text-muted);">-</span>
         </div>
         <div class="summary-row summary-row-highlight">
           <span class="summary-label" id="sum-payment-label">Betaling bij aankomst</span>
@@ -1011,28 +1014,31 @@
         <!-- Real Money Payment Gateway UI Scaffold (Only visible in Real Money Mode) -->
         <div class="modal-payment-gateway" id="modal-payment-gateway" hidden>
           <div class="payment-gateway-header">
-            <span class="payment-gateway-title">Betaalmethode (2026 Vast Tarief)</span>
-            <span class="payment-gateway-lock">🔒 256-bit SSL • Stripe / iDEAL</span>
+            <span class="payment-gateway-title">Kies betaalmethode</span>
+            <span class="payment-gateway-lock">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>SSL Beveiligd</span>
+            </span>
           </div>
 
           <div class="payment-gateway-tabs" id="modal-payment-tabs">
             <button type="button" class="pg-tab active" data-pg="ideal">
-              <span class="pay-badge-ideal">iDEAL</span>
-              <span>iDEAL</span>
+              <span class="pay-pill-name">iDEAL</span>
+              <span class="pay-pill-meta">Nederlandse bank</span>
             </button>
             <button type="button" class="pg-tab" data-pg="stripe">
-              <span>💳</span>
-              <span>Creditcard / Stripe</span>
+              <span class="pay-pill-name">Creditcard</span>
+              <span class="pay-pill-meta">Visa • Mastercard</span>
             </button>
             <button type="button" class="pg-tab" data-pg="taxi">
-              <span>🚖</span>
-              <span>Pin / Contant in Taxi</span>
+              <span class="pay-pill-name">In de Taxi</span>
+              <span class="pay-pill-meta">Pin of contant</span>
             </button>
           </div>
 
           <!-- iDEAL Panel -->
           <div class="pg-panel" id="pg-panel-ideal">
-            <label for="ideal-bank-select" class="form-label" style="font-size:0.8rem;">Selecteer uw bank voor iDEAL-betaling</label>
+            <label for="ideal-bank-select" class="form-label">Selecteer uw bank voor iDEAL</label>
             <select id="ideal-bank-select" class="form-select">
               <option value="ING">ING Bank</option>
               <option value="Rabobank">Rabobank</option>
@@ -1051,16 +1057,16 @@
           <!-- Stripe / Card Panel -->
           <div class="pg-panel" id="pg-panel-stripe" hidden>
             <div class="form-group" style="margin-bottom:8px;">
-              <label class="form-label" style="font-size:0.8rem;">Kaartnummer (Visa / Mastercard / Amex)</label>
+              <label class="form-label">Kaartnummer (Visa / Mastercard / Amex)</label>
               <input type="text" id="stripe-card-num" class="form-input" placeholder="4242 •••• •••• 4242" maxlength="19" autocomplete="cc-number">
             </div>
             <div class="form-row-2" style="gap:8px;">
               <div>
-                <label class="form-label" style="font-size:0.78rem;">Vervaldatum</label>
+                <label class="form-label">Vervaldatum</label>
                 <input type="text" id="stripe-card-exp" class="form-input" placeholder="MM / JJ" maxlength="7" autocomplete="cc-exp">
               </div>
               <div>
-                <label class="form-label" style="font-size:0.78rem;">CVC</label>
+                <label class="form-label">CVC</label>
                 <input type="text" id="stripe-card-cvc" class="form-input" placeholder="123" maxlength="4" autocomplete="cc-csc">
               </div>
             </div>
@@ -1070,8 +1076,8 @@
           <!-- Pay in Taxi Panel -->
           <div class="pg-panel" id="pg-panel-taxi" hidden>
             <div class="pg-taxi-box">
-              <strong>🚖 Betaal in de Mercedes bij uw chauffeur</strong>
-              <p>U betaalt het vaste bedrag bij aankomst via contactloos pinnen (Maestro, VPAY, Visa, Mastercard, Apple Pay) of contant.</p>
+              <strong>Betalen in de Mercedes bij uw chauffeur</strong>
+              <p>U voldoet het vaste tarief bij aankomst via contactloos pinnen (Maestro, VPAY, Visa, Mastercard, Apple Pay) of contant.</p>
             </div>
           </div>
         </div>

@@ -1872,59 +1872,57 @@ a.channel-item:hover {
 
 /* ==========================================================================
    Real Money Mode & Payment Gateway Scaffold Styles
+   Matches the Daylight Card & Vehicle Selector Design System
    ========================================================================== */
 .ippa-result-box.tier-euro {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(226, 193, 90, 0.1));
-  border-color: rgba(16, 185, 129, 0.45);
+  background: var(--tier-b-bg);
+  border-color: var(--tier-b-border);
 }
 
 .ippa-result-box.tier-euro .ippa-payment-pill {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: var(--text-primary);
   color: #ffffff;
-  font-size: 1.15rem;
+  font-size: 0.96rem;
   font-weight: 800;
   letter-spacing: -0.01em;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
 }
 
 .real-money-breakdown {
   margin-top: 6px;
-  font-size: 0.76rem;
-  color: rgba(255, 255, 255, 0.72);
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 6px;
-  padding: 5px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  line-height: 1.4;
+  padding-top: 6px;
+  border-top: 1px solid rgba(138, 83, 0, 0.14);
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.45;
 }
 
 .calc-payment-scaffold {
-  margin-bottom: 14px;
-  padding: 12px 14px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 2px;
 }
 
-.calc-payment-header {
+.calc-payment-header,
+.payment-gateway-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+}
+
+.payment-gateway-title {
   font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
-.calc-payment-label {
+.calc-payment-secure,
+.payment-gateway-lock {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--tier-a-fg);
   font-weight: 600;
-  color: var(--color-text-main);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.calc-payment-secure {
-  color: #10b981;
-  font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
 }
 
 .payment-method-pills,
@@ -1936,102 +1934,100 @@ a.channel-item:hover {
 
 .pay-pill,
 .pg-tab {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--color-text-muted);
-  font-size: 0.78rem;
-  font-weight: 600;
+  padding: 10px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: var(--transition);
+  text-align: center;
 }
 
 .pay-pill:hover,
 .pg-tab:hover {
-  border-color: rgba(226, 193, 90, 0.45);
-  color: #ffffff;
+  border-color: var(--border-strong);
 }
 
 .pay-pill.active,
 .pg-tab.active {
-  background: rgba(226, 193, 90, 0.16);
-  border-color: var(--color-primary);
-  color: #ffffff;
-  box-shadow: 0 0 0 1px rgba(226, 193, 90, 0.3);
+  background: var(--bg-card);
+  border-color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-.pay-badge-ideal {
-  background: #cc0066;
-  color: #ffffff;
-  font-size: 0.66rem;
-  font-weight: 800;
-  padding: 2px 5px;
-  border-radius: 4px;
-  letter-spacing: 0.02em;
+.pay-pill-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.pay-pill-meta {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.2;
 }
 
 .modal-payment-gateway {
-  margin: 14px 0 16px;
+  margin: 4px 0 16px;
   padding: 14px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(226, 193, 90, 0.28);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
 }
 
-.payment-gateway-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+.modal-payment-gateway .pg-tab {
+  background: rgba(255, 255, 255, 0.6);
 }
 
-.payment-gateway-title {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.payment-gateway-lock {
-  font-size: 0.74rem;
-  color: #10b981;
-  font-weight: 600;
+.modal-payment-gateway .pg-tab.active {
+  background: var(--bg-card);
+  border-color: var(--text-primary);
 }
 
 .pg-panel {
   margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.pg-panel .form-input,
+.pg-panel .form-select {
+  background: var(--bg-card);
 }
 
 .pg-foot-note {
   margin-top: 6px;
   font-size: 0.74rem;
-  color: var(--color-text-muted);
+  color: var(--text-muted);
 }
 
 .pg-taxi-box {
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  border-radius: 8px;
-  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
   font-size: 0.82rem;
 }
 
 .pg-taxi-box strong {
   display: block;
-  color: #10b981;
-  margin-bottom: 4px;
+  color: var(--text-primary);
+  font-weight: 700;
+  margin-bottom: 3px;
 }
 
 .pg-taxi-box p {
   margin: 0;
-  color: var(--color-text-muted);
+  color: var(--text-secondary);
   font-size: 0.78rem;
+  line-height: 1.5;
 }
 
 @media (max-width: 560px) {
