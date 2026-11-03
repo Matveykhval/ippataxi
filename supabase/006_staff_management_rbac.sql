@@ -275,9 +275,9 @@ begin
     raise exception 'Ongeldige rol opgegeven.';
   end if;
 
-  -- Only owner can grant 'owner' role
-  if p_role = 'owner' and v_caller_role != 'owner' then
-    raise exception 'Forbidden: alleen de huidige eigenaar kan de eigenaarsrol overdragen.';
+  -- The 'owner' role cannot be assigned via the dashboard
+  if p_role = 'owner' and v_target_curr_role != 'owner' then
+    raise exception 'Forbidden: de eigenaarsrol kan niet worden toegekend via het dashboard.';
   end if;
 
   update public.staff

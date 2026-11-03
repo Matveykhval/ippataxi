@@ -126,8 +126,14 @@
 
   function isSeniorDriver() {
     const urlParams = new URLSearchParams(window.location.search);
-    const forceSenior = urlParams.get('mode') === 'senior' || Boolean(window.IPPA_FORCE_SENIOR_VIEW);
-    return state.staff?.role === 'senior_driver' || ((state.staff?.role === 'owner' || state.staff?.role === 'admin') && (forceDriverMode || forceSenior)) || forceSenior;
+    const mode = urlParams.get('mode');
+    if (state.staff?.role === 'senior_driver') return true;
+    if (state.staff?.role === 'owner' || state.staff?.role === 'admin') {
+      if (mode === 'driver') return false;
+      if (mode === 'senior') return true;
+      return true; // default in driver view for admin
+    }
+    return false;
   }
 
   function isOwner() {
@@ -227,7 +233,8 @@
 
     if ($('who')) {
       if (driverMode && (staff.role === 'owner' || staff.role === 'admin')) {
-        $('who').textContent = `${staff.name} (${formatRole(staff.role)} • Senior Preview)`;
+        const previewLabel = isSeniorDriver() ? 'Senior Chauffeur Preview' : 'Chauffeur Preview';
+        $('who').textContent = `${staff.name} (${formatRole(staff.role)} • ${previewLabel})`;
       } else {
         $('who').textContent = `${staff.name} (${formatRole(staff.role)})`;
       }
@@ -242,11 +249,20 @@
     if ($('driver-tabs')) $('driver-tabs').hidden = !driverMode;
     if ($('stats-bar')) $('stats-bar').hidden = driverMode;
     if ($('driver-portal-link')) $('driver-portal-link').hidden = driverMode;
+    if ($('senior-portal-link')) $('senior-portal-link').hidden = driverMode;
 
+    const isAdminOrOwner = staff.role === 'owner' || staff.role === 'admin';
     const adminLink = $('admin-portal-link');
     if (adminLink) {
-      const isAdminOrOwner = staff.role === 'owner' || staff.role === 'admin';
       adminLink.hidden = !isAdminOrOwner;
+    }
+    const toSeniorLink = $('driver-to-senior-link');
+    if (toSeniorLink) {
+      toSeniorLink.hidden = !isAdminOrOwner || isSeniorDriver();
+    }
+    const toStandardLink = $('driver-to-standard-link');
+    if (toStandardLink) {
+      toStandardLink.hidden = !isAdminOrOwner || !isSeniorDriver();
     }
 
     const banner = $('driver-rbac-banner');
@@ -371,6 +387,9 @@
   }
 
   async function handleUpdateStaffRole(targetStaff, newRole) {
+    if (newRole === 'owner') {
+      return toast('De eigenaarsrol kan niet worden toegekend via het dashboard.', false);
+    }
     if (targetStaff.role === 'owner' && !isRealOwner()) {
       return toast('U kunt de eigenaar niet wijzigen.', false);
     }
@@ -941,9 +960,6 @@
         el('option', { value: 'senior_driver', text: 'Senior Chauffeur', ...(st.role === 'senior_driver' ? { selected: true } : {}) }),
         el('option', { value: 'admin', text: 'Admin (Beheerder)', ...(st.role === 'admin' ? { selected: true } : {}) })
       ]);
-      if (isRealOwner()) {
-        roleSelect.append(el('option', { value: 'owner', text: 'Eigenaar (Owner)', ...(st.role === 'owner' ? { selected: true } : {}) }));
-      }
       roleSelect.addEventListener('change', () => handleUpdateStaffRole(st, roleSelect.value));
       actionRow.append(roleSelect);
 
