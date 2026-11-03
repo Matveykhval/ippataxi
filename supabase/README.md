@@ -14,21 +14,26 @@ only logged-in staff can read them.
    Never use the `service_role` key there.
 7. Commit and push. Done.
 
-## Adding a driver & Driver Dispatch RBAC
-1. In the Supabase **SQL Editor**, run [`004_driver_dispatch_rbac.sql`](004_driver_dispatch_rbac.sql) to add `assigned_driver_id`, `declined_by`, the atomic `accept_ride`/`decline_ride`/`complete_ride` RPCs, and strict RBAC policies/triggers.
-2. Add the driver account in **Authentication → Users → Add user** (enter e-mail + password, tick *Auto Confirm User*).
-3. Link the account in the SQL Editor with `role = 'driver'`:
-   ```sql
-   insert into public.staff (user_id, name, role)
-   select id, 'Naam Chauffeur', 'driver'
-   from auth.users
-   where email = 'chauffeur@ippataxi.nl';
-   ```
-4. Drivers can log in at `https://ippataxi.nl/driver/` (or `https://ippataxi.nl/admin/`, which automatically switches to Driver Mode for `driver` accounts).
-   - Drivers can only view unassigned pending rides and rides assigned to their own `user_id`.
-   - Clicking **Accept** immediately assigns their `user_id` (`assigned_driver_id`) and name (`driver`) to the ride, changes `status` to `'accepted'`, and removes it from the available pool for other drivers.
-   - Clicking **Decline** hides the ride from that driver's pool while keeping it available for other drivers.
-   - Drivers are strictly blocked (at both the database RLS/trigger layer and UI layer) from deleting rides, cancelling rides, or editing customer details.
+## Adding Staff (Owner, Admin, or Driver)
+1. Add the user account in **Authentication → Users → Add user** (enter e-mail + password, tick *Auto Confirm User*).
+2. Link the account in the SQL Editor with the desired role:
+   - **To add an Admin / Dispatcher** (`role = 'admin'`):
+     ```sql
+     insert into public.staff (user_id, name, role)
+     select id, 'Admin Naam', 'admin'
+     from auth.users
+     where email = 'admin@ippataxi.nl';
+     ```
+   - **To add a Driver** (`role = 'driver'`):
+     ```sql
+     insert into public.staff (user_id, name, role)
+     select id, 'Chauffeur Naam', 'driver'
+     from auth.users
+     where email = 'driver@ippataxi.nl';
+     ```
+3. Role capabilities:
+   - **Owner & Admin**: Full dispatch table, driver assignment, editing customer details, changing statuses, internal notes, reading customer messages, and ride management at `https://ippataxi.nl/admin/`.
+   - **Driver**: Restricted Chauffeur Portal at `https://ippataxi.nl/driver/` (only sees available pending rides to Accept / Decline and their own accepted rides to Complete). Strictly blocked from editing customer details or cancelling.
 
 
 ## Customer notifications (status page + e-mail)

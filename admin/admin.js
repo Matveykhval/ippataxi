@@ -112,7 +112,7 @@
   }
 
   function isOwner() {
-    return state.staff?.role === 'owner' && !forceDriverMode;
+    return (state.staff?.role === 'owner' || state.staff?.role === 'admin') && !forceDriverMode;
   }
 
   /**
@@ -192,10 +192,11 @@
     const driverMode = isDriverView();
     document.title = driverMode ? 'Driver - ippataxi' : 'Admin - ippataxi';
 
-    if ($('who')) $('who').textContent = `${staff.name} (${staff.role === 'owner' ? 'Admin' : 'Chauffeur'})`;
+    const roleDisplay = staff.role === 'owner' ? 'Owner' : (staff.role === 'admin' ? 'Admin' : 'Chauffeur');
+    if ($('who')) $('who').textContent = `${staff.name} (${roleDisplay})`;
     const roleBadge = $('role-badge');
     if (roleBadge) {
-      roleBadge.textContent = driverMode ? 'Chauffeur' : 'Admin';
+      roleBadge.textContent = driverMode ? 'Chauffeur' : (staff.role === 'owner' ? 'Owner' : 'Admin');
       roleBadge.classList.toggle('driver', driverMode);
     }
 
@@ -203,7 +204,7 @@
     if ($('driver-tabs')) $('driver-tabs').hidden = !driverMode;
     if ($('driver-rbac-banner')) $('driver-rbac-banner').hidden = !driverMode;
     if ($('stats-bar')) $('stats-bar').hidden = driverMode;
-    if ($('driver-portal-link')) $('driver-portal-link').hidden = driverMode || staff.role !== 'owner';
+    if ($('driver-portal-link')) $('driver-portal-link').hidden = driverMode;
 
     show('app');
     state.filter = driverMode ? 'all' : 'open';
@@ -763,7 +764,7 @@
       ...state.staffList.map((st) =>
         el('option', {
           value: st.user_id,
-          text: `${st.name} (${st.role === 'owner' ? 'Admin' : 'Driver'})`,
+          text: `${st.name} (${st.role === 'owner' ? 'Owner' : (st.role === 'admin' ? 'Admin' : 'Driver')})`,
           ...(r.assigned_driver_id === st.user_id ? { selected: true } : {})
         })
       )
