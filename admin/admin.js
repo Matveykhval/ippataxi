@@ -143,10 +143,13 @@
     setTimeout(() => t.remove(), 5000);
   }
 
+  // Supabase function slug (its endpoint URL: /functions/v1/smart-action). The slug is fixed at creation.
+  const NOTIFY_FUNCTION = 'smart-action';
+
   async function notifyCustomer(row) {
     if (!NOTIFY.includes(row.status)) return;
     if (!row.email) return toast('Opgeslagen · geen e-mail bekend voor deze klant', false);
-    const { data, error } = await db.functions.invoke('notify-status', { body: { bookingId: row.id } });
+    const { data, error } = await db.functions.invoke(NOTIFY_FUNCTION, { body: { bookingId: row.id } });
     if (!error && data?.sent) return toast(`E-mail verstuurd naar ${row.email} ✓`);
     console.error('notify-status failed', error, data);
     toast('E-mail versturen mislukt ✗ (zie console of function logs)', false);
