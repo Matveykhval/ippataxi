@@ -72,3 +72,4 @@ grant select on public.site_settings to anon, authenticated;
 grant insert, update on public.site_settings to authenticated;
 grant execute on function public.get_currency_mode() to anon, authenticated;
 grant execute on function public.set_currency_mode(text) to authenticated;
+
